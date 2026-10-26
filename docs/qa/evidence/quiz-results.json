@@ -1,0 +1,77 @@
+{
+  "environment": {
+    "browser": "148.0.7778.96",
+    "artifact": "C:\\Users\\kimyo\\Documents\\Codex\\2026-10-27\\task\\music-theory-lab\\output\\preview.html",
+    "artifactSha256": "3638adefdcf32113307c7c093d3b82d3c36802934f2d8af0a59085b51f490a9f",
+    "expectedArtifactSha256": "3638adefdcf32113307c7c093d3b82d3c36802934f2d8af0a59085b51f490a9f",
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "mode": "standalone-file",
+    "servedE2E": false,
+    "headless": true,
+    "actualDevice": false,
+    "actualListening": false
+  },
+  "results": [
+    {
+      "name": "pre quiz expands with five labelled fieldsets and no attempt recorded on render",
+      "status": "passed"
+    },
+    {
+      "name": "pre answers produce five of five only after explicit check and record each attempt once",
+      "status": "passed"
+    },
+    {
+      "name": "post uses its separate five questions and records only on explicit check",
+      "status": "passed"
+    },
+    {
+      "name": "changing an answer clears stale feedback without creating a recorded attempt",
+      "status": "passed"
+    },
+    {
+      "name": "a second explicit post check records exactly one further attempt per answered question",
+      "status": "passed"
+    },
+    {
+      "name": "reload preserves the ten stored attempt counters without replaying callbacks or restoring session-local choices",
+      "status": "passed"
+    },
+    {
+      "name": "quiz file path has no uncaught page error or HTTP data request",
+      "status": "passed"
+    }
+  ],
+  "screenshots": [
+    "quiz-pre-844x390-feedback-3638adef-file-artifact.png",
+    "quiz-post-844x390-feedback-3638adef-file-artifact.png"
+  ],
+  "expectedAttempts": {
+    "pre-equivalence": 1,
+    "pre-bar-total": 1,
+    "pre-rest-time": 1,
+    "pre-tempo-ratio": 1,
+    "pre-length-properties": 1,
+    "post-equivalence": 2,
+    "post-bar-total": 2,
+    "post-rest-time": 2,
+    "post-tempo-ratio": 2,
+    "post-length-properties": 2
+  },
+  "restoredAttempts": {
+    "pre-equivalence": 1,
+    "pre-bar-total": 1,
+    "pre-rest-time": 1,
+    "pre-tempo-ratio": 1,
+    "pre-length-properties": 1,
+    "post-equivalence": 2,
+    "post-bar-total": 2,
+    "post-rest-time": 2,
+    "post-tempo-ratio": 2,
+    "post-length-properties": 2
+  },
+  "errors": [],
+  "blockedHttpRequests": []
+}

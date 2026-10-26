@@ -1,0 +1,10 @@
+/* Visual adapter styles are contained by their components. */
+.three-viewport { width: 100%; min-height: 164px; height: clamp(164px, 29dvh, 230px); overflow: hidden; border-radius: 10px; background: #eef3f3; }
+.three-viewport canvas { display: block; width: 100%; height: 100%; }
+.three-axis-labels { display: flex; justify-content: space-between; padding: 4px 8px; font-size: .8rem; }
+.three-view-controls { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 7px; }
+.three-view-controls button { min-width: 44px; min-height: 44px; padding: 6px 12px; }
+.three-event-controls { display: flex; flex-wrap: wrap; gap: 7px; list-style: none; padding: 0; }
+.three-event-controls button { min-width: 44px; min-height: 44px; padding: 7px 10px; border-radius: 9px; border: 2px solid #879da3; background: #fff; color: #18373d; font: inherit; }
+.three-event-controls button[aria-pressed="true"] { border-color: #8d4c12; background: #fff0d8; }
+.three-event-controls button[aria-current="step"] { outline: 2px solid #214d49; outline-offset: 2px; }

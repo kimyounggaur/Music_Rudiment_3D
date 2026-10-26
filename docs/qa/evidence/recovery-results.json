@@ -1,0 +1,282 @@
+{
+  "environment": {
+    "browser": "148.0.7778.96",
+    "base": "http://127.0.0.1:4174/",
+    "expectedIndexSha256": "6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d",
+    "appSourceSha256": "ff61a7cf415d44ab70d7d2f3fbb7afa1b9fa41462445a964d3425dfd6a56cf14",
+    "headless": true,
+    "actualDevice": false,
+    "actualHumanListening": false,
+    "audioCasesUse": "native browser AudioContext instrumented; see executed case evidence",
+    "scope": "production HTTP recovery regression; written for explicit root dispatch; no server startup or connection retry"
+  },
+  "results": [
+    {
+      "name": "recovery-malformed-preserves-original-until-new-learner",
+      "status": "passed",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "unexpectedRequests": [],
+      "resources": [
+        {
+          "url": "http://127.0.0.1:4174/",
+          "status": 200,
+          "type": "document"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-BAGu6o6O.css",
+          "status": 200,
+          "type": "stylesheet"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-Ca2y-oL_.js",
+          "status": 200,
+          "type": "script"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/vexflow-bravura-B1hF8ZV_.js",
+          "status": 200,
+          "type": "script"
+        }
+      ],
+      "storageSnapshot": {
+        "primary": "{\"progressSchemaVersion\":1,\"appVersion\":\"0.1.0\",\"lessonId\":\"duration-basics\",\"contentVersion\":\"1.0.0\",\"savedAt\":\"2026-10-26T18:31:44.236Z\",\"sceneProgress\":{\"scene-1\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-2\":{\"answers\":{},\"observedDurations\":[\"1/1\",\"1/2\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-3\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-4\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-5\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-6\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false}},\"attempts\":{},\"hints\":{},\"supportLevel\":1,\"studentPatterns\":{\"scene-1/upper\":[{\"id\":\"duration-basics-scene1-upper-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":1},\"notation\":{\"type\":\"whole\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-1/lower\":[{\"id\":\"duration-basics-scene1-lower-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-2/main\":[{\"id\":\"edit-scene-2-main-1-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":2},\"notation\":{\"type\":\"half\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"edit-scene-2-main-1-2\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":2},\"notation\":{\"type\":\"half\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-3/A\":[],\"scene-3/B\":[],\"scene-3/C\":[],\"scene-4/main\":[{\"id\":\"duration-basics-scene4-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"},{\"id\":\"duration-basics-scene4-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"}],\"scene-5/main\":[{\"id\":\"duration-basics-scene5-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-6/main\":[]},\"preferences\":{\"mode\":\"2d\",\"reducedMotion\":false,\"muted\":false,\"volume\":0.3,\"currentSceneId\":\"scene-2\"}}",
+        "backup": null,
+        "unrelated": "preserve-me"
+      },
+      "screenshot": "recovery-malformed-preserves-original-until-new-learner-6d4ca09b-844x390.png",
+      "trace": "recovery-malformed-preserves-original-until-new-learner-6d4ca09b-trace.zip"
+    },
+    {
+      "name": "recovery-future-schema-preserves-original-until-new-learner",
+      "status": "passed",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "unexpectedRequests": [],
+      "resources": [
+        {
+          "url": "http://127.0.0.1:4174/",
+          "status": 200,
+          "type": "document"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-BAGu6o6O.css",
+          "status": 200,
+          "type": "stylesheet"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-Ca2y-oL_.js",
+          "status": 200,
+          "type": "script"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/vexflow-bravura-B1hF8ZV_.js",
+          "status": 200,
+          "type": "script"
+        }
+      ],
+      "storageSnapshot": {
+        "primary": "{\"progressSchemaVersion\":1,\"appVersion\":\"0.1.0\",\"lessonId\":\"duration-basics\",\"contentVersion\":\"1.0.0\",\"savedAt\":\"2026-10-26T18:31:48.493Z\",\"sceneProgress\":{\"scene-1\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-2\":{\"answers\":{},\"observedDurations\":[\"1/1\",\"1/2\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-3\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-4\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-5\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-6\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false}},\"attempts\":{},\"hints\":{},\"supportLevel\":1,\"studentPatterns\":{\"scene-1/upper\":[{\"id\":\"duration-basics-scene1-upper-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":1},\"notation\":{\"type\":\"whole\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-1/lower\":[{\"id\":\"duration-basics-scene1-lower-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-2/main\":[{\"id\":\"edit-scene-2-main-1-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":2},\"notation\":{\"type\":\"half\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"edit-scene-2-main-1-2\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":2},\"notation\":{\"type\":\"half\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-3/A\":[],\"scene-3/B\":[],\"scene-3/C\":[],\"scene-4/main\":[{\"id\":\"duration-basics-scene4-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"},{\"id\":\"duration-basics-scene4-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"}],\"scene-5/main\":[{\"id\":\"duration-basics-scene5-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-6/main\":[]},\"preferences\":{\"mode\":\"2d\",\"reducedMotion\":false,\"muted\":false,\"volume\":0.3,\"currentSceneId\":\"scene-2\"}}",
+        "backup": null,
+        "unrelated": "preserve-me"
+      },
+      "screenshot": "recovery-future-schema-preserves-original-until-new-learner-6d4ca09b-844x390.png",
+      "trace": "recovery-future-schema-preserves-original-until-new-learner-6d4ca09b-trace.zip"
+    },
+    {
+      "name": "recovery-reference-tamper-preserves-original-until-new-learner",
+      "status": "passed",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "unexpectedRequests": [],
+      "resources": [
+        {
+          "url": "http://127.0.0.1:4174/",
+          "status": 200,
+          "type": "document"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-BAGu6o6O.css",
+          "status": 200,
+          "type": "stylesheet"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-Ca2y-oL_.js",
+          "status": 200,
+          "type": "script"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/vexflow-bravura-B1hF8ZV_.js",
+          "status": 200,
+          "type": "script"
+        }
+      ],
+      "storageSnapshot": {
+        "primary": "{\"progressSchemaVersion\":1,\"appVersion\":\"0.1.0\",\"lessonId\":\"duration-basics\",\"contentVersion\":\"1.0.0\",\"savedAt\":\"2026-10-26T18:31:52.904Z\",\"sceneProgress\":{\"scene-1\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-2\":{\"answers\":{},\"observedDurations\":[\"1/1\",\"1/2\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-3\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-4\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-5\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-6\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false}},\"attempts\":{},\"hints\":{},\"supportLevel\":1,\"studentPatterns\":{\"scene-1/upper\":[{\"id\":\"duration-basics-scene1-upper-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":1},\"notation\":{\"type\":\"whole\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-1/lower\":[{\"id\":\"duration-basics-scene1-lower-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-2/main\":[{\"id\":\"edit-scene-2-main-1-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":2},\"notation\":{\"type\":\"half\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"edit-scene-2-main-1-2\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":2},\"notation\":{\"type\":\"half\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-3/A\":[],\"scene-3/B\":[],\"scene-3/C\":[],\"scene-4/main\":[{\"id\":\"duration-basics-scene4-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"},{\"id\":\"duration-basics-scene4-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"}],\"scene-5/main\":[{\"id\":\"duration-basics-scene5-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-6/main\":[]},\"preferences\":{\"mode\":\"2d\",\"reducedMotion\":false,\"muted\":false,\"volume\":0.3,\"currentSceneId\":\"scene-2\"}}",
+        "backup": null,
+        "unrelated": "preserve-me"
+      },
+      "screenshot": "recovery-reference-tamper-preserves-original-until-new-learner-6d4ca09b-844x390.png",
+      "trace": "recovery-reference-tamper-preserves-original-until-new-learner-6d4ca09b-trace.zip"
+    },
+    {
+      "name": "recovery-valid-import-unblocks-after-confirmation",
+      "status": "passed",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "unexpectedRequests": [],
+      "resources": [
+        {
+          "url": "http://127.0.0.1:4174/",
+          "status": 200,
+          "type": "document"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-BAGu6o6O.css",
+          "status": 200,
+          "type": "stylesheet"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-Ca2y-oL_.js",
+          "status": 200,
+          "type": "script"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/vexflow-bravura-B1hF8ZV_.js",
+          "status": 200,
+          "type": "script"
+        }
+      ],
+      "storageSnapshot": {
+        "primary": "{\"progressSchemaVersion\":1,\"appVersion\":\"0.1.0\",\"lessonId\":\"duration-basics\",\"contentVersion\":\"1.0.0\",\"savedAt\":\"2026-10-26T18:31:55.162Z\",\"sceneProgress\":{\"scene-1\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-2\":{\"answers\":{},\"observedDurations\":[\"1/1\",\"1/2\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-3\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-4\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-5\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-6\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false}},\"attempts\":{},\"hints\":{},\"supportLevel\":1,\"studentPatterns\":{\"scene-1/upper\":[{\"id\":\"duration-basics-scene1-upper-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":1},\"notation\":{\"type\":\"whole\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-1/lower\":[{\"id\":\"duration-basics-scene1-lower-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-2/main\":[{\"id\":\"edit-scene-2-main-1-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":2},\"notation\":{\"type\":\"half\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"edit-scene-2-main-1-2\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":2},\"notation\":{\"type\":\"half\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-3/A\":[],\"scene-3/B\":[],\"scene-3/C\":[],\"scene-4/main\":[{\"id\":\"duration-basics-scene4-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"},{\"id\":\"duration-basics-scene4-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"}],\"scene-5/main\":[{\"id\":\"duration-basics-scene5-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-6/main\":[]},\"preferences\":{\"mode\":\"2d\",\"reducedMotion\":false,\"muted\":false,\"volume\":0.35,\"currentSceneId\":\"scene-2\"}}",
+        "backup": "synthetic-recovery-backup",
+        "unrelated": "preserve-me"
+      },
+      "screenshot": "recovery-valid-import-unblocks-after-confirmation-6d4ca09b-844x390.png",
+      "trace": "recovery-valid-import-unblocks-after-confirmation-6d4ca09b-trace.zip"
+    },
+    {
+      "name": "new-learner-clears-quiz-answers-and-score-cancel-preserves",
+      "status": "passed",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "unexpectedRequests": [],
+      "resources": [
+        {
+          "url": "http://127.0.0.1:4174/",
+          "status": 200,
+          "type": "document"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-BAGu6o6O.css",
+          "status": 200,
+          "type": "stylesheet"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-Ca2y-oL_.js",
+          "status": 200,
+          "type": "script"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/vexflow-bravura-B1hF8ZV_.js",
+          "status": 200,
+          "type": "script"
+        }
+      ],
+      "storageSnapshot": {
+        "primary": "{\"progressSchemaVersion\":1,\"appVersion\":\"0.1.0\",\"lessonId\":\"duration-basics\",\"contentVersion\":\"1.0.0\",\"savedAt\":\"2026-10-26T18:31:56.673Z\",\"sceneProgress\":{\"scene-1\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-2\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-3\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-4\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-5\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-6\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false}},\"attempts\":{},\"hints\":{},\"supportLevel\":1,\"studentPatterns\":{\"scene-1/upper\":[{\"id\":\"duration-basics-scene1-upper-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":1},\"notation\":{\"type\":\"whole\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-1/lower\":[{\"id\":\"duration-basics-scene1-lower-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-2/main\":[{\"id\":\"duration-basics-scene2-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":1},\"notation\":{\"type\":\"whole\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-3/A\":[],\"scene-3/B\":[],\"scene-3/C\":[],\"scene-4/main\":[{\"id\":\"duration-basics-scene4-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"},{\"id\":\"duration-basics-scene4-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"}],\"scene-5/main\":[{\"id\":\"duration-basics-scene5-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-6/main\":[]},\"preferences\":{\"mode\":\"2d\",\"reducedMotion\":false,\"muted\":false,\"volume\":0.3,\"currentSceneId\":\"scene-1\"}}",
+        "backup": null,
+        "unrelated": "preserve-me"
+      },
+      "screenshot": "new-learner-clears-quiz-answers-and-score-cancel-preserves-6d4ca09b-844x390.png",
+      "trace": "new-learner-clears-quiz-answers-and-score-cancel-preserves-6d4ca09b-trace.zip"
+    },
+    {
+      "name": "audio-muted-start-does-not-record-listened",
+      "status": "passed",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "unexpectedRequests": [],
+      "resources": [
+        {
+          "url": "http://127.0.0.1:4174/",
+          "status": 200,
+          "type": "document"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-BAGu6o6O.css",
+          "status": 200,
+          "type": "stylesheet"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-Ca2y-oL_.js",
+          "status": 200,
+          "type": "script"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/vexflow-bravura-B1hF8ZV_.js",
+          "status": 200,
+          "type": "script"
+        }
+      ],
+      "storageSnapshot": {
+        "primary": "{\"progressSchemaVersion\":1,\"appVersion\":\"0.1.0\",\"lessonId\":\"duration-basics\",\"contentVersion\":\"1.0.0\",\"savedAt\":\"2026-10-26T18:31:57.565Z\",\"sceneProgress\":{\"scene-1\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-2\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-3\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-4\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-5\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-6\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false}},\"attempts\":{},\"hints\":{},\"supportLevel\":1,\"studentPatterns\":{\"scene-1/upper\":[{\"id\":\"duration-basics-scene1-upper-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":1},\"notation\":{\"type\":\"whole\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-1/lower\":[{\"id\":\"duration-basics-scene1-lower-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-2/main\":[{\"id\":\"duration-basics-scene2-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":1},\"notation\":{\"type\":\"whole\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-3/A\":[],\"scene-3/B\":[],\"scene-3/C\":[],\"scene-4/main\":[{\"id\":\"duration-basics-scene4-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"},{\"id\":\"duration-basics-scene4-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"}],\"scene-5/main\":[{\"id\":\"duration-basics-scene5-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-6/main\":[]},\"preferences\":{\"mode\":\"2d\",\"reducedMotion\":false,\"muted\":true,\"volume\":0.35,\"currentSceneId\":\"scene-1\"}}",
+        "backup": "synthetic-recovery-backup",
+        "unrelated": "preserve-me"
+      },
+      "audio": {
+        "contexts": 1,
+        "starts": 1,
+        "ended": 1,
+        "unavailable": false
+      },
+      "screenshot": "audio-muted-start-does-not-record-listened-6d4ca09b-844x390.png",
+      "trace": "audio-muted-start-does-not-record-listened-6d4ca09b-trace.zip"
+    },
+    {
+      "name": "audio-zero-volume-start-does-not-record-listened",
+      "status": "passed",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "unexpectedRequests": [],
+      "resources": [
+        {
+          "url": "http://127.0.0.1:4174/",
+          "status": 200,
+          "type": "document"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-BAGu6o6O.css",
+          "status": 200,
+          "type": "stylesheet"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/index-Ca2y-oL_.js",
+          "status": 200,
+          "type": "script"
+        },
+        {
+          "url": "http://127.0.0.1:4174/assets/vexflow-bravura-B1hF8ZV_.js",
+          "status": 200,
+          "type": "script"
+        }
+      ],
+      "storageSnapshot": {
+        "primary": "{\"progressSchemaVersion\":1,\"appVersion\":\"0.1.0\",\"lessonId\":\"duration-basics\",\"contentVersion\":\"1.0.0\",\"savedAt\":\"2026-10-26T18:32:01.461Z\",\"sceneProgress\":{\"scene-1\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-2\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-3\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-4\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-5\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false},\"scene-6\":{\"answers\":{},\"observedDurations\":[\"1/1\"],\"observedLanes\":{},\"explanationSelfCheck\":false}},\"attempts\":{},\"hints\":{},\"supportLevel\":1,\"studentPatterns\":{\"scene-1/upper\":[{\"id\":\"duration-basics-scene1-upper-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":1},\"notation\":{\"type\":\"whole\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-1/lower\":[{\"id\":\"duration-basics-scene1-lower-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene1-lower-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-2/main\":[{\"id\":\"duration-basics-scene2-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":1},\"notation\":{\"type\":\"whole\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-3/A\":[],\"scene-3/B\":[],\"scene-3/C\":[],\"scene-4/main\":[{\"id\":\"duration-basics-scene4-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"},{\"id\":\"duration-basics-scene4-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene4-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"rest\"}],\"scene-5/main\":[{\"id\":\"duration-basics-scene5-main-1\",\"onset\":{\"n\":0,\"d\":1},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-2\",\"onset\":{\"n\":1,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-3\",\"onset\":{\"n\":1,\"d\":2},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}},{\"id\":\"duration-basics-scene5-main-4\",\"onset\":{\"n\":3,\"d\":4},\"duration\":{\"n\":1,\"d\":4},\"notation\":{\"type\":\"quarter\",\"dots\":0},\"kind\":\"note\",\"pitch\":{\"step\":\"C\",\"alter\":0,\"octave\":4}}],\"scene-6/main\":[]},\"preferences\":{\"mode\":\"2d\",\"reducedMotion\":false,\"muted\":false,\"volume\":0,\"currentSceneId\":\"scene-1\"}}",
+        "backup": "synthetic-recovery-backup",
+        "unrelated": "preserve-me"
+      },
+      "audio": {
+        "contexts": 1,
+        "starts": 1,
+        "ended": 1,
+        "unavailable": false
+      },
+      "screenshot": "audio-zero-volume-start-does-not-record-listened-6d4ca09b-844x390.png",
+      "trace": "audio-zero-volume-start-does-not-record-listened-6d4ca09b-trace.zip"
+    }
+  ],
+  "passed": 7,
+  "failed": 0,
+  "blocked": 0
+}

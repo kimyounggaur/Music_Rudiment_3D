@@ -1,0 +1,42 @@
+{
+  "artifactSha256": "3638adefdcf32113307c7c093d3b82d3c36802934f2d8af0a59085b51f490a9f",
+  "pdf": "C:\\Users\\kimyo\\Documents\\Codex\\2026-10-27\\task\\music-theory-lab\\output\\qa\\print-final\\activity-sheet-six-scenes.pdf",
+  "sha256": "c5b54ae203de97661d21c0375852a3b04dd99e8d279ea53bfa3304f549df1635",
+  "pages": 6,
+  "boxes": [
+    {
+      "title": "같은 끝, 다른 시작",
+      "height": 669.21875,
+      "lanes": 2
+    },
+    {
+      "title": "절반씩 나누기",
+      "height": 430.03125,
+      "lanes": 1
+    },
+    {
+      "title": "다른 조합, 같은 길이",
+      "height": 908.40625,
+      "lanes": 3
+    },
+    {
+      "title": "쉼표도 시간이에요",
+      "height": 430.03125,
+      "lanes": 1
+    },
+    {
+      "title": "템포와 비율",
+      "height": 430.03125,
+      "lanes": 1
+    },
+    {
+      "title": "나의 한 마디",
+      "height": 430.03125,
+      "lanes": 1
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "fileOrigin": true,
+  "actualPrinter": false
+}

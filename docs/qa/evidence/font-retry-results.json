@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "checks": 1,
+  "name": "one-shot local font failure → explicit44px retry → one real SVG with unchanged quarter-note events and preserved focus",
+  "browser": "148.0.7778.96",
+  "fixturePath": "C:\\Users\\kimyo\\Documents\\Codex\\2026-10-27\\task\\music-theory-lab\\output\\notation\\vexflow5\\fixtures.html",
+  "fixtureSha256": "da98358a09636c674c335a67e6fba079053e68284de8e1d8440dded2c7cb9dfa",
+  "pageErrors": [],
+  "externalRequests": [],
+  "route": "self-contained file only; no localhost connection or denied Chromium1248 retry",
+  "musicEducatorApproval": "pending",
+  "realDevice": "not tested"
+}

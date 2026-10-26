@@ -1,0 +1,264 @@
+{
+  "filesCompared": 64,
+  "mismatches": [],
+  "appIndexSha256": "6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d",
+  "cleanIndexSha256": "6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d",
+  "sourceFiles": [
+    {
+      "path": "src\\App.tsx",
+      "sha256": "ff61a7cf415d44ab70d7d2f3fbb7afa1b9fa41462445a964d3425dfd6a56cf14"
+    },
+    {
+      "path": "src\\audio\\AudioEngine.ts",
+      "sha256": "d1fec68c4038e4ae28eb2da019372a96739d306da99901680d2e4a95c0da7897"
+    },
+    {
+      "path": "src\\components\\ConceptQuiz.tsx",
+      "sha256": "7ad4a872f4d7e6e1ba393bc06a0ca1ce9f1c8530175dd07b45c0e241ac47d47a"
+    },
+    {
+      "path": "src\\components\\SceneBoundary.tsx",
+      "sha256": "2b58d7044b8741a57951daf8e2d0f0e9dab3f99053605f3f3dc20fad61e47df5"
+    },
+    {
+      "path": "src\\content\\lesson.ts",
+      "sha256": "a7f76c90f11a2970adb35a80e5b89ac5d636acee96365b60e9ea1dc72c1e7953"
+    },
+    {
+      "path": "src\\content\\types.ts",
+      "sha256": "36ff56e3b52c5eed6c757aa1968a1e195c3c8ba3c783a4a6f2c573df0abb438a"
+    },
+    {
+      "path": "src\\content\\validation.ts",
+      "sha256": "493ce5fb27a17c0472eaea953246c577589dd44abb51e449eb08981293bd1d24"
+    },
+    {
+      "path": "src\\domain\\errors.ts",
+      "sha256": "4eb1164b9fe0c909eba3a78b7ca450beb229e963cfe156c7948687bb4597f807"
+    },
+    {
+      "path": "src\\domain\\fraction.ts",
+      "sha256": "72712bcad8f8b070472387ebc4266dcb381605e7e82e57600c162aaa0a2f40d4"
+    },
+    {
+      "path": "src\\domain\\index.ts",
+      "sha256": "a07556c5aa889356cae5dee601f9116cd818bed0e1dfc0d313e4f221e96d12e4"
+    },
+    {
+      "path": "src\\domain\\music.ts",
+      "sha256": "7ccad3c3f0e0fadb058a5837d43b8b8eda2f674dc9787b03e5b7de30b6de427b"
+    },
+    {
+      "path": "src\\lesson\\assessment.ts",
+      "sha256": "ee2a4901381877b3f80412bbecc5ed8a0f13fb6edcc84c00eaac4f2beab862c9"
+    },
+    {
+      "path": "src\\lesson\\controller.ts",
+      "sha256": "315c0105bf1432d90294b5b5540d5d2b49598dcf9d0624c18811a19493c1133d"
+    },
+    {
+      "path": "src\\main.tsx",
+      "sha256": "7fd18cea04b4eabd8e5f2bc7ceb388c1bc79ddb65104971d59d604b0f64a0f2b"
+    },
+    {
+      "path": "src\\notation\\NotationView.tsx",
+      "sha256": "34a0277927e8a59cbcd0826ed7c9817f5215d4fe6db065ff2ee46e230acdc76f"
+    },
+    {
+      "path": "src\\persistence\\progress.ts",
+      "sha256": "ceae0e452e2f5b00579641398d4d1151654cd150a1b980e3fab08e278bab40a0"
+    },
+    {
+      "path": "src\\scenes\\DurationScene2D.tsx",
+      "sha256": "0c51dfcd82c12e9908b700860ffc1b6cf094e6f75dc8278cd783a9bc8b66f827"
+    },
+    {
+      "path": "src\\scenes\\DurationScene3D.tsx",
+      "sha256": "1402f16aef7865f90a83be68dcdf163c722445cbb5403938d65717f2a86796a0"
+    },
+    {
+      "path": "src\\scenes\\durationWorld.ts",
+      "sha256": "2f94bdd52015753676ffa356a07ea8de584f878f01d4649dd4a369b8b1491087"
+    },
+    {
+      "path": "src\\styles\\adapters.css",
+      "sha256": "6fd7ca4b4169342c000a31e130d4913116da30e159ff26a42477a4383f39e348"
+    },
+    {
+      "path": "src\\styles\\app.css",
+      "sha256": "f5b505177edb9ec5fb7a8ff07bcd6467fa66c659f4baee0ad0d47875c5d49e3e"
+    },
+    {
+      "path": "src\\styles\\print.css",
+      "sha256": "ade5808edd5cdae189b778059fcf70f088f3c8501dea98e9770c3fe3010d95c7"
+    },
+    {
+      "path": "tests\\assessment.test.ts",
+      "sha256": "52e959ad7cd1c94b8dd140d9b31ebc65ce2328f252f7099ed5dcf6c64e59a381"
+    },
+    {
+      "path": "tests\\audio.test.ts",
+      "sha256": "cdeb606531b0fffd6add3dcff20ba90b4f3a71b0876d6d1db1a93fc4e3a82395"
+    },
+    {
+      "path": "tests\\domain.test.ts",
+      "sha256": "5c250436a89135011dde5fa5eaf438a8f189629997d22c57bc7a4165e58bd5de"
+    },
+    {
+      "path": "tests\\duration-world.test.ts",
+      "sha256": "d9565e1bfa0d71548ec3f9062de2778d6313cdcf0b2bc6e9122d5c7881406f63"
+    },
+    {
+      "path": "tests\\lesson.test.ts",
+      "sha256": "7b22048316f6b210b90bbbe4ebd222098cd019e50462d9edd066bb755e293330"
+    },
+    {
+      "path": "tests\\persistence.test.ts",
+      "sha256": "f1071a4b165883947e785c46bdf041810cac255b90490cbc55f34233851dc889"
+    },
+    {
+      "path": "scripts\\build-standalone.ts",
+      "sha256": "350aef5bc74ad6abc875dc7fad84cc338a94335194f128f9b0ca8d7603d80198"
+    },
+    {
+      "path": "scripts\\e2e.ts",
+      "sha256": "ddbe70ef2eb10c82f1a76c1fef34da565c2be4443867a704652c8775c9a2b1d4"
+    },
+    {
+      "path": "scripts\\export-http-check.ts",
+      "sha256": "4010269c67763e77a0f68db9628b3d60bf8e4126bfb79e417dbbb79a73033a8f"
+    },
+    {
+      "path": "scripts\\failure-e2e.ts",
+      "sha256": "ab41c3c18b3151fc7adcea84ad0eafb91634d32440957175f0782752ca977fc5"
+    },
+    {
+      "path": "scripts\\font-license-audit.ts",
+      "sha256": "256fe9b3d1dc19532d67719b4595b14e5c74481bed0a4b588d116466c1212d03"
+    },
+    {
+      "path": "scripts\\http-e2e.ts",
+      "sha256": "f55090b90bc4326c262a3fbfb440c8da5c65ac8c74987a7d92865b4624939e45"
+    },
+    {
+      "path": "scripts\\http-probe.ts",
+      "sha256": "bc90cf0a190484fd81fc4fd94fbc7af1d40ebe1225803029e47b1df6dc987300"
+    },
+    {
+      "path": "scripts\\keyboard-e2e.ts",
+      "sha256": "055e206ba4caa840c324f7041eb82a664266469791f4ed634fea6d8d53e3459d"
+    },
+    {
+      "path": "scripts\\musescore-fixtures.mjs",
+      "sha256": "22a71bce62e7cc18ff652358d55d5c9833207c4c000ebab08623ef5ca41d96b8"
+    },
+    {
+      "path": "scripts\\notation-e2e.ts",
+      "sha256": "473e8c7e9c43d5e0670f24e5dd78726dff183545f2106af80dfcf43f45d9f7e2"
+    },
+    {
+      "path": "scripts\\notation-font-retry.ts",
+      "sha256": "0e09e27247039aacbc0ac4673018202a376dcbce14a8fa0d4b8130444d0d8bf0"
+    },
+    {
+      "path": "scripts\\print-e2e.ts",
+      "sha256": "a8cadd37054f5cba81937ef4c5948b19e06282bb8c3a50b3e72cc40362dfcb76"
+    },
+    {
+      "path": "scripts\\quiz-e2e.ts",
+      "sha256": "38bb82e86e950f8878eee85369f36e0fbba4aae10e9ab03f53c909a7ad09efa6"
+    },
+    {
+      "path": "scripts\\recovery-http-e2e.ts",
+      "sha256": "994e1aa4d8e6627a7dafb5c72e8699e327b98d988c0f015d9fa0b0f289ec1610"
+    },
+    {
+      "path": "scripts\\stability-http-e2e.ts",
+      "sha256": "b783d6ee038d8791b9adec4dd11104ddb70642e8f51e3b72271049532f1c8d41"
+    },
+    {
+      "path": "scripts\\three-http-e2e.ts",
+      "sha256": "fe773fac087541b890f37bf22aa2a79b7743429751e99be2bbe9e5163df925f0"
+    },
+    {
+      "path": "scripts\\validate-content.ts",
+      "sha256": "ea25903c248c80f9594ad48b97ef406d3e27d52ba4d55c982704adc2ba1c76f4"
+    },
+    {
+      "path": "scripts\\verify-local-dependencies.ts",
+      "sha256": "681910ce52d87424535dfbbab799018a313324bdc95ea36b766c239b198ee3c1"
+    },
+    {
+      "path": "public\\licenses\\Academico-Bold-nameID0-notice.txt",
+      "sha256": "22420709be5983701a2406720026a4054c64495bb5737ffcce9879426733071b"
+    },
+    {
+      "path": "public\\licenses\\Academico-Bold-OFL.txt",
+      "sha256": "cd3936d74ebdb6377a00f8ad3d166252f01be1ec5905848eb07d99814950817f"
+    },
+    {
+      "path": "public\\licenses\\Academico-OFL.txt",
+      "sha256": "cd3936d74ebdb6377a00f8ad3d166252f01be1ec5905848eb07d99814950817f"
+    },
+    {
+      "path": "public\\licenses\\Bravura-OFL.txt",
+      "sha256": "ea0f9e3b750bb1f7e46798e7179c9ebb781c66a4e52d325fbfdcbb558ee67870"
+    },
+    {
+      "path": "public\\licenses\\font-metadata.json",
+      "sha256": "350bb128e9c4cdc42333beeb5dcf9097d555c77508525b1a34e0c2e8c0d7347f"
+    },
+    {
+      "path": "public\\licenses\\React-MIT.txt",
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "public\\licenses\\ReactDOM-MIT.txt",
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "path": "public\\licenses\\README.md",
+      "sha256": "bf3705f59be3c54e8c53377913b96cb26304334fb26b27ab2871b524fd60a9d4"
+    },
+    {
+      "path": "public\\licenses\\Three-MIT.txt",
+      "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc"
+    },
+    {
+      "path": "public\\licenses\\VexFlow-AUTHORS.md",
+      "sha256": "13fd7d3378abd6dc3337105f00d8ea1cbb4a009c0e6d4452a1df38929fdaee18"
+    },
+    {
+      "path": "public\\licenses\\VexFlow-MIT.txt",
+      "sha256": "5522a52057a68b081dd3e06a878584b565c6a3f7e7ddb154dd24f25b5630216f"
+    },
+    {
+      "path": "package.json",
+      "sha256": "7f314eb5809577695da8735f2eacbc6b312f74d2629fca06805067e3796ecf0d"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "ad55f1c25618641e0dc66cbd51927393457d3005955907e89095db8df2c8c8a3"
+    },
+    {
+      "path": "index.html",
+      "sha256": "8f2d4a65ba2862e8055585096da7e47c90df4d1a8534208b8c8cf99a9928d65c"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "389de2b5e83ec89edf09bc990963eb716a06d3e06a6ea46ff14c1ebe11bd536e"
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "c0d8cebf34f166d398ef76e113fa45a2c7820c1e011aeb4963065f559a7c6632"
+    },
+    {
+      "path": "eslint.config.mjs",
+      "sha256": "239fe6da6f65d57a8723e86e251ada3561c4f2ff49e5f0445a93ba249f5923b6"
+    },
+    {
+      "path": "vercel.json",
+      "sha256": "eb869c4c4431b656a1e4818b6b3fd7570cfb42f566eadccec81bc79f008ba1c8"
+    }
+  ]
+}

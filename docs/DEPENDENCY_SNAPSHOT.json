@@ -1,0 +1,89 @@
+{
+  "formatVersion": 1,
+  "generatedAt": "2026-10-26T18:21:33.405Z",
+  "packageName": "duration-basics-lab",
+  "packageVersion": "0.1.0",
+  "lockfile": {
+    "format": 3,
+    "sha256": "ad55f1c25618641e0dc66cbd51927393457d3005955907e89095db8df2c8c8a3",
+    "packageEntries": 228
+  },
+  "declaredPackages": [
+    {
+      "name": "@eslint/js",
+      "version": "9.39.4",
+      "manifestSha256": "c68baf2c859b03e43de607b9f1e392008e678a982baed3c93ab52f89843af260"
+    },
+    {
+      "name": "@types/node",
+      "version": "22.19.19",
+      "manifestSha256": "ba8f6326a685af9e7dce89a99f55e0dc3cef450046acf00a20f7cb673562f581"
+    },
+    {
+      "name": "@types/react",
+      "version": "19.2.14",
+      "manifestSha256": "e8beff67b2575112eff5757dc8e9310a78fc6e7d2d44d9d7a8204026f4ab81b7"
+    },
+    {
+      "name": "@types/react-dom",
+      "version": "19.2.3",
+      "manifestSha256": "bf90986beaec5f757c164bf1d374f3038dc41b0b06673de4a55fd975d1e5deca"
+    },
+    {
+      "name": "@types/three",
+      "version": "0.186.0",
+      "manifestSha256": "b0253caeb8b99b6a64150e6279cc4bbf30e61610683bdf39f8db2667d6103626"
+    },
+    {
+      "name": "eslint",
+      "version": "9.39.4",
+      "manifestSha256": "80a7caf2adf34963e47b32a1e75157de6d6814c3ae5a9d90358ddd9364833fe7"
+    },
+    {
+      "name": "eslint-plugin-react-hooks",
+      "version": "7.1.1",
+      "manifestSha256": "c745f6ec0ce838f395eb5da17e3f907094fcd14c87c30b94810f217fe5e7b476"
+    },
+    {
+      "name": "playwright",
+      "version": "1.60.0",
+      "manifestSha256": "8be9edc5642a8c761b677e7af8b9937f36c0443a91e14765877716d70034e5bf"
+    },
+    {
+      "name": "react",
+      "version": "19.2.5",
+      "manifestSha256": "ce01a280a6109d1a837e88ce99784f318785079dbffda086a870aad61adc94e1"
+    },
+    {
+      "name": "react-dom",
+      "version": "19.2.5",
+      "manifestSha256": "92aa96480eaab724565c5bb8a4b1dd355114506e5babd36c48c783407ff9937d"
+    },
+    {
+      "name": "three",
+      "version": "0.186.1",
+      "manifestSha256": "f9c474a27c920b9435353a6235968f4453436bee0444fac7e5fd289c8fa463de"
+    },
+    {
+      "name": "typescript",
+      "version": "5.9.3",
+      "manifestSha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+    },
+    {
+      "name": "typescript-eslint",
+      "version": "8.59.4",
+      "manifestSha256": "57913fc91eac96e6d4b41849890b69442bbdbf09cfe174f7200afcb49c82bcf6"
+    },
+    {
+      "name": "vexflow",
+      "version": "5.0.0",
+      "manifestSha256": "ef9ffb83088fef329617e29281ac2df365778c9478b5df7259c2e364d072db3f"
+    },
+    {
+      "name": "vite",
+      "version": "5.4.21",
+      "manifestSha256": "e9802045cdc313b6da55ec2e2dd79312074645816089d64f6021f567c10c0a03"
+    }
+  ],
+  "integrityScope": "SHA-256 covers this lockfile and selected installed package.json files. npm uses registry integrity during install; this verifier does not manually hash compressed package tarballs or every installed file."
+}

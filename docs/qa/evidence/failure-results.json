@@ -1,0 +1,115 @@
+{
+  "environment": {
+    "browser": "148.0.7778.96",
+    "artifact": "C:\\Users\\kimyo\\Documents\\Codex\\2026-10-27\\task\\music-theory-lab\\output\\preview.html",
+    "artifactSha256": "3638adefdcf32113307c7c093d3b82d3c36802934f2d8af0a59085b51f490a9f",
+    "origin": "file-artifact",
+    "webServedE2E": "blocked-by-EACCES-local-socket",
+    "actualDevice": false,
+    "actualListening": false,
+    "headless": true
+  },
+  "selectedCases": [
+    "no-audio-api-text-route",
+    "storage-securityerror-text-export-valid-current-pattern",
+    "malicious-and-reference-tamper-import-preserves-state",
+    "new-learner-cancel-confirm-backup-deletion",
+    "blocked-storage-delete-must-not-claim-success",
+    "keyboard-dialog-focus-and-escape",
+    "reduced-motion-css3d-2d-and-rotation-preserve-pattern"
+  ],
+  "scope": "targeted-regression",
+  "results": [
+    {
+      "name": "no-audio-api-text-route",
+      "status": "passed",
+      "errors": [],
+      "consoleErrors": [],
+      "externalRequests": [],
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "screenshot": "failure-no-audio-api-text-route-3638adef-844x390-file-artifact.png",
+      "trace": "failure-no-audio-api-text-route-3638adef-trace.zip"
+    },
+    {
+      "name": "storage-securityerror-text-export-valid-current-pattern",
+      "status": "passed",
+      "errors": [],
+      "consoleErrors": [],
+      "externalRequests": [],
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "screenshot": "failure-storage-securityerror-text-export-valid-current-pattern-3638adef-844x390-file-artifact.png",
+      "trace": "failure-storage-securityerror-text-export-valid-current-pattern-3638adef-trace.zip"
+    },
+    {
+      "name": "malicious-and-reference-tamper-import-preserves-state",
+      "status": "passed",
+      "errors": [],
+      "consoleErrors": [],
+      "externalRequests": [],
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "screenshot": "failure-malicious-and-reference-tamper-import-preserves-state-3638adef-844x390-file-artifact.png",
+      "trace": "failure-malicious-and-reference-tamper-import-preserves-state-3638adef-trace.zip"
+    },
+    {
+      "name": "new-learner-cancel-confirm-backup-deletion",
+      "status": "passed",
+      "errors": [],
+      "consoleErrors": [],
+      "externalRequests": [],
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "screenshot": "failure-new-learner-cancel-confirm-backup-deletion-3638adef-844x390-file-artifact.png",
+      "trace": "failure-new-learner-cancel-confirm-backup-deletion-3638adef-trace.zip"
+    },
+    {
+      "name": "blocked-storage-delete-must-not-claim-success",
+      "status": "passed",
+      "errors": [],
+      "consoleErrors": [],
+      "externalRequests": [],
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "screenshot": "failure-blocked-storage-delete-must-not-claim-success-3638adef-844x390-file-artifact.png",
+      "trace": "failure-blocked-storage-delete-must-not-claim-success-3638adef-trace.zip"
+    },
+    {
+      "name": "keyboard-dialog-focus-and-escape",
+      "status": "passed",
+      "errors": [],
+      "consoleErrors": [],
+      "externalRequests": [],
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "screenshot": "failure-keyboard-dialog-focus-and-escape-3638adef-844x390-file-artifact.png",
+      "trace": "failure-keyboard-dialog-focus-and-escape-3638adef-trace.zip"
+    },
+    {
+      "name": "reduced-motion-css3d-2d-and-rotation-preserve-pattern",
+      "status": "passed",
+      "errors": [],
+      "consoleErrors": [],
+      "externalRequests": [],
+      "viewport": {
+        "width": 360,
+        "height": 640
+      },
+      "screenshot": "failure-reduced-motion-css3d-2d-and-rotation-preserve-pattern-3638adef-360x640-file-artifact.png",
+      "trace": "failure-reduced-motion-css3d-2d-and-rotation-preserve-pattern-3638adef-trace.zip"
+    }
+  ]
+}

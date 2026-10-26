@@ -1,0 +1,214 @@
+{
+  "status": "passed",
+  "browser": "148.0.7778.96",
+  "route": "self-contained file only; served localhost route denied and never retried",
+  "fixtures": 15,
+  "results": [
+    {
+      "name": "actual bundled Bravura and Academico fonts ready, no CDN",
+      "status": "passed"
+    },
+    {
+      "name": "render note-whole",
+      "status": "passed",
+      "detail": {
+        "events": 1,
+        "beams": 0
+      }
+    },
+    {
+      "name": "render note-half",
+      "status": "passed",
+      "detail": {
+        "events": 2,
+        "beams": 0
+      }
+    },
+    {
+      "name": "render note-quarter",
+      "status": "passed",
+      "detail": {
+        "events": 4,
+        "beams": 0
+      }
+    },
+    {
+      "name": "render note-eighth",
+      "status": "passed",
+      "detail": {
+        "events": 8,
+        "beams": 4
+      }
+    },
+    {
+      "name": "render note-sixteenth",
+      "status": "passed",
+      "detail": {
+        "events": 16,
+        "beams": 4
+      }
+    },
+    {
+      "name": "render rest-whole",
+      "status": "passed",
+      "detail": {
+        "events": 1,
+        "beams": 0
+      }
+    },
+    {
+      "name": "render rest-half",
+      "status": "passed",
+      "detail": {
+        "events": 2,
+        "beams": 0
+      }
+    },
+    {
+      "name": "render rest-quarter",
+      "status": "passed",
+      "detail": {
+        "events": 4,
+        "beams": 0
+      }
+    },
+    {
+      "name": "render rest-eighth",
+      "status": "passed",
+      "detail": {
+        "events": 8,
+        "beams": 0
+      }
+    },
+    {
+      "name": "render rest-sixteenth",
+      "status": "passed",
+      "detail": {
+        "events": 16,
+        "beams": 0
+      }
+    },
+    {
+      "name": "render mixed-scene6",
+      "status": "passed",
+      "detail": {
+        "events": 4,
+        "beams": 1
+      }
+    },
+    {
+      "name": "render empty-draft",
+      "status": "passed",
+      "detail": {
+        "events": 0,
+        "beams": 0
+      }
+    },
+    {
+      "name": "render incomplete-draft",
+      "status": "passed",
+      "detail": {
+        "events": 2,
+        "beams": 0
+      }
+    },
+    {
+      "name": "render spelling-f-sharp-g-flat",
+      "status": "passed",
+      "detail": {
+        "events": 4,
+        "beams": 0
+      }
+    },
+    {
+      "name": "render g-major-effective-alter",
+      "status": "passed",
+      "detail": {
+        "events": 4,
+        "beams": 0
+      }
+    },
+    {
+      "name": "treble C4 is one ledger line below staff and actual SVG contains ledger strokes",
+      "status": "passed",
+      "detail": [
+        {
+          "id": "note-quarter-0",
+          "y": 106,
+          "bottom": 96,
+          "ledgerLines": 1
+        },
+        {
+          "id": "note-quarter-1",
+          "y": 106,
+          "bottom": 96,
+          "ledgerLines": 1
+        },
+        {
+          "id": "note-quarter-2",
+          "y": 106,
+          "bottom": 96,
+          "ledgerLines": 1
+        },
+        {
+          "id": "note-quarter-3",
+          "y": 106,
+          "bottom": 96,
+          "ledgerLines": 1
+        }
+      ]
+    },
+    {
+      "name": "whole rest hangs from fourth line and is centered; half rest stands on middle line",
+      "status": "passed",
+      "detail": {
+        "wholeY": 66,
+        "halfY": 76,
+        "bottom": 96,
+        "wholeCentered": "true",
+        "wholeX": 401.9800109863281,
+        "svgWidth": 770
+      }
+    },
+    {
+      "name": "F sharp and G flat retain distinct staff spelling despite equal sounding pitch",
+      "status": "passed",
+      "detail": {
+        "keys": [
+          "f#/4",
+          "gb/4",
+          "c/4",
+          "b/4"
+        ],
+        "ys": [
+          91,
+          86,
+          106,
+          76
+        ]
+      }
+    },
+    {
+      "name": "event selection and playback highlighting preserve the actual notation SVG and glyphs",
+      "status": "passed"
+    },
+    {
+      "name": "portrait resize preserves one SVG per fixture without accumulated renderers",
+      "status": "passed"
+    },
+    {
+      "name": "print media retains actual SVG notation, PDF generated for review",
+      "status": "passed"
+    },
+    {
+      "name": "no browser page errors and no HTTP(S) requests",
+      "status": "passed"
+    }
+  ],
+  "errors": [],
+  "external": [],
+  "htmlBytes": 956611,
+  "musicEducatorApproval": "pending",
+  "realDevice": "not tested",
+  "fontLicense": "separate notice verification pending"
+}

@@ -1,0 +1,61 @@
+{
+  "status": "passed",
+  "phase": "complete",
+  "failure": null,
+  "environment": {
+    "node": "v24.14.0",
+    "browser": "148.0.7778.96",
+    "executablePath": "C:\\Users\\kimyo\\AppData\\Local\\ms-playwright\\chromium_headless_shell-1223\\chrome-headless-shell-win64\\chrome-headless-shell.exe",
+    "origin": "http://127.0.0.1:4174",
+    "authorizedHttpTarget": "http://127.0.0.1:4174/",
+    "browserDownloadDirectory": "C:\\Users\\kimyo\\Documents\\Codex\\2026-10-27\\task\\music-theory-lab\\output\\playwright\\export-http-browser-downloads",
+    "distIndexSha256": "6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d",
+    "actualDevice": false,
+    "actualListening": false
+  },
+  "checks": [
+    {
+      "name": "authorized HTTP app loaded",
+      "status": "passed",
+      "detail": "HTTP200"
+    },
+    {
+      "name": "current two-half-note pattern stored",
+      "status": "passed"
+    },
+    {
+      "name": "real JSON download file generated",
+      "status": "passed",
+      "detail": "7383 bytes"
+    },
+    {
+      "name": "downloaded schema/current pattern/visible snapshot match",
+      "status": "passed"
+    },
+    {
+      "name": "no uncaught errors or external requests",
+      "status": "passed"
+    }
+  ],
+  "httpStatus": 200,
+  "download": {
+    "suggestedFilename": "duration-basics-progress.json",
+    "url": "blob:http://127.0.0.1:4174/cb66e24e-f2be-4f5b-ae77-6ed53aa818db",
+    "failure": null,
+    "generatedFileExists": true,
+    "file": {
+      "path": "C:\\Users\\kimyo\\Documents\\Codex\\2026-10-27\\task\\music-theory-lab\\output\\playwright\\export-http-20261026184454033-15572-progress.json",
+      "bytes": 7383,
+      "sha256": "8b9f7c07bddc17a5c1fa003913f33b7dbcac85a6885bda346ab052cfaf395693"
+    }
+  },
+  "pageErrors": [],
+  "consoleErrors": [],
+  "blockedExternalRequests": [],
+  "artifacts": {
+    "resultPath": "C:\\Users\\kimyo\\Documents\\Codex\\2026-10-27\\task\\music-theory-lab\\output\\playwright\\export-http-20261026184454033-15572-result.json",
+    "screenshotPath": "C:\\Users\\kimyo\\Documents\\Codex\\2026-10-27\\task\\music-theory-lab\\output\\playwright\\export-http-20261026184454033-15572-844x390.png",
+    "tracePath": "C:\\Users\\kimyo\\Documents\\Codex\\2026-10-27\\task\\music-theory-lab\\output\\playwright\\export-http-20261026184454033-15572-trace.zip"
+  },
+  "causalLimit": "This verifies one authorized HTTP environment. A success does not identify the exact cause of earlier file-origin cancellation because execution permissions/origin/download directory may differ."
+}

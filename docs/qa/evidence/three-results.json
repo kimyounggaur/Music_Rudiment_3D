@@ -1,0 +1,65 @@
+{
+  "base": "http://127.0.0.1:4174/",
+  "indexSha256": "6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d",
+  "browser": "148.0.7778.96",
+  "securityFlagsAdded": false,
+  "realDevice": false,
+  "listening": false,
+  "results": [
+    {
+      "name": "actual Three revision186/WebGL2 canvas and exact half-note world extents, DPR cap1.5",
+      "status": "passed",
+      "detail": [
+        {
+          "id": "edit-scene-2-main-1-1",
+          "x": 0,
+          "width": 5,
+          "height": 0.38,
+          "depth": 0.9
+        },
+        {
+          "id": "edit-scene-2-main-1-2",
+          "x": 5,
+          "width": 5,
+          "height": 0.38,
+          "depth": 0.9
+        }
+      ]
+    },
+    {
+      "name": "idle demand rendering has zero additional renders over600ms",
+      "status": "passed",
+      "detail": {
+        "count": 2
+      }
+    },
+    {
+      "name": "real canvas raycast selects tapped block; out-and-back drag does not select",
+      "status": "passed"
+    },
+    {
+      "name": "keyboard selection44px and portrait/landscape resize preserve pattern/progress",
+      "status": "passed"
+    },
+    {
+      "name": "rest retains time and DOM label with dashed hollow Three outline",
+      "status": "passed"
+    },
+    {
+      "name": "actual WebGL context loss stops playback, disposes canvas, preserves pattern and falls back2D",
+      "status": "passed"
+    },
+    {
+      "name": "six mount/unmount cycles and rapid mode cancellation leave zero canvases",
+      "status": "passed"
+    },
+    {
+      "name": "WebGL unavailable fault gives automatic2D with same edited lesson",
+      "status": "passed"
+    },
+    {
+      "name": "lazy3D chunk load failure is caught and leaves usable2D lesson",
+      "status": "passed"
+    }
+  ]
+}

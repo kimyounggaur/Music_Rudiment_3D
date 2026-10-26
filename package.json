@@ -1,0 +1,38 @@
+{
+  "name": "duration-basics-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.14.0"
+  },
+  "scripts": {
+    "dev": "node node_modules/vite/bin/vite.js",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit",
+    "lint": "node node_modules/eslint/bin/eslint.js src scripts tests vite.config.ts",
+    "test": "node --test tests/*.test.ts",
+    "content:validate": "node scripts/validate-content.ts",
+    "build": "npm run content:validate && node node_modules/vite/bin/vite.js build",
+    "preview": "node node_modules/vite/bin/vite.js preview",
+    "test:e2e": "node scripts/e2e.ts"
+  },
+  "dependencies": {
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
+    "three": "0.186.1",
+    "vexflow": "5.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.4",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@types/three": "0.186.0",
+    "eslint": "9.39.4",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "playwright": "1.60.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.59.4",
+    "vite": "5.4.21"
+  }
+}

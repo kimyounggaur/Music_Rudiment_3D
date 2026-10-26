@@ -1,0 +1,923 @@
+{
+  "environment": {
+    "browser": "148.0.7778.96",
+    "origin": "http://127.0.0.1:4174",
+    "base": "http://127.0.0.1:4174/",
+    "mode": "served-production-http",
+    "runnerRevision": "native-pagehide-v1",
+    "expectedIndexSha256": "6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d",
+    "servedIndexSha256": "6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d",
+    "headless": true,
+    "viewport": "eight-viewport-matrix",
+    "actualDevice": false,
+    "actualListening": false,
+    "actualScreenReader": false
+  },
+  "results": [
+    {
+      "name": "assigned production app is actually HTTP-served with ready VexFlow SVG and local music/text fonts, no autoplay",
+      "status": "passed"
+    },
+    {
+      "name": "HTTP text/2D route completes all six scenes with keyboard split/Space support before AudioContext creation",
+      "status": "passed"
+    },
+    {
+      "name": "scene6 current success is removed by undo and restored by redo through the HTTP app",
+      "status": "passed"
+    },
+    {
+      "name": "real HTTP AudioContext play and stop work in scenes1 2 3 and6 at quarter90 without overlapping sessions",
+      "status": "passed"
+    },
+    {
+      "name": "scene4 native90BPM sources exclude rests, keep4/3second onset spacing and naturally finish at logical bar end",
+      "status": "passed"
+    },
+    {
+      "name": "60 and120 tempo guards, loop across a bar, stop, nonloop natural end and position reset work over HTTP",
+      "status": "passed"
+    },
+    {
+      "name": "native background visibility stop",
+      "status": "blocked",
+      "detail": "blocked: native headless tab focus did not produce document.hidden; no synthetic visibility event was used"
+    },
+    {
+      "name": "native aboutblank pagehide invokes app immediate source.stop for future loop appointments before unload and returns without autoplay",
+      "status": "passed"
+    },
+    {
+      "name": "actual Three renderer or explicit honest context fallback and portrait rotation preserve the rhythm",
+      "status": "passed",
+      "detail": "actual Three WebGL canvas rendered"
+    },
+    {
+      "name": "actual HTTP blob download saves a valid JSON file and real file import cancel/confirm preserves or restores exact patterns",
+      "status": "passed"
+    },
+    {
+      "name": "HTTP-origin progress restores after reload with teacher answers hidden and no new AudioContext or autoplay",
+      "status": "passed"
+    },
+    {
+      "name": "HTTP responsive 844x390: six ready score scenes no body overflow and44px transport",
+      "status": "passed"
+    },
+    {
+      "name": "HTTP responsive 667x375: six ready score scenes no body overflow and44px transport",
+      "status": "passed"
+    },
+    {
+      "name": "HTTP responsive 568x320: six ready score scenes no body overflow and44px transport",
+      "status": "passed"
+    },
+    {
+      "name": "HTTP responsive 390x844: six ready score scenes no body overflow and44px transport",
+      "status": "passed"
+    },
+    {
+      "name": "HTTP responsive 360x640: six ready score scenes no body overflow and44px transport",
+      "status": "passed"
+    },
+    {
+      "name": "HTTP responsive 320x640: six ready score scenes no body overflow and44px transport",
+      "status": "passed"
+    },
+    {
+      "name": "HTTP responsive 1024x768: six ready score scenes no body overflow and44px transport",
+      "status": "passed"
+    },
+    {
+      "name": "HTTP responsive 1366x768: six ready score scenes no body overflow and44px transport",
+      "status": "passed"
+    },
+    {
+      "name": "HTTP suite has no uncaught page errors, failed core resources, unexpected origins or data-upload requests",
+      "status": "passed"
+    }
+  ],
+  "threeOutcome": "actual Three WebGL canvas rendered",
+  "backgroundOutcome": "blocked: native headless tab focus did not produce document.hidden; no synthetic visibility event was used",
+  "pagehideEvidence": {
+    "nativePagehide": true,
+    "persisted": false,
+    "lateObserver": true,
+    "contextTime": 10.48,
+    "stopIndexBeforeNavigation": 86,
+    "futureSourceIds": [
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53
+    ],
+    "newStopsBeforeLatePagehideObserver": [
+      {
+        "id": 46,
+        "when": 10.48
+      },
+      {
+        "id": 47,
+        "when": 10.48
+      },
+      {
+        "id": 48,
+        "when": 10.48
+      },
+      {
+        "id": 49,
+        "when": 10.48
+      },
+      {
+        "id": 50,
+        "when": 10.48
+      },
+      {
+        "id": 51,
+        "when": 10.48
+      },
+      {
+        "id": 52,
+        "when": 10.48
+      },
+      {
+        "id": 53,
+        "when": 10.48
+      }
+    ]
+  },
+  "downloadSha256": "e064ffa17dde2598495d029e89c257ff72dfa38e690c335dfa052d91b3930453",
+  "audioEvidence": {
+    "beforeNativePagehide": {
+      "contextsCreated": 1,
+      "oscillatorsCreated": 53,
+      "starts": [
+        {
+          "id": 1,
+          "when": 0.035,
+          "contextTime": 0
+        },
+        {
+          "id": 2,
+          "when": 0.7016666666666667,
+          "contextTime": 0
+        },
+        {
+          "id": 3,
+          "when": 1.3683333333333332,
+          "contextTime": 0
+        },
+        {
+          "id": 4,
+          "when": 2.035,
+          "contextTime": 0
+        },
+        {
+          "id": 5,
+          "when": 0.04566666666666667,
+          "contextTime": 0.010666666666666666
+        },
+        {
+          "id": 6,
+          "when": 0.21233333333333332,
+          "contextTime": 0.010666666666666666
+        },
+        {
+          "id": 7,
+          "when": 0.379,
+          "contextTime": 0.010666666666666666
+        },
+        {
+          "id": 8,
+          "when": 0.7123333333333333,
+          "contextTime": 0.010666666666666666
+        },
+        {
+          "id": 9,
+          "when": 1.379,
+          "contextTime": 0.010666666666666666
+        },
+        {
+          "id": 10,
+          "when": 0.04566666666666667,
+          "contextTime": 0.010666666666666666
+        },
+        {
+          "id": 11,
+          "when": 0.7123333333333333,
+          "contextTime": 0.010666666666666666
+        },
+        {
+          "id": 12,
+          "when": 1.0456666666666667,
+          "contextTime": 0.010666666666666666
+        },
+        {
+          "id": 13,
+          "when": 0.04566666666666667,
+          "contextTime": 0.010666666666666666
+        },
+        {
+          "id": 14,
+          "when": 2.0456666666666665,
+          "contextTime": 0.010666666666666666
+        },
+        {
+          "id": 15,
+          "when": 2.379,
+          "contextTime": 0.010666666666666666
+        },
+        {
+          "id": 16,
+          "when": 0.187,
+          "contextTime": 0.152
+        },
+        {
+          "id": 17,
+          "when": 1.5203333333333333,
+          "contextTime": 0.152
+        },
+        {
+          "id": 18,
+          "when": 3.035,
+          "contextTime": 3
+        },
+        {
+          "id": 19,
+          "when": 4.035,
+          "contextTime": 3
+        },
+        {
+          "id": 20,
+          "when": 5.035,
+          "contextTime": 3
+        },
+        {
+          "id": 21,
+          "when": 6.035,
+          "contextTime": 3
+        },
+        {
+          "id": 22,
+          "when": 3.1470000000000002,
+          "contextTime": 3.112
+        },
+        {
+          "id": 23,
+          "when": 3.6470000000000002,
+          "contextTime": 3.112
+        },
+        {
+          "id": 24,
+          "when": 4.147,
+          "contextTime": 3.112
+        },
+        {
+          "id": 25,
+          "when": 4.647,
+          "contextTime": 3.112
+        },
+        {
+          "id": 26,
+          "when": 3.315,
+          "contextTime": 3.28
+        },
+        {
+          "id": 27,
+          "when": 3.815,
+          "contextTime": 3.28
+        },
+        {
+          "id": 28,
+          "when": 4.3149999999999995,
+          "contextTime": 3.28
+        },
+        {
+          "id": 29,
+          "when": 4.8149999999999995,
+          "contextTime": 3.28
+        },
+        {
+          "id": 30,
+          "when": 5.3149999999999995,
+          "contextTime": 3.28
+        },
+        {
+          "id": 31,
+          "when": 5.8149999999999995,
+          "contextTime": 3.28
+        },
+        {
+          "id": 32,
+          "when": 6.3149999999999995,
+          "contextTime": 3.28
+        },
+        {
+          "id": 33,
+          "when": 6.8149999999999995,
+          "contextTime": 3.28
+        },
+        {
+          "id": 34,
+          "when": 7.3149999999999995,
+          "contextTime": 5.32
+        },
+        {
+          "id": 35,
+          "when": 7.8149999999999995,
+          "contextTime": 5.32
+        },
+        {
+          "id": 36,
+          "when": 8.315,
+          "contextTime": 5.32
+        },
+        {
+          "id": 37,
+          "when": 8.815,
+          "contextTime": 5.32
+        },
+        {
+          "id": 38,
+          "when": 5.747,
+          "contextTime": 5.712
+        },
+        {
+          "id": 39,
+          "when": 6.247,
+          "contextTime": 5.712
+        },
+        {
+          "id": 40,
+          "when": 6.747,
+          "contextTime": 5.72
+        },
+        {
+          "id": 41,
+          "when": 7.247,
+          "contextTime": 5.72
+        },
+        {
+          "id": 42,
+          "when": 7.845666666666667,
+          "contextTime": 7.810666666666667
+        },
+        {
+          "id": 43,
+          "when": 8.845666666666666,
+          "contextTime": 7.810666666666667
+        },
+        {
+          "id": 44,
+          "when": 9.845666666666666,
+          "contextTime": 7.810666666666667
+        },
+        {
+          "id": 45,
+          "when": 10.845666666666666,
+          "contextTime": 7.810666666666667
+        },
+        {
+          "id": 46,
+          "when": 10.485666666666667,
+          "contextTime": 10.450666666666667
+        },
+        {
+          "id": 47,
+          "when": 11.485666666666667,
+          "contextTime": 10.450666666666667
+        },
+        {
+          "id": 48,
+          "when": 12.485666666666667,
+          "contextTime": 10.450666666666667
+        },
+        {
+          "id": 49,
+          "when": 13.485666666666667,
+          "contextTime": 10.450666666666667
+        },
+        {
+          "id": 50,
+          "when": 14.485666666666667,
+          "contextTime": 10.450666666666667
+        },
+        {
+          "id": 51,
+          "when": 15.485666666666667,
+          "contextTime": 10.450666666666667
+        },
+        {
+          "id": 52,
+          "when": 16.485666666666667,
+          "contextTime": 10.450666666666667
+        },
+        {
+          "id": 53,
+          "when": 17.485666666666667,
+          "contextTime": 10.450666666666667
+        }
+      ],
+      "stops": [
+        {
+          "id": 1,
+          "when": 0.7016666666666667
+        },
+        {
+          "id": 2,
+          "when": 1.3683333333333332
+        },
+        {
+          "id": 3,
+          "when": 2.0349999999999997
+        },
+        {
+          "id": 4,
+          "when": 2.7016666666666667
+        },
+        {
+          "id": 1,
+          "when": 0.010666666666666666
+        },
+        {
+          "id": 2,
+          "when": 0.010666666666666666
+        },
+        {
+          "id": 3,
+          "when": 0.010666666666666666
+        },
+        {
+          "id": 4,
+          "when": 0.010666666666666666
+        },
+        {
+          "id": 5,
+          "when": 0.21233333333333332
+        },
+        {
+          "id": 6,
+          "when": 0.379
+        },
+        {
+          "id": 7,
+          "when": 0.7123333333333333
+        },
+        {
+          "id": 8,
+          "when": 1.379
+        },
+        {
+          "id": 9,
+          "when": 2.7123333333333335
+        },
+        {
+          "id": 5,
+          "when": 0.010666666666666666
+        },
+        {
+          "id": 6,
+          "when": 0.010666666666666666
+        },
+        {
+          "id": 7,
+          "when": 0.010666666666666666
+        },
+        {
+          "id": 8,
+          "when": 0.010666666666666666
+        },
+        {
+          "id": 9,
+          "when": 0.010666666666666666
+        },
+        {
+          "id": 10,
+          "when": 0.7123333333333333
+        },
+        {
+          "id": 11,
+          "when": 1.0456666666666665
+        },
+        {
+          "id": 12,
+          "when": 1.379
+        },
+        {
+          "id": 10,
+          "when": 0.010666666666666666
+        },
+        {
+          "id": 11,
+          "when": 0.010666666666666666
+        },
+        {
+          "id": 12,
+          "when": 0.010666666666666666
+        },
+        {
+          "id": 13,
+          "when": 1.379
+        },
+        {
+          "id": 14,
+          "when": 2.379
+        },
+        {
+          "id": 15,
+          "when": 2.7123333333333335
+        },
+        {
+          "id": 13,
+          "when": 0.06133333333333333
+        },
+        {
+          "id": 14,
+          "when": 0.06133333333333333
+        },
+        {
+          "id": 15,
+          "when": 0.06133333333333333
+        },
+        {
+          "id": 16,
+          "when": 0.8536666666666666
+        },
+        {
+          "id": 17,
+          "when": 2.187
+        },
+        {
+          "id": 18,
+          "when": 4.035
+        },
+        {
+          "id": 19,
+          "when": 5.035
+        },
+        {
+          "id": 20,
+          "when": 6.035
+        },
+        {
+          "id": 21,
+          "when": 7.035
+        },
+        {
+          "id": 18,
+          "when": 3.050666666666667
+        },
+        {
+          "id": 19,
+          "when": 3.050666666666667
+        },
+        {
+          "id": 20,
+          "when": 3.050666666666667
+        },
+        {
+          "id": 21,
+          "when": 3.050666666666667
+        },
+        {
+          "id": 22,
+          "when": 3.6470000000000002
+        },
+        {
+          "id": 23,
+          "when": 4.147
+        },
+        {
+          "id": 24,
+          "when": 4.647
+        },
+        {
+          "id": 25,
+          "when": 5.147
+        },
+        {
+          "id": 22,
+          "when": 3.16
+        },
+        {
+          "id": 23,
+          "when": 3.16
+        },
+        {
+          "id": 24,
+          "when": 3.16
+        },
+        {
+          "id": 25,
+          "when": 3.16
+        },
+        {
+          "id": 26,
+          "when": 3.815
+        },
+        {
+          "id": 27,
+          "when": 4.3149999999999995
+        },
+        {
+          "id": 28,
+          "when": 4.8149999999999995
+        },
+        {
+          "id": 29,
+          "when": 5.3149999999999995
+        },
+        {
+          "id": 30,
+          "when": 5.8149999999999995
+        },
+        {
+          "id": 31,
+          "when": 6.3149999999999995
+        },
+        {
+          "id": 32,
+          "when": 6.8149999999999995
+        },
+        {
+          "id": 33,
+          "when": 7.3149999999999995
+        },
+        {
+          "id": 34,
+          "when": 7.8149999999999995
+        },
+        {
+          "id": 35,
+          "when": 8.315
+        },
+        {
+          "id": 36,
+          "when": 8.815
+        },
+        {
+          "id": 37,
+          "when": 9.315
+        },
+        {
+          "id": 30,
+          "when": 5.621333333333333
+        },
+        {
+          "id": 31,
+          "when": 5.621333333333333
+        },
+        {
+          "id": 32,
+          "when": 5.621333333333333
+        },
+        {
+          "id": 33,
+          "when": 5.621333333333333
+        },
+        {
+          "id": 34,
+          "when": 5.621333333333333
+        },
+        {
+          "id": 35,
+          "when": 5.621333333333333
+        },
+        {
+          "id": 36,
+          "when": 5.621333333333333
+        },
+        {
+          "id": 37,
+          "when": 5.621333333333333
+        },
+        {
+          "id": 38,
+          "when": 6.247
+        },
+        {
+          "id": 39,
+          "when": 6.747
+        },
+        {
+          "id": 40,
+          "when": 7.247
+        },
+        {
+          "id": 41,
+          "when": 7.747
+        },
+        {
+          "id": 42,
+          "when": 8.845666666666666
+        },
+        {
+          "id": 43,
+          "when": 9.845666666666666
+        },
+        {
+          "id": 44,
+          "when": 10.845666666666666
+        },
+        {
+          "id": 45,
+          "when": 11.845666666666666
+        },
+        {
+          "id": 44,
+          "when": 9.970666666666666
+        },
+        {
+          "id": 45,
+          "when": 9.970666666666666
+        },
+        {
+          "id": 46,
+          "when": 11.485666666666667
+        },
+        {
+          "id": 47,
+          "when": 12.485666666666667
+        },
+        {
+          "id": 48,
+          "when": 13.485666666666667
+        },
+        {
+          "id": 49,
+          "when": 14.485666666666667
+        },
+        {
+          "id": 50,
+          "when": 15.485666666666667
+        },
+        {
+          "id": 51,
+          "when": 16.485666666666667
+        },
+        {
+          "id": 52,
+          "when": 17.485666666666667
+        },
+        {
+          "id": 53,
+          "when": 18.485666666666667
+        }
+      ],
+      "ended": [
+        7,
+        11,
+        9,
+        10,
+        3,
+        12,
+        6,
+        1,
+        2,
+        5,
+        4,
+        8,
+        15,
+        13,
+        14,
+        16,
+        17,
+        21,
+        19,
+        18,
+        20,
+        25,
+        22,
+        23,
+        24,
+        26,
+        27,
+        28,
+        29,
+        32,
+        33,
+        31,
+        30,
+        36,
+        34,
+        37,
+        35,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "contextStates": [
+        {
+          "state": "running",
+          "currentTime": 10.472
+        }
+      ]
+    },
+    "beforeFinalReload": {
+      "contextsCreated": 0,
+      "oscillatorsCreated": 0,
+      "starts": [],
+      "stops": [],
+      "ended": [],
+      "contextStates": []
+    }
+  },
+  "screenshots": [
+    "scene6-390x844-3d-or-fallback-6d4ca09b-http.png",
+    "scene1-844x390-2d-6d4ca09b-http.png",
+    "scene2-844x390-2d-6d4ca09b-http.png",
+    "scene3-844x390-2d-6d4ca09b-http.png",
+    "scene4-844x390-2d-6d4ca09b-http.png",
+    "scene5-844x390-2d-6d4ca09b-http.png",
+    "scene6-844x390-2d-6d4ca09b-http.png",
+    "scene1-390x844-2d-6d4ca09b-http.png",
+    "scene2-390x844-2d-6d4ca09b-http.png",
+    "scene3-390x844-2d-6d4ca09b-http.png",
+    "scene4-390x844-2d-6d4ca09b-http.png",
+    "scene5-390x844-2d-6d4ca09b-http.png",
+    "scene6-390x844-2d-6d4ca09b-http.png"
+  ],
+  "resources": [
+    {
+      "url": "http://127.0.0.1:4174/",
+      "status": 200,
+      "type": "document"
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/index-BAGu6o6O.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/index-Ca2y-oL_.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/vexflow-bravura-B1hF8ZV_.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:4174/",
+      "status": 200,
+      "type": "document"
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/index-BAGu6o6O.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/index-Ca2y-oL_.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/vexflow-bravura-B1hF8ZV_.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/DurationScene3D-DzaAgZdJ.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/three.module-DOzBRDFc.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:4174/",
+      "status": 200,
+      "type": "document"
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/index-BAGu6o6O.css",
+      "status": 200,
+      "type": "stylesheet"
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/index-Ca2y-oL_.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/vexflow-bravura-B1hF8ZV_.js",
+      "status": 200,
+      "type": "script"
+    }
+  ],
+  "errors": [],
+  "unexpectedRequests": []
+}

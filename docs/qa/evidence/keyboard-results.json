@@ -1,0 +1,88 @@
+{
+  "environment": {
+    "browser": "148.0.7778.96",
+    "artifact": "C:\\Users\\kimyo\\Documents\\Codex\\2026-10-27\\task\\music-theory-lab\\output\\preview.html",
+    "artifactSha256": "3638adefdcf32113307c7c093d3b82d3c36802934f2d8af0a59085b51f490a9f",
+    "expectedArtifactSha256": "3638adefdcf32113307c7c093d3b82d3c36802934f2d8af0a59085b51f490a9f",
+    "mode": "standalone-file",
+    "servedE2E": false,
+    "viewport": {
+      "width": 844,
+      "height": 390
+    },
+    "headless": true,
+    "focusAssistedKeyboardRoute": true,
+    "actualDevice": false,
+    "actualListening": false,
+    "actualScreenReader": false
+  },
+  "results": [
+    {
+      "name": "fresh 2D scene has a ready VexFlow SVG and a locked next action before responses",
+      "status": "passed"
+    },
+    {
+      "name": "scene1 upper and lower text observations plus three native radio answers unlock next using keys",
+      "status": "passed"
+    },
+    {
+      "name": "scene2 four keyboard splits reach sixteenth limit and require the answer before progressing",
+      "status": "passed"
+    },
+    {
+      "name": "scene3 A B C lanes and note palettes complete all equivalence tasks using Enter only",
+      "status": "passed"
+    },
+    {
+      "name": "scene4 keyboard note-rest toggles and the continuous-time answer preserve and complete the bar",
+      "status": "passed"
+    },
+    {
+      "name": "scene5 keyboard select compares 120 and 60 and native radio responses unlock the final scene",
+      "status": "passed"
+    },
+    {
+      "name": "scene6 keyboard cards and explanation Space produce the final summary and a ready score SVG",
+      "status": "passed"
+    },
+    {
+      "name": "persisted six-scene completion restores correctly and all nine lane observations are text rather than listened",
+      "status": "passed"
+    },
+    {
+      "name": "entire route records zero pointer mouse touch or AudioContext creation and no page errors or HTTP requests",
+      "status": "passed"
+    }
+  ],
+  "keyboardActions": 48,
+  "audit": {
+    "pointerDown": 0,
+    "mouseDown": 0,
+    "touchStart": 0,
+    "audioContexts": 0
+  },
+  "completedScenes": [
+    "scene-1",
+    "scene-2",
+    "scene-3",
+    "scene-4",
+    "scene-5",
+    "scene-6"
+  ],
+  "observedLaneModes": {
+    "scene-1/upper": "text",
+    "scene-1/lower": "text",
+    "scene-2/main": "text",
+    "scene-3/A": "text",
+    "scene-3/B": "text",
+    "scene-3/C": "text",
+    "scene-4/main": "text",
+    "scene-5/main": "text",
+    "scene-6/main": "text"
+  },
+  "screenshots": [
+    "keyboard-six-scenes-844x390-complete-3638adef-file-artifact.png"
+  ],
+  "errors": [],
+  "externalRequests": []
+}
