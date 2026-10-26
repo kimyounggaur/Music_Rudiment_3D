@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "url": "https://music-rudiment-3d.vercel.app/",
+  "gitShaFromVerifiedDeploymentMetadata": "c91e7ebb92304e95b44ff7d12820824cdeb0018b",
+  "browser": "148.0.7778.96",
+  "actualDevice": false,
+  "actualListening": false,
+  "checks": [
+    "public HTTPS200, actual SVG/font ready, no autoplay",
+    "deployed actual Three module loads and preserves two half-note blocks",
+    "rest toggle preserves total; native Web Audio gesture starts and stops",
+    "final composition meets sum, duration variety, rest and explanation conditions",
+    "HTTPS-origin progress restores without autoplay",
+    "landscape/portrait stay usable without horizontal body overflow",
+    "actual Three MIT notice is served unchanged",
+    "no uncaught page errors or external app requests"
+  ],
+  "errors": [],
+  "external": []
+}

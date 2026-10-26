@@ -9,8 +9,8 @@
 | 현재정적검사 |typecheck/lint/content/build exit0 |부모현재source실행기록·clean결과. 실제기기/청취와구별 |
 | 단위/통합 |**96pass/0fail**,domain25·lesson25·audio18·persistence12·assessment10·Three모델6 |clean-reproduction/unit.log. 이전90로그는baseline |
 | 콘텐츠 |schema2.0.0/content1.0.0,6scenes9lanes |content:validate |
-| 공식의존성 |승인후Three0.186.1/types0.186.0·VexFlow5·15정확선언/228lock·설치181/optional47 |DEPENDENCY_INSTALL/SNAPSHOT. 이전DNS/오프라인잠금오류는역사 |
-| clean재현 |fresh npmci181설치exit0 후 type/lint/unit/content/build **5단계exit0** |[clean results](../../output/qa/clean-reproduction/results.json). source/test/scripts/public/config64개일치,mismatches0,main/clean index6d4c일치 |
+| 공식의존성 |Node `>=24.14.0 <25`,Three0.186.1/types0.186.0·VexFlow5·15정확선언/228lock·설치181/optional47 |현재lockSHA `9c381bfb0bf2c0d8954e9f72b5c721ce6a90eba8c6c819ac918579931d3e1138`,snapshot19:05:09.709Z. B원격배포검증과로컬재현은구분 |
+| clean재현 |두번째공식npm ci181exit0 후B설정type/lint/unit96/content/build **5단계exit0**,mainbuild0 |[clean results](../../output/qa/clean-reproduction/results.json). source/test/scripts/public/config**65개exact/mismatch0**,main/clean index6d4c동일. 이전64는A역사 |
 | 주 HTTP E2E |**19pass/1blocked/0fail,exit1** |[HTTP results](../../output/playwright/http-6d4ca09b/results.json). Chromium148.0.7778.96,실제productionHTTP. 차단을무시해exit0으로하지않음 |
 | native pagehide |신뢰된실제aboutblank이동,App이future8source에현재audio시간10.48의stop호출,lateobserver기록,복귀context0·패턴보존 |주HTTP결과의pagehideEvidence. 브라우저자동unload와JS stop호출을구별. 실제hidden검증을대체하지않음 |
 | native background hidden |**차단**:headless탭전환으로document.hidden재현안됨 |가짜visibilitychange나property변경으로통과시키지않음. 실제브라우저/기기검수필요 |
@@ -28,6 +28,9 @@
 | 15분안정성 |**PASS/exit0,900030.0102ms·30cycles**·start/endindex6d4c동일·nativecontext최대1·stop후liveosc0·2Dcanvas0·오류0 |[curated요약](evidence/stability-summary.json)·[전체로그](../../output/http/stability-6d4ca09b-2026-10-26T18-37-54-280Z/results.json). forcedGC없음·heapthreshold주장없음,실제모바일열/청취시험아님 |
 | 성능목표 |bundle/lazy/DPR/idle증거있음;fps/입력100ms/AV50ms미측정 |일반목표를달성값으로채우지않음 |
 | 실기기/SR/청취/음악/관찰 |대기 |기종·출력장치·검수자·날짜확보사실을만들지않음 |
+| 첫릴리스A |원격main `c91e7ebb92304e95b44ff7d12820824cdeb0018b`일치·GitHubCI40382693913success·VercelproductionREADY동일SHA |[API증거](evidence/release-first.json)·[RELEASE](../RELEASE.md). 보호설정변경·새자격증명없음 |
+| 공개HTTPS smoke |[운영주소](https://music-rudiment-3d.vercel.app/)200·SVG/Three/nativeAudio/작곡/저장/회전/MIT/오류0 **8/8pass** |[smoke](evidence/deployment-smoke-first.json)·[운영HTML SHA6d4c](evidence/production-index-first.json). 실제기기/청취검증아님 |
+| 후속B자동연결 |운영URL/근거·runtimeMIT·Node24상한실질수정과로컬clean65통과 |**Bpush후원격CI/자동production배포/정확SHA검증대기**,A결과자동승계안함 |
 | 입력로컬archive |지원materialization최초+1retry실패·원격전체읽기완료 |INPUT_PROVENANCE. 현재npm/HTTP승인으로자동해결된것아님 |
 
 현재 PDF 정본은 [docs/qa/activity-sheet-six-scenes.pdf](activity-sheet-six-scenes.pdf)와동일바이트의[output PDF](../../output/qa/print-final/activity-sheet-six-scenes.pdf)다.
@@ -35,4 +38,4 @@ SHA256 `c5b54ae203de97661d21c0375852a3b04dd99e8d279ea53bfa3304f549df1635`.
 이전79cf PDF의6쪽검수·5→7→6쪽수정이력도보존하며현재PDF의검토와혼동하지않는다.
 
 승인된npm/loopback 범위 안에서실제실행한결과만기록한다. 현재HTTP/Three/clean을“미구현·미승인”으로반복하지않으며,1개hidden차단과입력archive·필수사람검수를“문제없음”으로숨기지않는다.
-공개release와P22완료판정은대기다. [BUILD_STATUS](../BUILD_STATUS.md),[요구사항추적](../REQUIREMENTS_TRACE.md)을함께확인한다.
+첫공개릴리스A는실제관측완료이며후속B자동배포검증은대기다. P00~P23필수수동검수/입력한계가모두완료된것은아니다. [BUILD_STATUS](../BUILD_STATUS.md),[요구사항추적](../REQUIREMENTS_TRACE.md)을함께확인한다.

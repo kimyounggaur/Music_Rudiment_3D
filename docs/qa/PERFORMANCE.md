@@ -4,6 +4,10 @@
 
 현재 `dist/index.html` SHA256은 `6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d`다. 독립 HTML은1,821,442바이트·SHA256 `3638adefdcf32113307c7c093d3b82d3c36802934f2d8af0a59085b51f490a9f`이다. 이 문서 담당자가 실제 파일을 읽어 크기와 두 해시를 재확인했다.
 
+## 운영 릴리스의 검사 범위
+
+첫 실제 릴리스 A는 main `c91e7ebb92304e95b44ff7d12820824cdeb0018b`와 연결된 Vercel production READY이며 [운영 주소](https://music-rudiment-3d.vercel.app/)의 공개200·브라우저8검사를 통과했다. [실제 운영 화면 증거](evidence/deployment-smoke-first.json)는 기능 확인이며,운영 네트워크 지연·FPS·실제 모바일 성능 측정이 아니다. Node major 범위를`>=24.14.0 <25`로 제한한 현재65파일의 clean 재현은 공식 npm ci181개·typecheck/lint/unit96/content/build각exit0으로 통과했다. 후속 B push 뒤 자동 Git 배포는 아직 대기다. [공개 운영 HTML 해시](evidence/production-index-first.json)도 index6d4c와 일치하며 아래 자원 측정은 유지된다. 운영 기능 smoke8통과를 FPS·latency 측정으로 바꾸지 않는다.
+
 ## 빌드 자원 측정
 
 아래는 현재 파일 bytes와 Node zlib.gzipSync로 계산한 압축 크기다. 서버가 실제로 압축 전송한 양·초기 네트워크 payload·캐시 성능을 뜻하지 않는다. sourcemap은 아래 JS/CSS 표와 별도 생성 파일이다.

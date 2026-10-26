@@ -1,5 +1,7 @@
 # VexFlow와 내장 글꼴 고지
 
+앱 런타임의 [Three.js MIT](Three-MIT.txt), [React MIT](React-MIT.txt), [ReactDOM MIT](ReactDOM-MIT.txt) 원문도 함께 보존한다. 아래 글꼴 조사는 이들 프로그램의 라이선스와 별도로 수행했다.
+
 확인일: 2026-10-26 UTC. 대상은 로컬에서 무결성이 검증된 VexFlow5.0.0의 `vexflow/bravura` 경로에 포함된 WOFF2 글꼴이다. 외부 글꼴 파일을 내려받거나 글꼴 바이트를 수정하지 않았다.
 
 VexFlow 프로그램의 [MIT 고지](VexFlow-MIT.txt)와 [저자 목록](VexFlow-AUTHORS.md)을 원본 그대로 보존했다. **MIT라는 패키지 표기만으로 내장 글꼴도 MIT라고 판단하지 않았다.**
@@ -24,4 +26,4 @@ Academico의 OFL 적용은 Steinberg 공식 포럼 안내와도 일치한다. �
 
 외부 출처 조사 중 `web.click`으로 요청한 `https://github.com/vexflow/vexflow-fonts/tree/main/academico`와 `https://github.com/vexflow/vexflow-fonts/tree/main/bravura`는 각각 `Failed to fetch restricted URL`로 읽기 실패했다. 두 경로는 재시도하거나 다른 경로로 우회하지 않았다. 위 고지는 그 외부 경로에서 받은 내용이 아니라 이미 로컬에 검증돼 있던 패키지의 실제 WOFF2 이름 테이블에서 추출한 전체 원문이다. 따라서 이 조사로 외부 글꼴 저장소 내용까지 확인했다고 보고하지 않는다.
 
-글꼴 고지 확인과 로컬 렌더링은 공개 배포 허가를 뜻하지 않는다. 이번 작업에서 외부 배포·계정·결제·권한 확대는 하지 않았다.
+이 기록은 글꼴 고지 조사와 보존 범위다. 앱의 실제 배포·검증 상태는 프로젝트 README와 배포 기록에서 별도로 확인한다. 라이선스 조사를 음악교사 승인이나 교육 효과 검증으로 표시하지 않는다.

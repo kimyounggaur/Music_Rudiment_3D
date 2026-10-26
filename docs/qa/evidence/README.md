@@ -2,7 +2,7 @@
 
 최종 HTTP index SHA256은 `6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d`, 독립 HTML은 `3638adefdcf32113307c7c093d3b82d3c36802934f2d8af0a59085b51f490a9f`다.
 
-- `clean-reproduction.json`, `source-match.json`, `unit-results.txt`, `build-results.txt`: 공식 npm ci 후 동일64소스의 타입/린트/96테스트/콘텐츠/빌드 통과와 동일 index.
+- `clean-reproduction.json`, `source-match.json`, `unit-results.txt`, `build-results.txt`: 공식 npm ci 후 동일65소스의 타입/린트/96테스트/콘텐츠/빌드 통과와 동일 index.
 - `http-results.json`: 주요19통과, native document.hidden1개 blocked. 실제 pagehide 정지는 통과. suite의 exit1은 이 blocked를 숨기지 않기 위한 결과다.
 - `three-results.json`: 실제 Three/WebGL2·선택·유휴·회전·정리·context loss·미지원/로딩 실패 대체9통과.
 - `recovery-results.json`: 손상 원문 보호·확인된 초기화/가져오기·문항 초기화·음소거 청취 기록7통과.

@@ -1,0 +1,36 @@
+{
+  "repository": "https://github.com/kimyounggaur/Music_Rudiment_3D",
+  "branch": "main",
+  "commit": "c91e7ebb92304e95b44ff7d12820824cdeb0018b",
+  "ci": {
+    "id": 40382693913,
+    "status": "completed",
+    "conclusion": "success",
+    "sha": "c91e7ebb92304e95b44ff7d12820824cdeb0018b",
+    "url": "https://github.com/kimyounggaur/Music_Rudiment_3D/actions/runs/40382693913"
+  },
+  "projectId": "prj_rnWJfdGwpKbfCpjqfHupBAsQb8jd",
+  "teamId": "team_LVPR6NYP0tQeNt45mw0XXfH0",
+  "deployment": {
+    "id": "dpl_5crNfa8NBPeUeEfpiRxvXtCYs8Fd",
+    "state": "READY",
+    "target": "production",
+    "url": "music-rudiment-3d-g151lvgvc-kimyounggaurs-projects.vercel.app",
+    "aliases": [
+      "music-rudiment-3d.vercel.app",
+      "music-rudiment-3d-kimyounggaurs-projects.vercel.app",
+      "music-rudiment-3d-git-main-kimyounggaurs-projects.vercel.app"
+    ],
+    "meta": {
+      "githubCommitRef": "main",
+      "githubCommitSha": "c91e7ebb92304e95b44ff7d12820824cdeb0018b",
+      "githubCommitMessage": "feat: implement six-scene rhythm lab with Three and VexFlow",
+      "githubRepo": "Music_Rudiment_3D",
+      "githubOrg": "kimyounggaur"
+    }
+  },
+  "canonicalUrl": "https://music-rudiment-3d.vercel.app/",
+  "protectionChanged": false,
+  "newCredentialsCreated": false,
+  "source": "Observed GitHub and Vercel API results; browser smoke report stored separately."
+}

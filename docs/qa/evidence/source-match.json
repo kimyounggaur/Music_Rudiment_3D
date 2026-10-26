@@ -1,5 +1,5 @@
 {
-  "filesCompared": 64,
+  "filesCompared": 65,
   "mismatches": [],
   "appIndexSha256": "6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d",
   "cleanIndexSha256": "6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d",
@@ -121,6 +121,10 @@
       "sha256": "350aef5bc74ad6abc875dc7fad84cc338a94335194f128f9b0ca8d7603d80198"
     },
     {
+      "path": "scripts\\deployment-smoke.ts",
+      "sha256": "2a06d5db5cf64c1b163015f84a9258e2e79b00f94fe6c9d659e3b4f422bea83b"
+    },
+    {
       "path": "scripts\\e2e.ts",
       "sha256": "ddbe70ef2eb10c82f1a76c1fef34da565c2be4443867a704652c8775c9a2b1d4"
     },
@@ -218,7 +222,7 @@
     },
     {
       "path": "public\\licenses\\README.md",
-      "sha256": "bf3705f59be3c54e8c53377913b96cb26304334fb26b27ab2871b524fd60a9d4"
+      "sha256": "022a6594cc6bee2b1f241137dc2514be52f840ef1f284a3643845917c9248aff"
     },
     {
       "path": "public\\licenses\\Three-MIT.txt",
@@ -234,11 +238,11 @@
     },
     {
       "path": "package.json",
-      "sha256": "7f314eb5809577695da8735f2eacbc6b312f74d2629fca06805067e3796ecf0d"
+      "sha256": "493122d44df85542b6bb967f310d9ec2d10cb7481324ad8e10f8d3847711ab9a"
     },
     {
       "path": "package-lock.json",
-      "sha256": "ad55f1c25618641e0dc66cbd51927393457d3005955907e89095db8df2c8c8a3"
+      "sha256": "9c381bfb0bf2c0d8954e9f72b5c721ce6a90eba8c6c819ac918579931d3e1138"
     },
     {
       "path": "index.html",

@@ -2,9 +2,11 @@
 
 첫 리듬 단원 여섯 장면을 React/TypeScript로 구현했습니다. 정확한 분수 모델에서 VexFlow 5의 SVG 악보, 실제 Three.js 0.186.1 입체 블록, Web Audio 재생과 평가를 함께 만듭니다. 가로 모바일 화면을 우선하며 세로·키보드·소리 없는 2D 경로도 제공합니다.
 
+**실행: [음가 블록 실험실](https://music-rudiment-3d.vercel.app/)** · [배포와 Git 연동 기록](docs/RELEASE.md)
+
 ## 실행
 
-Node.js 24.14 이상에서 다음 순서로 실행합니다.
+Node.js 24.14 이상인 24.x에서 다음 순서로 실행합니다.
 
 ```powershell
 npm ci --ignore-scripts --no-audit --no-fund

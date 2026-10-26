@@ -9,7 +9,7 @@ dist/assets/DurationScene3D-DzaAgZdJ.js    9.12 kB │ gzip:   4.21 kB │ map: 
 dist/assets/index-Ca2y-oL_.js            274.46 kB │ gzip:  92.54 kB │ map: 1,146.08 kB
 dist/assets/vexflow-bravura-B1hF8ZV_.js  722.34 kB │ gzip: 389.65 kB │ map: 1,488.37 kB
 dist/assets/three.module-DOzBRDFc.js     746.92 kB │ gzip: 191.79 kB │ map: 3,156.99 kB
-✓ built in 2.93s
+✓ built in 2.60s
 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application

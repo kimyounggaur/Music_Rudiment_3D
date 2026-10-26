@@ -1,5 +1,9 @@
 # 현재 QA 요약
 
+첫 릴리스 A는 실제 배포됐다. 운영 주소는 [https://music-rudiment-3d.vercel.app/](https://music-rudiment-3d.vercel.app/)이며, main 커밋 `c91e7ebb92304e95b44ff7d12820824cdeb0018b`의 원격 SHA 일치·GitHub CI success·Vercel production READY·공개 HTTPS200과 실제 브라우저8검사 통과를 확인했다. [릴리스 기록](RELEASE.md), [API 증거](qa/evidence/release-first.json), [운영 화면 증거](qa/evidence/deployment-smoke-first.json).
+
+후속 B는 실제 운영 주소·런타임 MIT 안내와 Node major 범위 `>=24.14.0 <25`를 반영하는 실질적 변경이다. B의 push 뒤 자동 Git 배포·동일 SHA·CI·공개 화면을 다시 확인하는 작업은 대기다. B의 실제 clean 재현도 공식 npm ci 181개·5개 명령 exit0,65파일 해시 일치로 통과했다. 남은 것은 B push 뒤 자동 배포 검증이다. 앱 런타임과 컴파일 index는6d4c로 유지된다.
+
 현재 개발 구현에는 실제 Three.js0.186.1 WebGL2와 VexFlow5 SVG 악보가 포함된다. CSS3D만 구현됐다는 이전 상태는 해소됐다. 자동 검사 통과와 실제 기기·청취·음악 교육 검수는 서로 다른 결과다.
 
 ## 빌드와 실행 환경
@@ -23,7 +27,9 @@
 | 현재 악보 fixture/글꼴 복구 |23검사+1복구검사 재실행 통과·exit0 | 현재독립HTML3638,[기보 결과](../output/notation/vexflow5/results.json),[복구 결과](../output/notation/font-retry/results.json) |
 | 현재 file-origin 키보드·퀴즈·장애 |퀴즈7·키보드9·장애7, 합23통과 | 독립HTML3638,부모실행exit0. file main19는현재재실행하지않았으며옛42cohort와구분 |
 | 현재인쇄화면 |6쪽·58,368바이트·9악보,6이미지전체검토통과 | 현재SHA`c5b54ae203de97661d21c0375852a3b04dd99e8d279ea53bfa3304f549df1635`,[Poppler100dpi렌더](../output/qa/print-final/rendered-current/),[인수PDF](qa/activity-sheet-six-scenes.pdf). 실제프린터·Tagged PDF·교사승인아님 |
-| clean 전체source재현 |typecheck/lint/unit96/content/build각exit0 | [결과](../output/qa/clean-reproduction/results.json),[64파일해시일치·양쪽index6d4c](../output/qa/clean-reproduction/source-match.json). 최초복사상대경로오류는테스트전실패,수정후통과 |
+| 현재 clean 전체source재현 |공식 npm ci181개·typecheck/lint/unit96/content/build각exit0 | [결과](../output/qa/clean-reproduction/results.json),[현재65파일해시일치·양쪽index6d4c](../output/qa/clean-reproduction/source-match.json). 초기64파일 비교와 최초복사경로오류는 이력 |
+| 첫 운영 릴리스 A |main push·CI success·Vercel production READY·공개 HTTPS200·브라우저8/8·운영HTML index6d4c일치 | [실제 API](qa/evidence/release-first.json),[운영 화면](qa/evidence/deployment-smoke-first.json),commit c91e7ebb |
+| 운영 HTML 동일성 |공개 fetch SHA256이 local index6d4c와 일치 | [실제 결과](qa/evidence/production-index-first.json). B 자동 배포 검증과 별도 |
 |15분 headless 안정성 |900,030.0102ms·30회 반복·exit0 | [실제 요약](qa/evidence/stability-summary.json). 시작/종료 index6d4c,Context최대1·Stop뒤live oscillator0·2D Canvas0,페이지/콘솔/실패·외부요청0 |
 
 실제 Three 검사는 정확한 길이/고정 높이·깊이, 실제 Raycaster 선택과 드래그 취소,44px DOM 선택·회전 보존, 점선 빈 쉼표, context loss 중 정지·2D전환, Canvas 자원 정리, WebGL부재·lazy chunk 실패를 확인했다. 600ms 유휴 render-count가2에서 증가하지 않았다는 결과는 그 조건의 유휴 검사이며 지속 FPS 보장은 아니다. [Three 검수](qa/Three_REVIEW.md).
@@ -40,4 +46,4 @@
 
 15분 안정성의 heap/DOM 값은 관찰 기록이며 nondeterministic heap 임계값이나 forced GC 검사를 사용하지 않았다. 이 결과를 실제 모바일 발열·지속 FPS·청취 결과로 확대하지 않는다.
 
-현 판정은 “구현과 명시한 자동 경로·clean 재현·15분 headless 안정성 통과,일부 환경 및 수동 검수 대기”다. 전체 기기 검증·실제 청취·음악 승인·학습 효과·공개 배포 완료를 주장하지 않는다. 지정 GitHub/Vercel 결과는 부모의 별도 실제 실행 기록을 따른다.
+현 판정은 “구현과 명시한 자동 경로·clean 재현·15분 headless 안정성 통과,일부 환경 및 수동 검수 대기”다. 첫 공개 운영 릴리스 A의 성공은 위 증거로 확인했으며, 이를 전체 기기 검증·실제 청취·음악 승인·학습 효과로 확대하지 않는다. 후속 B의 자동 Git 배포 검증은 아직 대기다.

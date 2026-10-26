@@ -10,14 +10,16 @@
 | QA-DEVICE | 실제Android/iOS/macOS Safari·실제touch/주소창/notch/softkeyboard/SR·청취 미실행 | 기기/OS/browser/출력장치/담당/날짜/절차/증거 확보 |
 | QA-MUSIC | 음악 교육자·교사/학습자 관찰 대기 | 기보·용어·문항·동등답·오개념·수업 흐름 검토. 코드검사를 교육 효과로 확대하지 않음 |
 | PERF-01 | 지속fps·100ms입력·50ms유선동기·모바일네트워크3초·발열 미측정. 15분 headless 안정성은 아래 STABILITY-01로 해결 | 지정 환경에서 실측. 빌드 bytes·600ms유휴·mock예약을 실제 기기 성능으로 대체하지 않음 |
-| RELEASE-01 | 조건부 승인된 GitHub commit/push·Vercel 연동은 이 문서 갱신 시점에 실제 결과 미확정 | 부모가 정확한 remote/branch/commitSHA·CI·서비스URL·실행결과를 확인. URL/성공을 예측해 기재하지 않음 |
+| RELEASE-02 | 첫 A 릴리스는 아래 RELEASE-01로 해결. 후속 B에 운영 주소·런타임 MIT·Node major 범위`>=24.14.0 <25`를 반영하고 자동 Git 배포 검증 대기 | 현재 clean65파일·공식 npm ci181개·5명령 exit0은 확인. 남은 B push·CI·자동 배포 동일 SHA·공개 화면의 실제 결과를 확인 |
 
 ## 해결된 현재 항목
 
+- **RELEASE-01 첫 실제 릴리스 해결:** main `c91e7ebb92304e95b44ff7d12820824cdeb0018b` push와 원격 SHA 일치,GitHub CI40382693913 success,Vercel `dpl_5crNfa8NBPeUeEfpiRxvXtCYs8Fd` production READY·동일 Git SHA,운영[https://music-rudiment-3d.vercel.app/](https://music-rudiment-3d.vercel.app/)의 공개200·실제 브라우저8검사 통과. [API 증거](evidence/release-first.json),[화면 증거](evidence/deployment-smoke-first.json),[릴리스 문서](../RELEASE.md). [공개 운영 HTML 해시](evidence/production-index-first.json)도 index6d4c와 일치한다. SSO/보호·임시 공유 링크·새 자격 증명은 변경/생성하지 않았다.
+
 - **THREE-01 해결:** 공식 Three0.186.1/types0.186.0 설치, 실제 WebGL2 Canvas·Raycaster·context loss·2D복구. 실제 Three 객체6검사와 [최종6d4c HTTP9검사](../../output/http/three/results.json) 통과. 이전 CSS3D 대체를 실제 Three라고 표시한 것이 아니다.
 - **NET-01 현재 지정 범위 해결:** 신뢰된 사용자 승인 후 공식 npm과 지정localhost4174 실행이 성공했다. 예전 ENOTFOUND/DNS 거부·localhostEACCES는 [과거 진단](../DEPENDENCY_DIAGNOSIS.md)으로 보존한다. 정확한 Windows 방화벽 규칙/포트 점유 원인을 조사 완료했다고 하지 않는다.
-- **LOCK-01 설치 재현 해결:** 공식lock228·15정확선언/manifest·npm ci181packages/exit0. [설치 기록](../DEPENDENCY_INSTALL.md). clean 전체sourcebuild는 별도 LOCK-REPRO 대기다.
-- **LOCK-REPRO 해결:** [clean재현각명령](../../output/qa/clean-reproduction/results.json)typecheck/lint/unit96/content/build가exit0이다. [64소스파일비교](../../output/qa/clean-reproduction/source-match.json)는mismatches[]·main/clean index6d4c일치를확인했다. 최초복사경로오류는테스트전실패했고수정후전체실행통과했다.
+- **LOCK-01 설치 재현 해결:** 공식lock228·15정확선언/manifest·npm ci181packages/exit0. [설치 기록](../DEPENDENCY_INSTALL.md). 현재 clean 전체 source 재현도 아래 LOCK-REPRO로 해결했다.
+- **LOCK-REPRO 해결:** [clean재현각명령](../../output/qa/clean-reproduction/results.json)typecheck/lint/unit96/content/build가exit0이다. [현재65소스파일비교](../../output/qa/clean-reproduction/source-match.json)는mismatches[]·main/clean index6d4c일치를 확인했다. 공식 npm ci181개 재실행도 exit0,Node범위는`>=24.14.0 <25`,현재lock SHA256은`9c381bfb0bf2c0d8954e9f72b5c721ce6a90eba8c6c819ac918579931d3e1138`이다. 초기64파일 비교는 이력이다. 최초복사경로오류는테스트전실패했고수정후전체실행통과했다.
 - **SCORE-01 해결:** 실제 VexFlow5 SVG, 정상pnpm캐시293파일무결성·글꼴OFL고지·현재3638기보23/font복구1재실행exit0. 현재c5b54ae2 PDF6쪽9악보를Poppler100dpi로렌더하고부모가6이미지를실제확인해화면문제를발견하지못했다. [인수PDF](activity-sheet-six-scenes.pdf)는같은해시이며이전79cf검토는[이력](PRINT_REVIEW.md)이다. 교육자승인은별도다.
 - **EXPORT-01 현재 HTTP 성공:** [최종6d4c 실제JSON](evidence/export-http-results.json)을 7,383바이트로 실제 saveAs 저장했다. 파일 SHA256 `8b9f7c07bddc17a5c1fa003913f33b7dbcac85a6885bda346ab052cfaf395693`,스키마·리듬 일치. 과거 file-origin download canceled는 원인 미확정 이력으로 보존한다.
 - **STABILITY-01 해결:** [15분 headless 실제 결과](evidence/stability-summary.json)는900,030.0102ms·30회 반복·exit0,시작/종료 index6d4c다. native AudioContext최대1,각 Stop뒤live oscillator0·2D Canvas0,페이지/콘솔/실패·외부요청0. heap/DOM은 기록만 했으며 forced GC·heap 임계값·실제 기기 발열을 검증하지 않았다.

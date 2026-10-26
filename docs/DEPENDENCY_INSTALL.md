@@ -1,8 +1,10 @@
 # 승인 후 공식 lock 설치와 현재 의존성 검증
 
-기록일: 2026-10-26 UTC. 현재 snapshot 생성 시각은 `2026-10-26T18:21:33.405Z`다.
+기록일: 2026-10-26 UTC. 현재 snapshot 생성 시각은 `2026-10-26T19:05:09.709Z`다.
 
 ## 현재 설치 근거
+
+첫 Vercel 빌드에서 확인한 향후 Node major 자동 선택 경고를 해결하기 위해 root engine을 `>=24.14.0 <25`로 제한했다. 패키지 버전15개는 바꾸지 않았다. 이 lock으로 공식 npm ci181개를 다시 실행하고 typecheck/lint/96tests/content/build를 재현했다. 현재소스65개는 clean 복사본과 동일하고 빌드index도6d4c로 같다. 이전64개 재현은 첫 릴리스 이력이다.
 
 사용자의 네트워크 실행 승인이 도착한 뒤 부모 실행자가 공식 npm 레지스트리의 Three `0.186.1`(MIT) 조회 및 설치를 수행했다. 부모 실행자는 별도 `output/clean-install` 폴더의 `npm ci`가 **181 packages added, 종료 코드 0**으로 완료됐음을 전달했다. 이 담당자는 설치나 네트워크 요청을 재실행하지 않았다.
 
@@ -17,7 +19,7 @@
 | 직접 선언한 설치 manifest | 15/15개 버전·SHA-256 snapshot 확인 |
 | 본 프로젝트/clean-install lock | SHA-256 동일 |
 | 본 프로젝트/clean-install 직접 선언 manifest | SHA-256 15/15개 동일 |
-| current lock SHA-256 | `ad55f1c25618641e0dc66cbd51927393457d3005955907e89095db8df2c8c8a3` |
+| current lock SHA-256 | `9c381bfb0bf2c0d8954e9f72b5c721ce6a90eba8c6c819ac918579931d3e1138` |
 
 이전 로컬 캐시 조합의 13개 선언·21개 manifest 해시·177개 잠정 lock 항목은 **당시 상태의 이력**이다. 현재 공식 lock 설치를 그 숫자로 검증하지 않는다. [LOCAL_DEPENDENCIES.md](LOCAL_DEPENDENCIES.md)의 21개 원본 해시와 [DEPENDENCY_DIAGNOSIS.md](DEPENDENCY_DIAGNOSIS.md)의 pnpm 검증 기록은 변경하지 않고 보존한다.
 

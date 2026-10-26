@@ -12,10 +12,17 @@
 | `output/preview.html` | 1,821,442바이트, SHA-256 `3638adefdcf32113307c7c093d3b82d3c36802934f2d8af0a59085b51f490a9f` |
 | 직접 의존성 / lock | 정확 버전 선언15개, lock root 제외228항목. 실제181항목, 현재 플랫폼 미설치 optional47항목 |
 | 공식 설치 재현 | 별도 `output/clean-install`의 `npm ci`: 181 packages added, exit0 |
-| manifest 검증 | 직접 선언15/15개의 버전·SHA-256, 본 프로젝트와 clean-install lock/manifest 일치 |
-| clean source 전체 재현 | 실제 typecheck/lint/unit96/content/build 모두exit0. 64파일해시일치·mismatches[],main/clean index모두6d4c |
+| manifest 검증 | 직접 선언15/15개의 버전·SHA-256, 본 프로젝트와 clean-install lock/manifest 일치. 최신 snapshot:2026-10-26T19:05:09.709Z |
+| 현재 lock SHA256 | `9c381bfb0bf2c0d8954e9f72b5c721ce6a90eba8c6c819ac918579931d3e1138` |
+| 현재 clean source 전체 재현 | 공식 npm ci 181개를 다시 실행해 exit0. typecheck/lint/unit96/content/build 각 exit0,65파일 해시 일치·mismatches[],main/clean index 모두6d4c. 64파일 비교는 초기 A의 이력 |
 
 의존성 상세와 실제 lock hash는 [DEPENDENCY_INSTALL](DEPENDENCY_INSTALL.md), [DEPENDENCY_SNAPSHOT](DEPENDENCY_SNAPSHOT.json)을 따른다.
+
+## 첫 실제 릴리스와 후속 검증
+
+첫 릴리스 A는 실제 배포됐다. 운영 주소는 [https://music-rudiment-3d.vercel.app/](https://music-rudiment-3d.vercel.app/)이며, main 커밋 `c91e7ebb92304e95b44ff7d12820824cdeb0018b`의 원격 SHA 일치·GitHub CI success·Vercel production READY·공개 HTTPS200과 실제 브라우저8검사 통과를 확인했다. [릴리스 기록](RELEASE.md), [API 증거](qa/evidence/release-first.json), [운영 화면 증거](qa/evidence/deployment-smoke-first.json).
+
+후속 B는 실제 운영 주소·런타임 MIT 안내와 Node major 범위 `>=24.14.0 <25`를 반영하는 실질적 변경이다. B의 push 뒤 자동 Git 배포·동일 SHA·CI·공개 화면을 다시 확인하는 작업은 대기다. B의 실제 clean 재현도 공식 npm ci 181개·5개 명령 exit0,65파일 해시 일치로 통과했다. 남은 것은 B push 뒤 자동 배포 검증이다. 앱 런타임과 컴파일 index는6d4c로 유지된다.
 
 ## P00~P23 개별 상태
 
@@ -43,12 +50,12 @@
 | P19 | 장애/유휴 검사 일부 통과 / 성능 측정 대기 | 실제 Three 유휴600ms 추가 render0,6회 진입/해제 후 Canvas0,2D/context loss 복구. 15분 headless 안정성은 900,030.0102ms·30회 반복으로 통과. 실제 FPS·입력/유선 지연·모바일네트워크·모바일 발열은 미측정 |
 | P20 | 자동·화면 검수 일부 통과 / 수동 층 미완료 | 현재 unit/integration96통과, finalThree9·recovery7·main19통과/1blocked. 현재독립HTML의퀴즈7·키보드9·장애7통과. 실제 기기·청취·SR·교육자·사용자 관찰 대기 |
 | P21 | 확인 결함 수정·회귀 검증 | 분수/명령·원자적 import·modal·whole-rest·font복구·인쇄·실제 Three·손상 저장·새 학습자 퀴즈·음소거 청취 기록·chunk 실패 복구 수정. blocked 검사를 삭제하지 않음 |
-| P22 | 실행·인수 문서 준비 / 최종 판정 대기 | source/standalone/문서·제한·QA·저작권 고지 준비. clean source 전체재현완료. 15분 headless 안정성도 통과. 남은 native visibility·실기기/수동 검수는 별도 대기. GitHub/Vercel 실행 결과는 부모가 별도 확정 |
+| P22 | 첫 실제 릴리스 A 완료 / 후속 B·수동 검수 대기 | source/standalone/인수 문서·고지,현재 clean65파일 재현·15분 headless 통과. c91e7ebb main push·CI success·Vercel production READY·공개200·운영8검사 확인. B 자동 Git 배포 증명과 native visibility·실기기/수동 검수는 별도 대기 |
 | P23 | 다음 단원 템플릿 준비 | 새 단원 선택·계획 범위를 정의. 첫 파일럿 검토와 한 단원 선택 전 새 단원을 구현 완료로 표시하지 않음 |
 
 ## 현재 실행 결과와 서로 다른 검수 대상
 
-- 부모 실행자의현재typecheck/lint/content/test/build통과에이어 [clean 재현](../output/qa/clean-reproduction/results.json)에서도각명령exit0. [단위/통합로그](../output/qa/clean-reproduction/unit.log)는 **96 passed,0 failed,0 skipped**다. [source-match](../output/qa/clean-reproduction/source-match.json)는64파일해시일치·mismatches[]·양쪽index6d4c를기록한다. 최초clean runner의잘못된복사상대경로는테스트실행전실패했고,경로수정후실제전체검사를통과했다. 첫시도부터통과했다고기록하지않는다. 기존90검사TAP는역사기록이다.
+- 부모 실행자의현재typecheck/lint/content/test/build통과에이어 [clean 재현](../output/qa/clean-reproduction/results.json)에서도각명령exit0. [단위/통합로그](../output/qa/clean-reproduction/unit.log)는 **96 passed,0 failed,0 skipped**다. [source-match](../output/qa/clean-reproduction/source-match.json)는 현재65파일 해시 일치·mismatches[]·양쪽 index6d4c를 기록한다. 64파일 비교는 초기 A의 이력이다. 최초clean runner의잘못된복사상대경로는테스트실행전실패했고,경로수정후실제전체검사를통과했다. 첫시도부터통과했다고기록하지않는다. 기존90검사TAP는역사기록이다.
 - [최종 Three HTTP 결과](../output/http/three/results.json): 현재 index6d4c, **9/9 통과**. 실제 Three186/WebGL2, 유휴·Raycaster·회전·쉼표·context loss·반복 정리·불가/지연 로딩 실패를 확인했다.
 - [최종 복구 HTTP 결과](../output/playwright/recovery-http-6d4ca09b/recovery-http-results.json): **7통과,0실패,0blocked**. 손상/미래버전/원본변조 보존, 유효 import 확인, 새 학습자 퀴즈 초기화, muted/volume0을 listened로 기록하지 않음을 확인했다.
 - [최종 main HTTP 결과](../output/playwright/http-6d4ca09b/results.json): index6d4c, runner native-pagehide-v1, **19통과/1blocked**, suite exit1. 실제about:blank pagehide가미래 Loop 예약source.stop을즉시호출하고 복귀자동재생이없음을 확인했다. headless의 네이티브 탭 숨김 관찰 제한은blocked로 남겼다. [직전aff330e4의18통과/1blocked](../output/playwright/http-aff330e4/results.json)도 이력이다.
@@ -58,6 +65,8 @@
 - [기보23](../output/notation/vexflow5/results.json), [font 복구1](../output/notation/font-retry/results.json)는현재독립HTML에서재실행exit0. 현재6쪽PDF는 SHA256 `c5b54ae203de97661d21c0375852a3b04dd99e8d279ea53bfa3304f549df1635`,58,368바이트다. [현재렌더6쪽](../output/qa/print-final/rendered-current/)을Poppler100dpi로생성하고부모가실제6이미지를모두확인해화면문제를발견하지못했다. [인수PDF](qa/activity-sheet-six-scenes.pdf)도같은해시다. 이전79cfPDF의검토는 [인쇄이력](qa/PRINT_REVIEW.md)과구분한다. [Three 검수](qa/Three_REVIEW.md)도해당산출물범위를따른다.
 
 브라우저는 Windows headless Chromium148.0.7778.96이며 실제 휴대전화·실제 청취·스크린리더 실행을 뜻하지 않는다. 자동 검증을 수업 효과나 음악 교육자 승인으로 확대하지 않는다.
+
+현재 운영 URL의 실제 HTML fetch도 index6d4c와 일치했다. [공개 HTML 해시 증거](qa/evidence/production-index-first.json). 이는 후속 B의 자동 Git 배포를 대신하는 증거는 아니다.
 
 ## 남은 조치와 복구
 

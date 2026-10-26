@@ -4,9 +4,9 @@
 
 ## 재현과 실행
 
-Node24.14 이상에서 `npm ci --ignore-scripts --no-audit --no-fund` → `npm run build` → `npm run preview`. 검증된 주소는 http://127.0.0.1:4174/ 이다. 개발 서버 기본 포트는4173이다. 제한 환경의 최초 접속 실패와 사용자 승인 후 지원 경로의 성공을 구별한다.
+Node24.14 이상인24.x에서 `npm ci --ignore-scripts --no-audit --no-fund` → `npm run build` → `npm run preview`. 검증된 주소는 http://127.0.0.1:4174/ 이다. 개발 서버 기본 포트는4173이다. 제한 환경의 최초 접속 실패와 사용자 승인 후 지원 경로의 성공을 구별한다.
 
-`output/clean-install`에서 공식 npm ci181개와 typecheck/lint/96 tests/content/build가 실제 통과했다. 64개 소스·설정·공개 고지 파일이 원본과 일치하고 main/clean 빌드 index SHA256은 모두 `6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d`다. [재현 기록](../output/qa/clean-reproduction/results.json).
+`output/clean-install`에서 공식 npm ci181개와 typecheck/lint/96 tests/content/build가 실제 통과했다. 65개 소스·설정·공개 고지 파일이 원본과 일치하고 main/clean 빌드 index SHA256은 모두 `6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d`다. [재현 기록](../output/qa/clean-reproduction/results.json).
 
 `node scripts/build-standalone.ts`로 같은 소스의 독립 HTML을 다시 만들 수 있다. 현재 `output/preview.html`은1,821,442bytes/SHA256 `3638adefdcf32113307c7c093d3b82d3c36802934f2d8af0a59085b51f490a9f`다. 파일 origin의 저장소와 HTTP origin을 합쳐 설명하지 않는다.
 
