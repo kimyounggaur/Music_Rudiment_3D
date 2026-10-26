@@ -26,6 +26,8 @@ React/TypeScript, VexFlow5 실제 SVG, Three0.186.1 실제 WebGL2, audio clock �
 
 ## 남은 수동 검수와 릴리스
 
+운영 주소는 https://music-rudiment-3d.vercel.app/ 이다. 소스 c91e7ebb의 정상 push/CI/production 배포 후, 후속 a8c10094 push만으로 별도 production 배포가 자동 생성되는 것을 확인했다. 해당 배포/원격 SHA 일치·CI success·공개 운영8검사도 통과했다. 상세는 [RELEASE](RELEASE.md)와 보존한 API/브라우저 증거를 따른다. 새 OAuth·토큰·보호 설정 변경 없이 기존 통합을 사용했다.
+
 실제 기기·청취·iOS/Safari·스크린리더·200% 전체 접근성·음악교사/학습자 파일럿은 미검증이다. headless에서 native document.hidden 전환을 만들지 못했다. 장시간 headless 안정성 결과와 실제 모바일 발열/FPS/출력 지연은 구별한다. 입력 원형 MD의 로컬 지원 전송 실패는 남아 있고 전체 원격 읽기/구현과 분리한다.
 
 사용자는 지정 GitHub 저장소 commit/push, 이후 Vercel 배포·Git 자동 연동과 범위 내 네트워크 실행을 명시적으로 승인했다. 새 OAuth·토큰·지속 권한 확대·유료 변경은 승인 범위가 아니다. 원격 결과는 실제 SHA/CI/배포 상태를 확인한 뒤 별도로 기록한다. 강제 push나 기존 이력 삭제를 사용하지 않는다.

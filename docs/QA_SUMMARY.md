@@ -2,7 +2,7 @@
 
 첫 릴리스 A는 실제 배포됐다. 운영 주소는 [https://music-rudiment-3d.vercel.app/](https://music-rudiment-3d.vercel.app/)이며, main 커밋 `c91e7ebb92304e95b44ff7d12820824cdeb0018b`의 원격 SHA 일치·GitHub CI success·Vercel production READY·공개 HTTPS200과 실제 브라우저8검사 통과를 확인했다. [릴리스 기록](RELEASE.md), [API 증거](qa/evidence/release-first.json), [운영 화면 증거](qa/evidence/deployment-smoke-first.json).
 
-후속 B는 실제 운영 주소·런타임 MIT 안내와 Node major 범위 `>=24.14.0 <25`를 반영하는 실질적 변경이다. B의 push 뒤 자동 Git 배포·동일 SHA·CI·공개 화면을 다시 확인하는 작업은 대기다. B의 실제 clean 재현도 공식 npm ci 181개·5개 명령 exit0,65파일 해시 일치로 통과했다. 남은 것은 B push 뒤 자동 배포 검증이다. 앱 런타임과 컴파일 index는6d4c로 유지된다.
+후속 B `a8c10094e225add88e8fcdf0f90a8b89dc5b3351`은 운영 주소·런타임 MIT·Node24 major 상한의 실질적 수정이다. main push만으로 Vercel `dpl_9qrmQkYn9fvZoSW44usshp4LzQJp`가 자동 생성되어 production READY가 됐다. 원격/배포 SHA 일치, GitHub CI #40384757352 success, 공개 운영 브라우저8검사 통과를 확인했다. 이 커밋에는 수동 배포 API를 호출하지 않았다. 증거는 `docs/qa/evidence/auto-deploy-verified.json`과 `deployment-smoke-auto.json`이다. clean65파일·96검사와 index6d4c는 유지되며, 실제 기기·청취·수동 검수는 별도 미완료다.
 
 현재 개발 구현에는 실제 Three.js0.186.1 WebGL2와 VexFlow5 SVG 악보가 포함된다. CSS3D만 구현됐다는 이전 상태는 해소됐다. 자동 검사 통과와 실제 기기·청취·음악 교육 검수는 서로 다른 결과다.
 
@@ -46,4 +46,4 @@
 
 15분 안정성의 heap/DOM 값은 관찰 기록이며 nondeterministic heap 임계값이나 forced GC 검사를 사용하지 않았다. 이 결과를 실제 모바일 발열·지속 FPS·청취 결과로 확대하지 않는다.
 
-현 판정은 “구현과 명시한 자동 경로·clean 재현·15분 headless 안정성 통과,일부 환경 및 수동 검수 대기”다. 첫 공개 운영 릴리스 A의 성공은 위 증거로 확인했으며, 이를 전체 기기 검증·실제 청취·음악 승인·학습 효과로 확대하지 않는다. 후속 B의 자동 Git 배포 검증은 아직 대기다.
+현 판정은 “구현과 명시한 자동 경로·clean 재현·15분 headless 안정성 통과,일부 환경 및 수동 검수 대기”다. 첫 공개 운영 릴리스 A의 성공은 위 증거로 확인했으며, 이를 전체 기기 검증·실제 청취·음악 승인·학습 효과로 확대하지 않는다. 후속 B의 push·CI·자동 production·SHA·공개8검사도 실제 통과했다.

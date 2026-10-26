@@ -1,0 +1,36 @@
+{
+  "repository": "kimyounggaur/Music_Rudiment_3D",
+  "branch": "main",
+  "commit": "a8c10094e225add88e8fcdf0f90a8b89dc5b3351",
+  "remoteShaConfirmed": true,
+  "ci": {
+    "id": 40384757352,
+    "status": "completed",
+    "conclusion": "success",
+    "sha": "a8c10094e225add88e8fcdf0f90a8b89dc5b3351",
+    "url": "https://github.com/kimyounggaur/Music_Rudiment_3D/actions/runs/40384757352"
+  },
+  "automaticDeployment": {
+    "id": "dpl_9qrmQkYn9fvZoSW44usshp4LzQJp",
+    "state": "READY",
+    "target": "production",
+    "url": "music-rudiment-3d-rbb67rvmm-kimyounggaurs-projects.vercel.app",
+    "aliases": [
+      "music-rudiment-3d.vercel.app",
+      "music-rudiment-3d-kimyounggaurs-projects.vercel.app",
+      "music-rudiment-3d-git-main-kimyounggaurs-projects.vercel.app"
+    ],
+    "gitMeta": {
+      "githubCommitRef": "main",
+      "githubCommitSha": "a8c10094e225add88e8fcdf0f90a8b89dc5b3351",
+      "githubCommitMessage": "chore: pin Node 24 and record verified production release",
+      "githubRepo": "Music_Rudiment_3D",
+      "githubOrg": "kimyounggaur"
+    }
+  },
+  "publicUrl": "https://music-rudiment-3d.vercel.app/",
+  "triggerEvidence": "Only git push was performed after the meaningful Node24/runtime notice/release documentation change. No deployment-create API was called for this commit.",
+  "protectionChanged": false,
+  "newCredentialsCreated": false,
+  "nonProductionBranchPreview": "Configured Git integration default; no dummy branch push was created for testing."
+}

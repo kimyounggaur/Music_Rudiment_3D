@@ -22,7 +22,7 @@
 
 첫 릴리스 A는 실제 배포됐다. 운영 주소는 [https://music-rudiment-3d.vercel.app/](https://music-rudiment-3d.vercel.app/)이며, main 커밋 `c91e7ebb92304e95b44ff7d12820824cdeb0018b`의 원격 SHA 일치·GitHub CI success·Vercel production READY·공개 HTTPS200과 실제 브라우저8검사 통과를 확인했다. [릴리스 기록](RELEASE.md), [API 증거](qa/evidence/release-first.json), [운영 화면 증거](qa/evidence/deployment-smoke-first.json).
 
-후속 B는 실제 운영 주소·런타임 MIT 안내와 Node major 범위 `>=24.14.0 <25`를 반영하는 실질적 변경이다. B의 push 뒤 자동 Git 배포·동일 SHA·CI·공개 화면을 다시 확인하는 작업은 대기다. B의 실제 clean 재현도 공식 npm ci 181개·5개 명령 exit0,65파일 해시 일치로 통과했다. 남은 것은 B push 뒤 자동 배포 검증이다. 앱 런타임과 컴파일 index는6d4c로 유지된다.
+후속 B `a8c10094e225add88e8fcdf0f90a8b89dc5b3351`은 운영 주소·런타임 MIT·Node24 major 상한의 실질적 수정이다. main push만으로 Vercel `dpl_9qrmQkYn9fvZoSW44usshp4LzQJp`가 자동 생성되어 production READY가 됐다. 원격/배포 SHA 일치, GitHub CI #40384757352 success, 공개 운영 브라우저8검사 통과를 확인했다. 이 커밋에는 수동 배포 API를 호출하지 않았다. 증거는 `docs/qa/evidence/auto-deploy-verified.json`과 `deployment-smoke-auto.json`이다. clean65파일·96검사와 index6d4c는 유지되며, 실제 기기·청취·수동 검수는 별도 미완료다.
 
 ## P00~P23 개별 상태
 
@@ -50,7 +50,7 @@
 | P19 | 장애/유휴 검사 일부 통과 / 성능 측정 대기 | 실제 Three 유휴600ms 추가 render0,6회 진입/해제 후 Canvas0,2D/context loss 복구. 15분 headless 안정성은 900,030.0102ms·30회 반복으로 통과. 실제 FPS·입력/유선 지연·모바일네트워크·모바일 발열은 미측정 |
 | P20 | 자동·화면 검수 일부 통과 / 수동 층 미완료 | 현재 unit/integration96통과, finalThree9·recovery7·main19통과/1blocked. 현재독립HTML의퀴즈7·키보드9·장애7통과. 실제 기기·청취·SR·교육자·사용자 관찰 대기 |
 | P21 | 확인 결함 수정·회귀 검증 | 분수/명령·원자적 import·modal·whole-rest·font복구·인쇄·실제 Three·손상 저장·새 학습자 퀴즈·음소거 청취 기록·chunk 실패 복구 수정. blocked 검사를 삭제하지 않음 |
-| P22 | 첫 실제 릴리스 A 완료 / 후속 B·수동 검수 대기 | source/standalone/인수 문서·고지,현재 clean65파일 재현·15분 headless 통과. c91e7ebb main push·CI success·Vercel production READY·공개200·운영8검사 확인. B 자동 Git 배포 증명과 native visibility·실기기/수동 검수는 별도 대기 |
+| P22 | Git 릴리스·자동 배포 검증 완료 / 수동 검수 대기 | source/standalone/인수 문서·고지,현재 clean65파일 재현·15분 headless 통과. c91e7ebb main push·CI success·Vercel production READY·공개200·운영8검사 확인. B의 자동 production/CI/SHA/공개8검사도 통과. native visibility·실기기/수동 검수는 별도 대기 |
 | P23 | 다음 단원 템플릿 준비 | 새 단원 선택·계획 범위를 정의. 첫 파일럿 검토와 한 단원 선택 전 새 단원을 구현 완료로 표시하지 않음 |
 
 ## 현재 실행 결과와 서로 다른 검수 대상

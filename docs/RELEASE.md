@@ -24,7 +24,11 @@
 
 기존 같은 저장소 연결0개·예정 프로젝트 이름404·관련 프로젝트 목록을 확인한 뒤 `create_git_project`가 GitHub 연결과 운영 브랜치main을 반환했다. 같은 프로젝트를 사용한다. **main push는 production, 나머지 브랜치 push는 preview**가 되는 Git 통합을 사용하며 별도 수동 배포 워크플로나 새 자격 증명은 추가하지 않았다. [Vercel 공식 Git 동작](https://vercel.com/docs/git/vercel-for-github).
 
-후속 커밋에는 실제 운영 주소·검증 기록·런타임 라이선스 안내와 Node24 major 범위 제한을 반영한다. 첫 빌드가 지적한 `>=24.14.0`의 향후 major 자동 선택 가능성을 `>=24.14.0 <25`로 제한했다. 이 실질적 수정의 push 뒤 자동 생성 배포와 SHA/CI를 다시 확인하고 최종 실행 보고서에 남긴다. 검증만을 위한 빈 코드 커밋은 만들지 않는다.
+후속 커밋 `a8c10094e225add88e8fcdf0f90a8b89dc5b3351`에는 운영 주소·검증 기록·런타임 라이선스와 Node24 major 상한을 반영했다. 이 커밋을 push한 뒤 **수동 배포 API를 호출하지 않았으며**, Vercel이 새 배포 `dpl_9qrmQkYn9fvZoSW44usshp4LzQJp`를 자동 생성했다. 실제 상태는 production READY, meta의 저장소/main/SHA는 모두 일치했다. [GitHub CI #2](https://github.com/kimyounggaur/Music_Rudiment_3D/actions/runs/40384757352)도 success였다. 정상 운영 별칭이 이 배포에 연결됐고 공개 운영 브라우저8검사도 다시 통과했다. 따라서 main push의 자동 production 배포를 실제로 검증했다. 빈 코드·가짜 수정 커밋은 만들지 않았다.
+
+[자동 배포 API 증거](qa/evidence/auto-deploy-verified.json) · [자동 배포 운영8검사](qa/evidence/deployment-smoke-auto.json)
+
+다른 브랜치의 preview 동작은 Git 통합의 기본 설정이며, 검증만을 위한 더미 브랜치 push는 만들지 않았다. 이 기록을 보존하는 문서 커밋도 같은 자동 배포 연결을 사용한다. 문서에 자기 자신의 미래 SHA나 아직 실행하지 않은 결과를 기입하지 않는다.
 
 [첫 API 증거](qa/evidence/release-first.json) · [운영 브라우저8검사](qa/evidence/deployment-smoke-first.json) · [단계 상태](BUILD_STATUS.md) · [남은 수동 검수](KNOWN_LIMITATIONS.md)
 

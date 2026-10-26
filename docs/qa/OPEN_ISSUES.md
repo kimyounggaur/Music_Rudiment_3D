@@ -10,7 +10,7 @@
 | QA-DEVICE | 실제Android/iOS/macOS Safari·실제touch/주소창/notch/softkeyboard/SR·청취 미실행 | 기기/OS/browser/출력장치/담당/날짜/절차/증거 확보 |
 | QA-MUSIC | 음악 교육자·교사/학습자 관찰 대기 | 기보·용어·문항·동등답·오개념·수업 흐름 검토. 코드검사를 교육 효과로 확대하지 않음 |
 | PERF-01 | 지속fps·100ms입력·50ms유선동기·모바일네트워크3초·발열 미측정. 15분 headless 안정성은 아래 STABILITY-01로 해결 | 지정 환경에서 실측. 빌드 bytes·600ms유휴·mock예약을 실제 기기 성능으로 대체하지 않음 |
-| RELEASE-02 | 첫 A 릴리스는 아래 RELEASE-01로 해결. 후속 B에 운영 주소·런타임 MIT·Node major 범위`>=24.14.0 <25`를 반영하고 자동 Git 배포 검증 대기 | 현재 clean65파일·공식 npm ci181개·5명령 exit0은 확인. 남은 B push·CI·자동 배포 동일 SHA·공개 화면의 실제 결과를 확인 |
+| RELEASE-02 해결 | 후속 B a8c10094의 main push로 자동 production READY·SHA 일치·CI success·공개8검사 통과 | auto-deploy-verified.json / deployment-smoke-auto.json. 수동 기기·음악 검수와 구별 |
 
 ## 해결된 현재 항목
 

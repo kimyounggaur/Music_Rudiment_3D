@@ -6,7 +6,7 @@
 
 ## 운영 릴리스의 검사 범위
 
-첫 실제 릴리스 A는 main `c91e7ebb92304e95b44ff7d12820824cdeb0018b`와 연결된 Vercel production READY이며 [운영 주소](https://music-rudiment-3d.vercel.app/)의 공개200·브라우저8검사를 통과했다. [실제 운영 화면 증거](evidence/deployment-smoke-first.json)는 기능 확인이며,운영 네트워크 지연·FPS·실제 모바일 성능 측정이 아니다. Node major 범위를`>=24.14.0 <25`로 제한한 현재65파일의 clean 재현은 공식 npm ci181개·typecheck/lint/unit96/content/build각exit0으로 통과했다. 후속 B push 뒤 자동 Git 배포는 아직 대기다. [공개 운영 HTML 해시](evidence/production-index-first.json)도 index6d4c와 일치하며 아래 자원 측정은 유지된다. 운영 기능 smoke8통과를 FPS·latency 측정으로 바꾸지 않는다.
+첫 실제 릴리스 A는 main `c91e7ebb92304e95b44ff7d12820824cdeb0018b`와 연결된 Vercel production READY이며 [운영 주소](https://music-rudiment-3d.vercel.app/)의 공개200·브라우저8검사를 통과했다. [실제 운영 화면 증거](evidence/deployment-smoke-first.json)는 기능 확인이며,운영 네트워크 지연·FPS·실제 모바일 성능 측정이 아니다. Node major 범위를`>=24.14.0 <25`로 제한한 현재65파일의 clean 재현은 공식 npm ci181개·typecheck/lint/unit96/content/build각exit0으로 통과했다. 후속 B push만으로 production READY와 SHA 일치·CI success·공개8검사가 확인됐다. [공개 운영 HTML 해시](evidence/production-index-first.json)도 index6d4c와 일치하며 아래 자원 측정은 유지된다. 운영 기능 smoke8통과를 FPS·latency 측정으로 바꾸지 않는다.
 
 ## 빌드 자원 측정
 

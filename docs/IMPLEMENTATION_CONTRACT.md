@@ -2,7 +2,7 @@
 
 ## 최신 사용자 승인 변경
 
-이후 사용자 요청으로 모든 구현·검증이 끝난 뒤 `kimyounggaur/Music_Rudiment_3D`에 commit·push하고, 그 후 연동 Vercel 앱 배포 및 push 자동 배포 설정까지 조건부 허용되었다. 이 대상에 대해서는 아래의 초기 일괄 금지를 이 승인으로 대체한다. 새 OAuth grant·토큰 생성·권한 확대·유료 플랜 변경은 허용되지 않았다. 정확 악보 미완료로 선행 조건이 남아 현재 commit·push·배포·프로젝트 생성·설정 변경은 실행하지 않았다. 읽기 전용 확인 결과는 RELEASE_TARGET_AUDIT.md를 따른다.
+이후 사용자 요청으로 모든 구현·검증이 끝난 뒤 `kimyounggaur/Music_Rudiment_3D`에 commit·push하고, 그 후 연동 Vercel 앱 배포 및 push 자동 배포 설정까지 조건부 허용되었다. 이 대상에 대해서는 아래의 초기 일괄 금지를 이 승인으로 대체한다. 새 OAuth grant·토큰 생성·권한 확대·유료 플랜 변경은 허용되지 않았다. 이후 실제 Three/VexFlow 구현과 자동 검증을 수행하고 지정 저장소 main push·CI 및 Vercel Git 자동 production 배포를 확인했다. 실제 기기·청취·음악교사·입력 원형 보관 한계는 별도로 남긴다. 현재 실행 증거는 RELEASE.md를 따른다. 읽기 전용 확인 결과는 RELEASE_TARGET_AUDIT.md를 따른다.
 
 작성: 2026-10-26 UTC. 상태: **P00 준비 문서 작성, 로컬 입력 검증은 차단되어 P00 수용 게이트 미통과.**
 

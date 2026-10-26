@@ -2,7 +2,7 @@
 
 갱신일: 2026-10-26 UTC. 새 독립 작업공간: `C:\Users\kimyo\Documents\Codex\2026-10-27\task\music-theory-lab`.
 
-첫 공개운영주소는 [music-rudiment-3d.vercel.app](https://music-rudiment-3d.vercel.app/)이며 A릴리스가 실제 확인됐다. 후속B자동배포검증은대기다.
+첫 공개운영주소는 [music-rudiment-3d.vercel.app](https://music-rudiment-3d.vercel.app/)이며 A릴리스가 실제 확인됐다. 후속B자동production/CI/SHA/공개8검사도실제통과했다.
 
 현재 production HTTP 진입 문서 `dist/index.html` SHA256은 **`6d4ca09b0288cdd5bdf376fbdc7168e13e432bdb919f6b6151d7f348ad08383d`**다. 실제 HTTP 응답 바이트와 clean 복제 빌드가 이 값과 일치한다. 현재 standalone 파일 SHA는 `3638adefdcf32113307c7c093d3b82d3c36802934f2d8af0a59085b51f490a9f`다. 이전4f097829·9453·002 등의 file-only 결과는 역사 기록으로 보존하며 서로 다른 빌드의 결과를 합쳐 현재 전체 통과로 표시하지 않는다.
 
@@ -16,7 +16,7 @@ React/TypeScript·실제 VexFlow 악보·Three WebGL·Web Audio·여섯 장면·
 | E-PROMPT | Library `libfile_7143bfa2339c81919b926aadfb2cc3e2`, 구현프롬프트v1.0,111,872바이트·1~1268행 원격 전체 읽기 | 문서의 테스트 서술 자체는 실행 결과가 아님 |
 | E-TRANSFER | [INPUT_PROVENANCE](INPUT_PROVENANCE.md): 두 입력을 task/inputs로 지원 전송, 최초와 허용된1회 재시도 모두 exit1 `download failed`, 파일 없음 | 원인을 접근 거부라고 확정하지 않음. 임의 재구성/다운로드 우회/추가재시도 없음. npm/HTTP 승인을 이 실패의 해소로 간주 안 함 |
 | E-ENV | [REPO_AUDIT](REPO_AUDIT.md), 초기 환경 오류 기록: 처음 빈 폴더·상위지침 조사, Node24.14.0/npm11.9.0/Python3.14.3 | 기존 원본 프로젝트·음악 파일은 수정하지 않고 새 폴더 사용 |
-| E-DEPS | 공식npm Three0.186.1/types0.186.0·VexFlow5,15정확선언/228lock항목. B작업트리 Node범위 `>=24.14.0 <25`와현재lock SHA `9c381bfb0bf2c0d8954e9f72b5c721ce6a90eba8c6c819ac918579931d3e1138`,snapshot19:05:09.709Z·두번째공식npm ci181설치exit0 확인. DEPENDENCY_INSTALL/SNAPSHOT 참조 | 이전ad55lock·64source와오프라인/DNS진단은A/초기역사다. 현재공식설치검증과구별. B후속push/자동production재검증은아직대기 |
+| E-DEPS | 공식npm Three0.186.1/types0.186.0·VexFlow5,15정확선언/228lock항목. B작업트리 Node범위 `>=24.14.0 <25`와현재lock SHA `9c381bfb0bf2c0d8954e9f72b5c721ce6a90eba8c6c819ac918579931d3e1138`,snapshot19:05:09.709Z·두번째공식npm ci181설치exit0 확인. DEPENDENCY_INSTALL/SNAPSHOT 참조 | 이전ad55lock·64source와오프라인/DNS진단은A/초기역사다. 현재공식설치검증과구별. B후속push/자동production/CI/SHA/공개8검사확인완료 |
 | E-CHECK | 부모 최종 source의 typecheck/lint/content/build exit0. 현재 콘텐츠 schema2.0.0/content1.0.0,6장면9레인 | 실제 전송/기기성능/청취와 구별. 자세한 명령/로그는 BUILD_STATUS |
 | E-CLEAN | [현재clean results](../output/qa/clean-reproduction/results.json):B설정으로type/lint/unit96/content/build **5단계exit0**,mainbuild도exit0. [source-match](../output/qa/clean-reproduction/source-match.json):**65개exact·mismatch0**,main/clean index6d4c동일,공식npm ci181exit0 | A의64개검증은역사로보존. B작업트리의로컬재현통과이며B원격CI/자동배포통과를앞당겨주장하지않음 |
 | E-CONTENT | `content:validate`:duration-basics6scenes9lanes, schema2.0.0/content1.0.0 | 구조/의미 검증이며 교육자 승인과 다름 |
@@ -35,8 +35,8 @@ React/TypeScript·실제 VexFlow 악보·Three WebGL·Web Audio·여섯 장면·
 | E-PRINT | 현재 [정본PDF](qa/activity-sheet-six-scenes.pdf)와 [output PDF](../output/qa/print-final/activity-sheet-six-scenes.pdf) SHA **`c5b54ae203de97661d21c0375852a3b04dd99e8d279ea53bfa3304f549df1635`**,6쪽/9SVG,현재6개native Poppler이미지를부모가모두실제화면검수PASS. [결과](../output/qa/print-final/results.json)·[PRINT_REVIEW](qa/PRINT_REVIEW.md) | 이전79cf PDF6쪽검수/5→7→6쪽수정이력도보존하며새PDF에승인을소급하지않음. actualPrinter=false·실제종이/흑백/SR PDF·교사검수미실행 |
 | E-STABILITY | [15분요약](qa/evidence/stability-summary.json), [전체결과](../output/http/stability-6d4ca09b-2026-10-26T18-37-54-280Z/results.json):**PASS/exit0**,18:37:54.280Z→18:52:57.191Z,측정900030.0102ms·30cycles. start/end HTTPindex6d4c동일·max nativecontext1·stop후 liveoscillator0·2D canvas0·page/console/요청오류0 | headlessChromium148의자동반복안정성이다. forcedGC=false,heap/DOM수치는기록만하고임의threshold로무누수/모바일성능을주장안함. 실제기기/청취/열시험아님 |
 | E-RELEASE-A | **첫실제릴리스확인:** [운영앱](https://music-rudiment-3d.vercel.app/)·[Git저장소](https://github.com/kimyounggaur/Music_Rudiment_3D),main `c91e7ebb92304e95b44ff7d12820824cdeb0018b`원격일치·[CI40382693913](https://github.com/kimyounggaur/Music_Rudiment_3D/actions/runs/40382693913)success. Vercel `dpl_5crNfa8NBPeUeEfpiRxvXtCYs8Fd` READY/production·Git SHA동일. [API증거](qa/evidence/release-first.json),[HTTPS smoke](qa/evidence/deployment-smoke-first.json) **8/8pass**, [운영HTML](qa/evidence/production-index-first.json)200/SHA6d4c | 실제SVG/Three/nativeAudio/작곡/저장/회전/MIT/오류0 확인. 보호변경·새credentials없음. headlessChromium검사이며실제기기·청취·음악승인아님 |
-| E-RELEASE-B | [RELEASE](RELEASE.md):운영URL/릴리스근거·runtimeMIT안내·Node24major상한의실질수정,공식npm ci181·main/clean5단계·65source일치·index6d4c유지 | **B커밋push뒤Git자동production배포/CI/SHA확인은대기.** 빈테스트커밋이나수동성공으로위장하지않음. A성공을B에자동승계하지않음 |
-| E-MANUAL | 실제모바일·SR·스피커/헤드폰청취·유선AV지연·음악교육자·교사/학습자 관찰은대기. 자동15분은E-STABILITY에서확인 | 실제기기/청취승인과첫공개릴리스A의관측은별개다. 후속B자동배포검증은대기이며수동검수완료로바꾸지않음 |
+| E-RELEASE-B | [RELEASE](RELEASE.md):운영URL/릴리스근거·runtimeMIT안내·Node24major상한의실질수정,공식npm ci181·main/clean5단계·65source일치·index6d4c유지 | **B a8c10094 push뒤Git자동production READY/CI success/SHA일치/공개8검사실제통과.** 빈테스트커밋이나수동성공으로위장하지않음. A성공을B에자동승계하지않음 |
+| E-MANUAL | 실제모바일·SR·스피커/헤드폰청취·유선AV지연·음악교육자·교사/학습자 관찰은대기. 자동15분은E-STABILITY에서확인 | 실제기기/청취승인과첫공개릴리스A의관측은별개다. B자동배포통과를수동검수완료로바꾸지않음 |
 
 현재 root가 명시적으로 실행한 브라우저/네트워크 결과만 기록했다. 이 문서 갱신 담당자는 추가 브라우저·서버·npm·네트워크 요청을 실행하지 않았다. 원본 음악·다른 프로젝트는 수정하지 않았고, 새 폴더와 별도 clean 폴더만 사용했다. 사용자승인범위밖로그인·결제·무제한권한확대·유료계약은수행하지않는다. 별도승인된첫Git/Vercel공개릴리스A의실제결과는E-RELEASE-A에구분했다.
 
@@ -74,7 +74,7 @@ React/TypeScript·실제 VexFlow 악보·Three WebGL·Web Audio·여섯 장면·
 | DATA-001 | 12 | 구조+의미 런타임 검증, note/rest union·ID·분수·notation·레인 비중첩 | P05 | src/content/types.ts, validation.ts, tests/lesson.test.ts | QA-D01/D02/D04; rest.pitch·중복ID·분모0·음수·겹침·범위·notation 무효 fixture | 구조·의미 자동검증 통과: 유효/무효 fixture와 콘텐츠 6장면9레인; 지원 범위 밖 데이터 명시 거부 | E-CONTENT, E-UNIT |
 | DATA-002 | 12 | Lesson→Scene→Lane→Event, ID namespace, 장면1 두레인 시간 중복 허용 | P05 | src/content/types.ts, lesson.ts, validation.ts | 레인 내부 검증, 레인합2마디 오판 금지; 타입/스키마 일치검사 | 자동검증 통과: scene/lane·ID 범위, schemaVersion2.0.0/contentVersion1.0.0·비교 레인 보존 | E-CONTENT, E-UNIT |
 | DATA-003 | 12, 17 | draft/playable/assessment 분리, 빈·미완성 답은 합법 초안이며 정답 아님 | P05, P07, P14 | src/content/validation.ts, src/lesson/controller.ts, src/notation/NotationView.tsx | QA-D03; 빈 draft 렌더·재생거부/명시 접두재생, 자동 rest 삽입 금지 | 자동검증: 빈/미완성 draft·playable·평가 분리와 실제SVG fixture, 자동 쉼표 삽입 없음. 음악 교육자 검수 대기 | E-CONTENT, E-UNIT, E-NOTATION |
-| QA-003 | 13, 27 | 공식 문서·패키지 metadata·peer·라이선스 확인 후 정확버전 lock | P03 | package.json, package-lock.json, docs/DEPENDENCY_INSTALL.md, output/qa/clean-reproduction/* | 실제 install-from-lockfile·typecheck·최소test·build; 추정버전 금지 | 로컬실행환경검증:공식lock15/228·두번째npm ci181·B설정source65exact·5단계exit0·main/clean index6d4c일치. B원격CI/자동배포는대기 | E-DEPS, E-CLEAN, E-HTTP, E-RELEASE-A, E-RELEASE-B |
+| QA-003 | 13, 27 | 공식 문서·패키지 metadata·peer·라이선스 확인 후 정확버전 lock | P03 | package.json, package-lock.json, docs/DEPENDENCY_INSTALL.md, output/qa/clean-reproduction/* | 실제 install-from-lockfile·typecheck·최소test·build; 추정버전 금지 | 로컬실행환경검증:공식lock15/228·두번째npm ci181·B설정source65exact·5단계exit0·main/clean index6d4c일치. B원격CI/자동배포/SHA/공개8검사실제통과 | E-DEPS, E-CLEAN, E-HTTP, E-RELEASE-A, E-RELEASE-B |
 | DATA-004 | 14 | domain은 React/DOM/Three/저장 비의존, command reducer 원자 변경 | P04, P08, P15, P22 | src/domain/*, src/lesson/controller.ts, tests/lesson.test.ts | 실패명령 이력 미추가; undo후 편집 redo폐기; adapter snapshot revision 일치 | 자동검증: 비의존 domain·원자명령·실패보존·undo/redo와 Three 순수모델6개 포함 unit96 통과 | E-UNIT, E-CHECK |
 | UX-004 | 14, 20 | Lesson/UI/Transport/Persistence 상태 분리, 선택·초점 복구, 현재성공 재계산 | P08, P14~P17 | src/lesson/controller.ts, src/App.tsx | split첫자식/merge결과 초점; 성공→undo→실패→redo→성공 | 부분 자동검증: 현재 성공 재계산·선택·undo/redo·dialog 초점 회귀 통과; 전체 화면/SR 초점 감사 미실행 | E-UNIT, E-BROWSER, E-FAILURE, E-MANUAL |
 | AUDIO-001 | 15 | 사용자 제스처 unlock, AudioContext.currentTime 단일 예약시계, 자동재생 금지 | P09 | src/audio/AudioEngine.ts, src/App.tsx, tests/audio.test.ts | QA-A01, Fraction→초 예약·화면역변환; 새로고침 소리없음 | 자동검증: HTTP 첫진입/복구 context0, 제스처 후 실제 nativeAPI·무음/음량0은 listened로 기록하지 않음. 실제 청취 대기 | E-UNIT, E-HTTP, E-HTTP-RECOVERY, E-MANUAL |
@@ -104,7 +104,7 @@ React/TypeScript·실제 VexFlow 악보·Three WebGL·Web Audio·여섯 장면·
 | QA-010 | 27 | 공식 근거는 후보 API·호환성 확인용, 실제 설치/실행과 구별 | P03, P07, P09, P18~P20 | docs/LOCAL_DEPENDENCIES.md, package.json, package-lock.json, public/licenses/* | 확인일·URL·실제버전·API·라이선스 기록, 문서작성자의 과거확인을 현재검증으로 쓰지않음 | 공식 npm Three0.186.1/types0.186.0 승인 조회·설치, lock228/15manifest와 npm ci 설치 확인. VexFlow293파일/OFL 고지 보존 | E-DEPS, E-NOTATION, E-FONTS |
 | QA-011 | 28 | 장면2 의미→2D악보→조작 검증 후 오디오, 마지막3D 교육적효용 관찰 | P08~P10, P20 | src/lesson/controller.ts, src/scenes/*, src/audio/AudioEngine.ts, src/notation/NotationView.tsx | 한절편게이트·같은 snapshot 일치·2D/3D 비교 관찰, 대량전환 없음 | 자동검증: 장면2 의미·2D·실제악보·Web Audio·실제Three와 키보드. 3D 교육적효과·음악 승인은 대기 | E-UNIT, E-HTTP, E-NOTATION, E-KEYBOARD, E-THREE, E-MANUAL |
 | QA-012 | 7, 21, 25 | 후속단원 하나만 계획, 첫파일럿 QA·선택 필요, 기존회귀 유지 | P23 | docs/NEXT_LESSON_TEMPLATE.md, src/domain/* 재사용 후보 | 단원 선택/목표/신규음악규칙/축범례/새version/작은2D절편 계획; 구현과 구별 | 템플릿/재사용분석 산출물 있음. 다음단원 선택·파일럿 검토 후 별도 작은절편 계획, 후속단원 구현 없음 | E-PROMPT, docs/NEXT_LESSON_TEMPLATE.md, E-MANUAL |
-| QA-013 | 21~22 | 재현 가능한 인수패키지와 개발검증/수업시험준비/공개판단 구분 | P22 | README.md, docs/BUILD_STATUS.md, docs/qa/*, output/preview.html, dist/* | lock install→typecheck→lint→content validate→unit/integration→build→E2E 실제 실행 | 첫릴리스A:원격main정확SHA·CI success·VercelproductionREADY·공개HTTPS8검사PASS. B실질수정로컬clean65통과,후속push/자동배포검증대기. 입력archive/hidden/필수수동한계유지 | E-CLEAN, E-RELEASE-A, E-RELEASE-B, E-HTTP, E-STABILITY, E-MANUAL |
+| QA-013 | 21~22 | 재현 가능한 인수패키지와 개발검증/수업시험준비/공개판단 구분 | P22 | README.md, docs/BUILD_STATUS.md, docs/qa/*, output/preview.html, dist/* | lock install→typecheck→lint→content validate→unit/integration→build→E2E 실제 실행 | 첫릴리스A:원격main정확SHA·CI success·VercelproductionREADY·공개HTTPS8검사PASS. B실질수정로컬clean65통과,B push/CI/자동production/SHA/공개8검사확인완료. 입력archive/hidden/필수수동한계유지 | E-CLEAN, E-RELEASE-A, E-RELEASE-B, E-HTTP, E-STABILITY, E-MANUAL |
 
 ## 설계서 28절 누락 점검
 
@@ -167,7 +167,7 @@ React/TypeScript·실제 VexFlow 악보·Three WebGL·Web Audio·여섯 장면·
 | P19 | 실제Three idle600ms추가render0·DPR1.5·6수명회귀·안전대체·번들분리·HTTP15분900030.0102ms/30cycles PASS | 부분:자동안정성완료,실기기fps/입력100ms/AV50ms/발열은미측정 |
 | P20 |unit96/clean5단계·HTTP19pass1blocked·Three9·recovery7·currentfile23·notation23/font1·PDF6·실제export·자동15분PASS | 부분:실제hidden차단·실기기/SR/청취/교육검수대기 |
 | P21 |font/rest/focus/저장·오염복구·음소거청취기록·Three오류최소수정/회귀 | 확인된회귀·자동15분통과,입력archive·hidden/외부검수남음 |
-| P22 |README·source/dist·clean65·검증/제한·PDF·첫실제Git/CI/Vercel공개운영A | 첫릴리스A관측완료,후속B자동배포검증대기. 입력archive·hidden·실기기/청취/교육자등미완료는유지 |
+| P22 |README·source/dist·clean65·검증/제한·PDF·첫실제Git/CI/Vercel공개운영A | 첫릴리스A관측완료,후속B자동배포/CI/SHA/공개8검사통과. 입력archive·hidden·실기기/청취/교육자등미완료는유지 |
 | P23 |NEXT_LESSON_TEMPLATE·공통모듈재사용분석 | 계획템플릿있음,다음단원선택/파일럿검토후작은범위착수. 후속단원구현없음 |
 
 P03/P07/P10/HTTP의 이전 차단을 현재 상태로 그대로 반복하지 않는다. 각각 실제 승인·설치·실행 증거로 갱신했으며 이전 실패와 baseline은 지우지 않았다. 입력 materialization의 실패는 별개의 남은 게이트다.

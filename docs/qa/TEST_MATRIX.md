@@ -30,7 +30,7 @@
 | 실기기/SR/청취/음악/관찰 |대기 |기종·출력장치·검수자·날짜확보사실을만들지않음 |
 | 첫릴리스A |원격main `c91e7ebb92304e95b44ff7d12820824cdeb0018b`일치·GitHubCI40382693913success·VercelproductionREADY동일SHA |[API증거](evidence/release-first.json)·[RELEASE](../RELEASE.md). 보호설정변경·새자격증명없음 |
 | 공개HTTPS smoke |[운영주소](https://music-rudiment-3d.vercel.app/)200·SVG/Three/nativeAudio/작곡/저장/회전/MIT/오류0 **8/8pass** |[smoke](evidence/deployment-smoke-first.json)·[운영HTML SHA6d4c](evidence/production-index-first.json). 실제기기/청취검증아님 |
-| 후속B자동연결 |운영URL/근거·runtimeMIT·Node24상한실질수정과로컬clean65통과 |**Bpush후원격CI/자동production배포/정확SHA검증대기**,A결과자동승계안함 |
+| 후속B자동연결 |운영URL/근거·runtimeMIT·Node24상한실질수정과로컬clean65통과 |**B a8c10094 push후원격CI success/자동production READY/정확SHA/공개8검사통과**,A결과자동승계안함 |
 | 입력로컬archive |지원materialization최초+1retry실패·원격전체읽기완료 |INPUT_PROVENANCE. 현재npm/HTTP승인으로자동해결된것아님 |
 
 현재 PDF 정본은 [docs/qa/activity-sheet-six-scenes.pdf](activity-sheet-six-scenes.pdf)와동일바이트의[output PDF](../../output/qa/print-final/activity-sheet-six-scenes.pdf)다.
@@ -38,4 +38,4 @@ SHA256 `c5b54ae203de97661d21c0375852a3b04dd99e8d279ea53bfa3304f549df1635`.
 이전79cf PDF의6쪽검수·5→7→6쪽수정이력도보존하며현재PDF의검토와혼동하지않는다.
 
 승인된npm/loopback 범위 안에서실제실행한결과만기록한다. 현재HTTP/Three/clean을“미구현·미승인”으로반복하지않으며,1개hidden차단과입력archive·필수사람검수를“문제없음”으로숨기지않는다.
-첫공개릴리스A는실제관측완료이며후속B자동배포검증은대기다. P00~P23필수수동검수/입력한계가모두완료된것은아니다. [BUILD_STATUS](../BUILD_STATUS.md),[요구사항추적](../REQUIREMENTS_TRACE.md)을함께확인한다.
+첫공개릴리스A는실제관측완료이며후속B자동production/CI/SHA/공개8검사도실제통과했다. P00~P23필수수동검수/입력한계가모두완료된것은아니다. [BUILD_STATUS](../BUILD_STATUS.md),[요구사항추적](../REQUIREMENTS_TRACE.md)을함께확인한다.
