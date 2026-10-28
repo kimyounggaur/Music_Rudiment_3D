@@ -1,0 +1,441 @@
+{
+  "stage": "Uncommitted first-two-spread release candidate; browser QA pending",
+  "baselineHead": "4dd62db8dc46ca6468bffeeb586c1d295a38a793",
+  "sourceCommit": null,
+  "startedAt": "2026-10-28T13:46:14.307Z",
+  "completedAt": "2026-10-28T13:46:36.030Z",
+  "node": "v24.18.0",
+  "tests": {
+    "tests": 257,
+    "pass": 257,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "commands": [
+    {
+      "name": "test",
+      "exitCode": 0,
+      "logSha256": "00edd0b2dd03f31f18998779c1c02b3991b832daa97acaec57876c0c845a4d74",
+      "matches": true
+    },
+    {
+      "name": "lint",
+      "exitCode": 0,
+      "logSha256": "604713a21654273827100626f033ce8b4df3fa1676aa4ec78e3dbc36c738b2bf",
+      "matches": true
+    },
+    {
+      "name": "build",
+      "exitCode": 0,
+      "logSha256": "d02feba19db757120a6617ad5ce3feb8b7a45b30a8b71f1b00c1c94d536f9dc0",
+      "matches": true
+    },
+    {
+      "name": "typecheck",
+      "exitCode": 0,
+      "logSha256": "32f030e0882c957afa8f108ae5aca97253a9949989a6ba6d1bf718df035aabeb",
+      "matches": true
+    }
+  ],
+  "sourceFingerprints": [
+    {
+      "path": "eslint.config.mjs",
+      "bytes": 642,
+      "sha256": "239fe6da6f65d57a8723e86e251ada3561c4f2ff49e5f0445a93ba249f5923b6"
+    },
+    {
+      "path": "index.html",
+      "bytes": 1111,
+      "sha256": "3f25305788c7d1768cd5e2c6955580d365af6220f6f0c9c79fa73822fec9bc37"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 112427,
+      "sha256": "9c381bfb0bf2c0d8954e9f72b5c721ce6a90eba8c6c819ac918579931d3e1138"
+    },
+    {
+      "path": "package.json",
+      "bytes": 1136,
+      "sha256": "493122d44df85542b6bb967f310d9ec2d10cb7481324ad8e10f8d3847711ab9a"
+    },
+    {
+      "path": "src/App.tsx",
+      "bytes": 30406,
+      "sha256": "ff61a7cf415d44ab70d7d2f3fbb7afa1b9fa41462445a964d3425dfd6a56cf14"
+    },
+    {
+      "path": "src/audio/AudioEngine.ts",
+      "bytes": 27891,
+      "sha256": "eb029840760327d984b2952b7f582b6937967b6604c5d10ad5f5b90fa22a8a14"
+    },
+    {
+      "path": "src/audio/TransportAdapter.ts",
+      "bytes": 363,
+      "sha256": "c48c78dd6a75326d063900a79b04b0008cad3c1343432d6d36710b7a5f664812"
+    },
+    {
+      "path": "src/audio/renderBarBuffer.ts",
+      "bytes": 1849,
+      "sha256": "4510492f409274724fac5c0c887d99b92aa33fa59cb5db6401a3c233d1a34f64"
+    },
+    {
+      "path": "src/book/BookApp.tsx",
+      "bytes": 40429,
+      "sha256": "8473e4c55462fcf4f1a05d2f0f59b9803b447adbb6dcfec7eca80ffba463133f"
+    },
+    {
+      "path": "src/book/BookNotation.tsx",
+      "bytes": 17979,
+      "sha256": "e625c87956c8e97d80e411989a581cc4dcc567789fda498264d287c0b90903c1"
+    },
+    {
+      "path": "src/book/BookProgressSession.ts",
+      "bytes": 1808,
+      "sha256": "dd09df3b63903617a8471468f44c692262bec6ce1a79a33060af469431497c08"
+    },
+    {
+      "path": "src/book/BookProgressTools.tsx",
+      "bytes": 13026,
+      "sha256": "00949df2235704fdc272db2dcb8f5345923e6428fe48016da75fc72bc3402f81"
+    },
+    {
+      "path": "src/book/LessonPages.tsx",
+      "bytes": 14287,
+      "sha256": "9f7dd28275ee2dcd2b5fd89bb3739996cb8afef2420788b7e2450ec97b317e36"
+    },
+    {
+      "path": "src/book/SceneHost.ts",
+      "bytes": 11421,
+      "sha256": "d38afb1473232e5bcf6e0b7c061cc04308b9427d73c0a057417990854c693886"
+    },
+    {
+      "path": "src/book/audioOwnership.ts",
+      "bytes": 1807,
+      "sha256": "df2f095430620e7ea6761d662101b243878ec4047b77af4d6ad75e6492863863"
+    },
+    {
+      "path": "src/book/controller.ts",
+      "bytes": 17924,
+      "sha256": "d1c14e10784e779e1aa527204ad4624cbbebfd911fe2dd47a3056f399eef87b4"
+    },
+    {
+      "path": "src/book/geometry.ts",
+      "bytes": 9395,
+      "sha256": "f4ac7df3880b8ce22b79e00a0e41776db7d2b7ae948273d3ce53a8c85c219472"
+    },
+    {
+      "path": "src/book/gesture.ts",
+      "bytes": 5472,
+      "sha256": "cdb1f1178c3d3853b5e6e165a46792512980819c765027a7fad3bc8eeffb0d39"
+    },
+    {
+      "path": "src/book/inspector.ts",
+      "bytes": 4793,
+      "sha256": "c5d4e423c2177e0d59814eeaafbbb28ce16e78b87696a49b577e136845ad67fc"
+    },
+    {
+      "path": "src/book/learningProgress.ts",
+      "bytes": 3033,
+      "sha256": "69189d13fd129f72e33af177486eb100d1d06c878dbd3c2166904fbbfbfb8a17"
+    },
+    {
+      "path": "src/book/lessonScene.ts",
+      "bytes": 6664,
+      "sha256": "47ed137bd907923eaf1709470bdee5aaf8ee43fd058068351780a4494f1de31a"
+    },
+    {
+      "path": "src/book/manifest.ts",
+      "bytes": 2362,
+      "sha256": "79339ab29e18e33b5c66a4f7acb9119e6e6439e0a13b321b62aea66790b5fc1c"
+    },
+    {
+      "path": "src/book/motion.ts",
+      "bytes": 1116,
+      "sha256": "2628d68ab1721a225e8fb101cdaef115fbc9d3246ee6b546b9eed8fc0186f868"
+    },
+    {
+      "path": "src/book/notationFonts.generated.ts",
+      "bytes": 397277,
+      "sha256": "c4b98c74259f60b93bad5051e26435a37c11358a284f15af5a66636425c32ea8"
+    },
+    {
+      "path": "src/book/notationPreparation.ts",
+      "bytes": 1043,
+      "sha256": "f5615b9a0cfc2cb3a971a1314df292f7d2fdcd03582260ecddaeaffb45926a66"
+    },
+    {
+      "path": "src/book/pagePrint.ts",
+      "bytes": 1482,
+      "sha256": "b57ff692a56f4b0cffa465e0b815c4ade2c531147ec69791d00d587e3ab3a870"
+    },
+    {
+      "path": "src/book/pageProjection.ts",
+      "bytes": 1057,
+      "sha256": "a9c7cc25c95be5c616751c0d50510f7f098e21b7b7c4eee582d4a09b6752cb5f"
+    },
+    {
+      "path": "src/book/pageSnapshot.ts",
+      "bytes": 19022,
+      "sha256": "f9d978fc3fcafc2012420b46e9404c4f6846a076dbfecb643f0e745efea60ec2"
+    },
+    {
+      "path": "src/book/stage.ts",
+      "bytes": 33594,
+      "sha256": "dbdec194e8baa7d717c972d4c31b9f9e8eefec8459d900a2cd550d1e888e4952"
+    },
+    {
+      "path": "src/book/useBookAudio.ts",
+      "bytes": 10979,
+      "sha256": "a2195f296747c4f180900df242880b0608d0dab8c409422820b3ddaf264d5a09"
+    },
+    {
+      "path": "src/book/useBookProgress.ts",
+      "bytes": 10900,
+      "sha256": "fed5efd4b9b776008fecd66960d149a843c70e24eb71f60eee81b98947239cdd"
+    },
+    {
+      "path": "src/book/usePagePrints.ts",
+      "bytes": 11323,
+      "sha256": "4a8da4c49a05c0499a899fa098cab129f92ca89113a3ed24a0e33512d147c7f0"
+    },
+    {
+      "path": "src/components/ConceptQuiz.tsx",
+      "bytes": 4582,
+      "sha256": "7ad4a872f4d7e6e1ba393bc06a0ca1ce9f1c8530175dd07b45c0e241ac47d47a"
+    },
+    {
+      "path": "src/components/SceneBoundary.tsx",
+      "bytes": 638,
+      "sha256": "2b58d7044b8741a57951daf8e2d0f0e9dab3f99053605f3f3dc20fad61e47df5"
+    },
+    {
+      "path": "src/content/lesson.ts",
+      "bytes": 12384,
+      "sha256": "a7f76c90f11a2970adb35a80e5b89ac5d636acee96365b60e9ea1dc72c1e7953"
+    },
+    {
+      "path": "src/content/types.ts",
+      "bytes": 1645,
+      "sha256": "36ff56e3b52c5eed6c757aa1968a1e195c3c8ba3c783a4a6f2c573df0abb438a"
+    },
+    {
+      "path": "src/content/validation.ts",
+      "bytes": 16255,
+      "sha256": "493ce5fb27a17c0472eaea953246c577589dd44abb51e449eb08981293bd1d24"
+    },
+    {
+      "path": "src/domain/errors.ts",
+      "bytes": 1025,
+      "sha256": "4eb1164b9fe0c909eba3a78b7ca450beb229e963cfe156c7948687bb4597f807"
+    },
+    {
+      "path": "src/domain/fraction.ts",
+      "bytes": 3923,
+      "sha256": "72712bcad8f8b070472387ebc4266dcb381605e7e82e57600c162aaa0a2f40d4"
+    },
+    {
+      "path": "src/domain/index.ts",
+      "bytes": 527,
+      "sha256": "a07556c5aa889356cae5dee601f9116cd818bed0e1dfc0d313e4f221e96d12e4"
+    },
+    {
+      "path": "src/domain/music.ts",
+      "bytes": 6691,
+      "sha256": "7ccad3c3f0e0fadb058a5837d43b8b8eda2f674dc9787b03e5b7de30b6de427b"
+    },
+    {
+      "path": "src/lesson/assessment.ts",
+      "bytes": 7992,
+      "sha256": "ee2a4901381877b3f80412bbecc5ed8a0f13fb6edcc84c00eaac4f2beab862c9"
+    },
+    {
+      "path": "src/lesson/controller.ts",
+      "bytes": 22203,
+      "sha256": "315c0105bf1432d90294b5b5540d5d2b49598dcf9d0624c18811a19493c1133d"
+    },
+    {
+      "path": "src/main.tsx",
+      "bytes": 274,
+      "sha256": "d52fca87b3a382376b0603eb43b8706dd86ccf6b196cb9c75cafa813352851cc"
+    },
+    {
+      "path": "src/notation/NotationView.tsx",
+      "bytes": 11790,
+      "sha256": "34a0277927e8a59cbcd0826ed7c9817f5215d4fe6db065ff2ee46e230acdc76f"
+    },
+    {
+      "path": "src/persistence/bookProgress.ts",
+      "bytes": 19038,
+      "sha256": "134b2fb730d99a114e4faba322fedf4b3f9ff57553d81a94ff9ead07ac309b34"
+    },
+    {
+      "path": "src/persistence/progress.ts",
+      "bytes": 17536,
+      "sha256": "ceae0e452e2f5b00579641398d4d1151654cd150a1b980e3fab08e278bab40a0"
+    },
+    {
+      "path": "src/scenes/DurationScene2D.tsx",
+      "bytes": 4725,
+      "sha256": "0c51dfcd82c12e9908b700860ffc1b6cf094e6f75dc8278cd783a9bc8b66f827"
+    },
+    {
+      "path": "src/scenes/DurationScene3D.tsx",
+      "bytes": 12170,
+      "sha256": "1402f16aef7865f90a83be68dcdf163c722445cbb5403938d65717f2a86796a0"
+    },
+    {
+      "path": "src/scenes/durationWorld.ts",
+      "bytes": 5970,
+      "sha256": "2f94bdd52015753676ffa356a07ea8de584f878f01d4649dd4a369b8b1491087"
+    },
+    {
+      "path": "src/styles/adapters.css",
+      "bytes": 1039,
+      "sha256": "6fd7ca4b4169342c000a31e130d4913116da30e159ff26a42477a4383f39e348"
+    },
+    {
+      "path": "src/styles/app.css",
+      "bytes": 11315,
+      "sha256": "f5b505177edb9ec5fb7a8ff07bcd6467fa66c659f4baee0ad0d47875c5d49e3e"
+    },
+    {
+      "path": "src/styles/book-progress.css",
+      "bytes": 3422,
+      "sha256": "c62a263a1bd2c417aecdc354d610066e221b1925ba95258ed71b5c62d931bfc9"
+    },
+    {
+      "path": "src/styles/book.css",
+      "bytes": 6122,
+      "sha256": "24a41052fdd482dcfa2058901408c5a7569a807128c096fbcfdf7c15d5e05545"
+    },
+    {
+      "path": "src/styles/lesson-pages.css",
+      "bytes": 6198,
+      "sha256": "b79bc20b96cbdb3d9c95047e678769936e0373a432ff6ce58ba61962eeed18ef"
+    },
+    {
+      "path": "src/styles/print.css",
+      "bytes": 1061,
+      "sha256": "ade5808edd5cdae189b778059fcf70f088f3c8501dea98e9770c3fe3010d95c7"
+    },
+    {
+      "path": "src/vite-env.d.ts",
+      "bytes": 38,
+      "sha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5"
+    },
+    {
+      "path": "tests/assessment.test.ts",
+      "bytes": 5264,
+      "sha256": "52e959ad7cd1c94b8dd140d9b31ebc65ce2328f252f7099ed5dcf6c64e59a381"
+    },
+    {
+      "path": "tests/audio-transport.test.ts",
+      "bytes": 29009,
+      "sha256": "0fb697a7a4aa588720e0ffcce17aebfc2010073905831698ea20404d8d976c2c"
+    },
+    {
+      "path": "tests/audio.test.ts",
+      "bytes": 14802,
+      "sha256": "cdeb606531b0fffd6add3dcff20ba90b4f3a71b0876d6d1db1a93fc4e3a82395"
+    },
+    {
+      "path": "tests/book-audio-ownership.test.ts",
+      "bytes": 5783,
+      "sha256": "501e2969b94e090b1d2249e3247fa3db1b5087ce8750465b44850a82636bd32c"
+    },
+    {
+      "path": "tests/book-controller.test.ts",
+      "bytes": 29880,
+      "sha256": "9997714c714adbf43c91108db53631ef80253f5f8849f60d06372df969c7d409"
+    },
+    {
+      "path": "tests/book-geometry.test.ts",
+      "bytes": 6281,
+      "sha256": "231137c66356eddc6539dac62ae4df19a124b0d2208e1be2e94a3df626b16187"
+    },
+    {
+      "path": "tests/book-gesture.test.ts",
+      "bytes": 6530,
+      "sha256": "cb821dd950980415f93f4f5430f73970c770699f5b5347e28ce9f2d66965468f"
+    },
+    {
+      "path": "tests/book-lesson-scene.test.ts",
+      "bytes": 7537,
+      "sha256": "3611b809d0ba546d1a9e9a4fe3af9a828cbe6ec56e37b26da237d0db833e8e42"
+    },
+    {
+      "path": "tests/book-notation-preparation.test.ts",
+      "bytes": 2174,
+      "sha256": "2acb32cddb63ae85c2d6e326a17855f18e3a1ce076e7996f7308ac289425e561"
+    },
+    {
+      "path": "tests/book-page-projection.test.ts",
+      "bytes": 1571,
+      "sha256": "7bf44724c1781064214a50b2960b918250fa98ab10a6fec52d1d8d8e3efcfe29"
+    },
+    {
+      "path": "tests/book-page-snapshot.test.ts",
+      "bytes": 5603,
+      "sha256": "13ce0252ad2b62c76652e3b70995e20a14d6351d1e18ee3a7c659b6c3d730f06"
+    },
+    {
+      "path": "tests/book-progress-session.test.ts",
+      "bytes": 6394,
+      "sha256": "b63801905be9390114c3b6550589af986f9e17ce74d9e06115281ba265d96f8e"
+    },
+    {
+      "path": "tests/book-progress.test.ts",
+      "bytes": 37094,
+      "sha256": "7a8c5dfe4b82d9c0dfc1815200941a325f5e44440b733c736fa415a48cefcc61"
+    },
+    {
+      "path": "tests/book-scene-host.test.ts",
+      "bytes": 16348,
+      "sha256": "99d6b1709c4d4e8c6c4271e7a119c93c5a5a3c1e5a195c8acf50ffda7c621e62"
+    },
+    {
+      "path": "tests/domain.test.ts",
+      "bytes": 11684,
+      "sha256": "5c250436a89135011dde5fa5eaf438a8f189629997d22c57bc7a4165e58bd5de"
+    },
+    {
+      "path": "tests/duration-world.test.ts",
+      "bytes": 10924,
+      "sha256": "d9565e1bfa0d71548ec3f9062de2778d6313cdcf0b2bc6e9122d5c7881406f63"
+    },
+    {
+      "path": "tests/lesson.test.ts",
+      "bytes": 18110,
+      "sha256": "7b22048316f6b210b90bbbe4ebd222098cd019e50462d9edd066bb755e293330"
+    },
+    {
+      "path": "tests/persistence.test.ts",
+      "bytes": 9244,
+      "sha256": "f1071a4b165883947e785c46bdf041810cac255b90490cbc55f34233851dc889"
+    },
+    {
+      "path": "tests/qa-evidence.test.ts",
+      "bytes": 5137,
+      "sha256": "0e5c9456c16586c04676cbb6c60ecc23dd90b569f3854a1c5c030af57ce8325c"
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 480,
+      "sha256": "389de2b5e83ec89edf09bc990963eb716a06d3e06a6ea46ff14c1ebe11bd536e"
+    },
+    {
+      "path": "vite.config.ts",
+      "bytes": 366,
+      "sha256": "b9833d389eb818cb91117ec2df5cc67ccea434f60459d250ad4888d0e988e9e7"
+    }
+  ],
+  "sourceUnchanged": true,
+  "limits": [
+    "Not a release or deployment result",
+    "Direct-drag request denied; retry permission pending",
+    "Remaining accessibility/mobile/stress QA pending",
+    "No actual listening or physical-device claim"
+  ]
+}

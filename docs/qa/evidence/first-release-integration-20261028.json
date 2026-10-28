@@ -1,0 +1,764 @@
+{
+  "checkedAt": "2026-10-28T16:17:48.274Z",
+  "scope": "First two book spreads only",
+  "baselineCommit": "4dd62db8dc46ca6468bffeeb586c1d295a38a793",
+  "sourceChecks": {
+    "startedAt": "2026-10-28T16:07:18.013Z",
+    "completedAt": "2026-10-28T16:07:39.203Z",
+    "commands": [
+      {
+        "name": "test",
+        "command": "npm.cmd test",
+        "startedAt": "2026-10-28T16:07:18.014Z",
+        "completedAt": "2026-10-28T16:07:19.748Z",
+        "exitCode": 0,
+        "error": null,
+        "logPath": "original-20261028T160718013Z-test.log",
+        "logSha256": "b6c9230235eb932164d47ed3f488d75ff81917b54915c219c4fb9efc2de841d2",
+        "testTotals": {
+          "tests": 272,
+          "pass": 272,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        }
+      },
+      {
+        "name": "typecheck",
+        "command": "npm.cmd run typecheck",
+        "startedAt": "2026-10-28T16:07:19.751Z",
+        "completedAt": "2026-10-28T16:07:25.884Z",
+        "exitCode": 0,
+        "error": null,
+        "logPath": "original-20261028T160718013Z-typecheck.log",
+        "logSha256": "32f030e0882c957afa8f108ae5aca97253a9949989a6ba6d1bf718df035aabeb"
+      },
+      {
+        "name": "lint",
+        "command": "npm.cmd run lint",
+        "startedAt": "2026-10-28T16:07:25.884Z",
+        "completedAt": "2026-10-28T16:07:32.038Z",
+        "exitCode": 0,
+        "error": null,
+        "logPath": "original-20261028T160718013Z-lint.log",
+        "logSha256": "604713a21654273827100626f033ce8b4df3fa1676aa4ec78e3dbc36c738b2bf"
+      },
+      {
+        "name": "build",
+        "command": "npm.cmd run build",
+        "startedAt": "2026-10-28T16:07:32.039Z",
+        "completedAt": "2026-10-28T16:07:39.179Z",
+        "exitCode": 0,
+        "error": null,
+        "logPath": "original-20261028T160718013Z-build.log",
+        "logSha256": "d90c9e3b273a498941037eca962c46ffe1e920425b99b898e4d3c49be6d6e69e"
+      }
+    ],
+    "fingerprints": [
+      {
+        "path": "eslint.config.mjs",
+        "sha256": "239fe6da6f65d57a8723e86e251ada3561c4f2ff49e5f0445a93ba249f5923b6"
+      },
+      {
+        "path": "index.html",
+        "sha256": "3f25305788c7d1768cd5e2c6955580d365af6220f6f0c9c79fa73822fec9bc37"
+      },
+      {
+        "path": "package-lock.json",
+        "sha256": "9c381bfb0bf2c0d8954e9f72b5c721ce6a90eba8c6c819ac918579931d3e1138"
+      },
+      {
+        "path": "package.json",
+        "sha256": "493122d44df85542b6bb967f310d9ec2d10cb7481324ad8e10f8d3847711ab9a"
+      },
+      {
+        "path": "public/book/front-cover-preview.png",
+        "sha256": "1e83c2fb3766e1f786f2dd12b6639a487c582203bbeb104f6886ae441ef7b7dd"
+      },
+      {
+        "path": "public/book/front-cover.png",
+        "sha256": "a6483dacf509d908904917d042c8b8db2aa46a7daf669c1b97dc61542e12f453"
+      },
+      {
+        "path": "public/licenses/Academico-Bold-OFL.txt",
+        "sha256": "cd3936d74ebdb6377a00f8ad3d166252f01be1ec5905848eb07d99814950817f"
+      },
+      {
+        "path": "public/licenses/Academico-Bold-nameID0-notice.txt",
+        "sha256": "22420709be5983701a2406720026a4054c64495bb5737ffcce9879426733071b"
+      },
+      {
+        "path": "public/licenses/Academico-OFL.txt",
+        "sha256": "cd3936d74ebdb6377a00f8ad3d166252f01be1ec5905848eb07d99814950817f"
+      },
+      {
+        "path": "public/licenses/Bravura-OFL.txt",
+        "sha256": "ea0f9e3b750bb1f7e46798e7179c9ebb781c66a4e52d325fbfdcbb558ee67870"
+      },
+      {
+        "path": "public/licenses/README.md",
+        "sha256": "022a6594cc6bee2b1f241137dc2514be52f840ef1f284a3643845917c9248aff"
+      },
+      {
+        "path": "public/licenses/React-MIT.txt",
+        "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+      },
+      {
+        "path": "public/licenses/ReactDOM-MIT.txt",
+        "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+      },
+      {
+        "path": "public/licenses/Three-MIT.txt",
+        "sha256": "8b378ebe60e2fe500158cb0ac71cb5e8b7d92953c2abcc63a0eb90499653b5bc"
+      },
+      {
+        "path": "public/licenses/VexFlow-AUTHORS.md",
+        "sha256": "13fd7d3378abd6dc3337105f00d8ea1cbb4a009c0e6d4452a1df38929fdaee18"
+      },
+      {
+        "path": "public/licenses/VexFlow-MIT.txt",
+        "sha256": "5522a52057a68b081dd3e06a878584b565c6a3f7e7ddb154dd24f25b5630216f"
+      },
+      {
+        "path": "public/licenses/book-notation-fonts.txt",
+        "sha256": "6985098212e9d397fd405bd027be81991b3116064ee95363d9a114fbcece9fff"
+      },
+      {
+        "path": "public/licenses/font-metadata.json",
+        "sha256": "350bb128e9c4cdc42333beeb5dcf9097d555c77508525b1a34e0c2e8c0d7347f"
+      },
+      {
+        "path": "scripts/build-standalone.ts",
+        "sha256": "350aef5bc74ad6abc875dc7fad84cc338a94335194f128f9b0ca8d7603d80198"
+      },
+      {
+        "path": "scripts/deployment-smoke.ts",
+        "sha256": "2a06d5db5cf64c1b163015f84a9258e2e79b00f94fe6c9d659e3b4f422bea83b"
+      },
+      {
+        "path": "scripts/e2e.ts",
+        "sha256": "ddbe70ef2eb10c82f1a76c1fef34da565c2be4443867a704652c8775c9a2b1d4"
+      },
+      {
+        "path": "scripts/encode-qa-video.py",
+        "sha256": "0b36cc95fc7ff3bf53549bb9fcd7e851e56c6906cf474f548958efb1e55bd254"
+      },
+      {
+        "path": "scripts/export-http-check.ts",
+        "sha256": "4010269c67763e77a0f68db9628b3d60bf8e4126bfb79e417dbbb79a73033a8f"
+      },
+      {
+        "path": "scripts/extract-notation-fonts.mjs",
+        "sha256": "a37b4a4bb65359232d1f696f9ae50152dc335b6afe2bf53314788ecf15efd7a3"
+      },
+      {
+        "path": "scripts/failure-e2e.ts",
+        "sha256": "ab41c3c18b3151fc7adcea84ad0eafb91634d32440957175f0782752ca977fc5"
+      },
+      {
+        "path": "scripts/font-license-audit.ts",
+        "sha256": "256fe9b3d1dc19532d67719b4595b14e5c74481bed0a4b588d116466c1212d03"
+      },
+      {
+        "path": "scripts/http-e2e.ts",
+        "sha256": "f55090b90bc4326c262a3fbfb440c8da5c65ac8c74987a7d92865b4624939e45"
+      },
+      {
+        "path": "scripts/http-probe.ts",
+        "sha256": "bc90cf0a190484fd81fc4fd94fbc7af1d40ebe1225803029e47b1df6dc987300"
+      },
+      {
+        "path": "scripts/keyboard-e2e.ts",
+        "sha256": "055e206ba4caa840c324f7041eb82a664266469791f4ed634fea6d8d53e3459d"
+      },
+      {
+        "path": "scripts/musescore-fixtures.mjs",
+        "sha256": "22a71bce62e7cc18ff652358d55d5c9833207c4c000ebab08623ef5ca41d96b8"
+      },
+      {
+        "path": "scripts/notation-e2e.ts",
+        "sha256": "473e8c7e9c43d5e0670f24e5dd78726dff183545f2106af80dfcf43f45d9f7e2"
+      },
+      {
+        "path": "scripts/notation-font-retry.ts",
+        "sha256": "0e09e27247039aacbc0ac4673018202a376dcbce14a8fa0d4b8130444d0d8bf0"
+      },
+      {
+        "path": "scripts/print-e2e.ts",
+        "sha256": "a8cadd37054f5cba81937ef4c5948b19e06282bb8c3a50b3e72cc40362dfcb76"
+      },
+      {
+        "path": "scripts/qa-evidence.ts",
+        "sha256": "1fa37cd6dcec7d55682d611e2a5a5b753ef42fe2f3b79c56ad6152692057b497"
+      },
+      {
+        "path": "scripts/quiz-e2e.ts",
+        "sha256": "38bb82e86e950f8878eee85369f36e0fbba4aae10e9ab03f53c909a7ad09efa6"
+      },
+      {
+        "path": "scripts/recovery-http-e2e.ts",
+        "sha256": "994e1aa4d8e6627a7dafb5c72e8699e327b98d988c0f015d9fa0b0f289ec1610"
+      },
+      {
+        "path": "scripts/stability-http-e2e.ts",
+        "sha256": "b783d6ee038d8791b9adec4dd11104ddb70642e8f51e3b72271049532f1c8d41"
+      },
+      {
+        "path": "scripts/three-http-e2e.ts",
+        "sha256": "fe773fac087541b890f37bf22aa2a79b7743429751e99be2bbe9e5163df925f0"
+      },
+      {
+        "path": "scripts/validate-content.ts",
+        "sha256": "ea25903c248c80f9594ad48b97ef406d3e27d52ba4d55c982704adc2ba1c76f4"
+      },
+      {
+        "path": "scripts/verify-local-dependencies.ts",
+        "sha256": "681910ce52d87424535dfbbab799018a313324bdc95ea36b766c239b198ee3c1"
+      },
+      {
+        "path": "src/App.tsx",
+        "sha256": "ff61a7cf415d44ab70d7d2f3fbb7afa1b9fa41462445a964d3425dfd6a56cf14"
+      },
+      {
+        "path": "src/audio/AudioEngine.ts",
+        "sha256": "eb029840760327d984b2952b7f582b6937967b6604c5d10ad5f5b90fa22a8a14"
+      },
+      {
+        "path": "src/audio/TransportAdapter.ts",
+        "sha256": "c48c78dd6a75326d063900a79b04b0008cad3c1343432d6d36710b7a5f664812"
+      },
+      {
+        "path": "src/audio/renderBarBuffer.ts",
+        "sha256": "4510492f409274724fac5c0c887d99b92aa33fa59cb5db6401a3c233d1a34f64"
+      },
+      {
+        "path": "src/book/BookApp.tsx",
+        "sha256": "6955865da7717171ee4d49e52cce9081e8f55c7b386d902ee35d04c59fe6182a"
+      },
+      {
+        "path": "src/book/BookNotation.tsx",
+        "sha256": "e625c87956c8e97d80e411989a581cc4dcc567789fda498264d287c0b90903c1"
+      },
+      {
+        "path": "src/book/BookProgressSession.ts",
+        "sha256": "dd09df3b63903617a8471468f44c692262bec6ce1a79a33060af469431497c08"
+      },
+      {
+        "path": "src/book/BookProgressTools.tsx",
+        "sha256": "00949df2235704fdc272db2dcb8f5345923e6428fe48016da75fc72bc3402f81"
+      },
+      {
+        "path": "src/book/LessonPages.tsx",
+        "sha256": "ad348b571473d9aa1934fa8c645ad27e2e8deade07c0702d711c950e3d26d49a"
+      },
+      {
+        "path": "src/book/SceneHost.ts",
+        "sha256": "d38afb1473232e5bcf6e0b7c061cc04308b9427d73c0a057417990854c693886"
+      },
+      {
+        "path": "src/book/audioOwnership.ts",
+        "sha256": "df2f095430620e7ea6761d662101b243878ec4047b77af4d6ad75e6492863863"
+      },
+      {
+        "path": "src/book/controller.ts",
+        "sha256": "d1c14e10784e779e1aa527204ad4624cbbebfd911fe2dd47a3056f399eef87b4"
+      },
+      {
+        "path": "src/book/geometry.ts",
+        "sha256": "f4ac7df3880b8ce22b79e00a0e41776db7d2b7ae948273d3ce53a8c85c219472"
+      },
+      {
+        "path": "src/book/gesture.ts",
+        "sha256": "cdb1f1178c3d3853b5e6e165a46792512980819c765027a7fad3bc8eeffb0d39"
+      },
+      {
+        "path": "src/book/inspector.ts",
+        "sha256": "c5d4e423c2177e0d59814eeaafbbb28ce16e78b87696a49b577e136845ad67fc"
+      },
+      {
+        "path": "src/book/learningProgress.ts",
+        "sha256": "69189d13fd129f72e33af177486eb100d1d06c878dbd3c2166904fbbfbfb8a17"
+      },
+      {
+        "path": "src/book/lessonScene.ts",
+        "sha256": "47ed137bd907923eaf1709470bdee5aaf8ee43fd058068351780a4494f1de31a"
+      },
+      {
+        "path": "src/book/manifest.ts",
+        "sha256": "79339ab29e18e33b5c66a4f7acb9119e6e6439e0a13b321b62aea66790b5fc1c"
+      },
+      {
+        "path": "src/book/motion.ts",
+        "sha256": "2628d68ab1721a225e8fb101cdaef115fbc9d3246ee6b546b9eed8fc0186f868"
+      },
+      {
+        "path": "src/book/notationFonts.generated.ts",
+        "sha256": "c4b98c74259f60b93bad5051e26435a37c11358a284f15af5a66636425c32ea8"
+      },
+      {
+        "path": "src/book/notationPreparation.ts",
+        "sha256": "f5615b9a0cfc2cb3a971a1314df292f7d2fdcd03582260ecddaeaffb45926a66"
+      },
+      {
+        "path": "src/book/pagePrint.ts",
+        "sha256": "b57ff692a56f4b0cffa465e0b815c4ade2c531147ec69791d00d587e3ab3a870"
+      },
+      {
+        "path": "src/book/pageProjection.ts",
+        "sha256": "a9c7cc25c95be5c616751c0d50510f7f098e21b7b7c4eee582d4a09b6752cb5f"
+      },
+      {
+        "path": "src/book/pageSnapshot.ts",
+        "sha256": "f9d978fc3fcafc2012420b46e9404c4f6846a076dbfecb643f0e745efea60ec2"
+      },
+      {
+        "path": "src/book/stage.ts",
+        "sha256": "dbdec194e8baa7d717c972d4c31b9f9e8eefec8459d900a2cd550d1e888e4952"
+      },
+      {
+        "path": "src/book/useBookAudio.ts",
+        "sha256": "a2195f296747c4f180900df242880b0608d0dab8c409422820b3ddaf264d5a09"
+      },
+      {
+        "path": "src/book/useBookProgress.ts",
+        "sha256": "fed5efd4b9b776008fecd66960d149a843c70e24eb71f60eee81b98947239cdd"
+      },
+      {
+        "path": "src/book/usePagePrints.ts",
+        "sha256": "4a8da4c49a05c0499a899fa098cab129f92ca89113a3ed24a0e33512d147c7f0"
+      },
+      {
+        "path": "src/components/ConceptQuiz.tsx",
+        "sha256": "7ad4a872f4d7e6e1ba393bc06a0ca1ce9f1c8530175dd07b45c0e241ac47d47a"
+      },
+      {
+        "path": "src/components/SceneBoundary.tsx",
+        "sha256": "2b58d7044b8741a57951daf8e2d0f0e9dab3f99053605f3f3dc20fad61e47df5"
+      },
+      {
+        "path": "src/content/lesson.ts",
+        "sha256": "a7f76c90f11a2970adb35a80e5b89ac5d636acee96365b60e9ea1dc72c1e7953"
+      },
+      {
+        "path": "src/content/types.ts",
+        "sha256": "36ff56e3b52c5eed6c757aa1968a1e195c3c8ba3c783a4a6f2c573df0abb438a"
+      },
+      {
+        "path": "src/content/validation.ts",
+        "sha256": "493ce5fb27a17c0472eaea953246c577589dd44abb51e449eb08981293bd1d24"
+      },
+      {
+        "path": "src/domain/errors.ts",
+        "sha256": "4eb1164b9fe0c909eba3a78b7ca450beb229e963cfe156c7948687bb4597f807"
+      },
+      {
+        "path": "src/domain/fraction.ts",
+        "sha256": "72712bcad8f8b070472387ebc4266dcb381605e7e82e57600c162aaa0a2f40d4"
+      },
+      {
+        "path": "src/domain/index.ts",
+        "sha256": "a07556c5aa889356cae5dee601f9116cd818bed0e1dfc0d313e4f221e96d12e4"
+      },
+      {
+        "path": "src/domain/music.ts",
+        "sha256": "7ccad3c3f0e0fadb058a5837d43b8b8eda2f674dc9787b03e5b7de30b6de427b"
+      },
+      {
+        "path": "src/lesson/assessment.ts",
+        "sha256": "ee2a4901381877b3f80412bbecc5ed8a0f13fb6edcc84c00eaac4f2beab862c9"
+      },
+      {
+        "path": "src/lesson/controller.ts",
+        "sha256": "315c0105bf1432d90294b5b5540d5d2b49598dcf9d0624c18811a19493c1133d"
+      },
+      {
+        "path": "src/main.tsx",
+        "sha256": "d52fca87b3a382376b0603eb43b8706dd86ccf6b196cb9c75cafa813352851cc"
+      },
+      {
+        "path": "src/notation/NotationView.tsx",
+        "sha256": "34a0277927e8a59cbcd0826ed7c9817f5215d4fe6db065ff2ee46e230acdc76f"
+      },
+      {
+        "path": "src/persistence/bookProgress.ts",
+        "sha256": "134b2fb730d99a114e4faba322fedf4b3f9ff57553d81a94ff9ead07ac309b34"
+      },
+      {
+        "path": "src/persistence/progress.ts",
+        "sha256": "ceae0e452e2f5b00579641398d4d1151654cd150a1b980e3fab08e278bab40a0"
+      },
+      {
+        "path": "src/scenes/DurationScene2D.tsx",
+        "sha256": "0c51dfcd82c12e9908b700860ffc1b6cf094e6f75dc8278cd783a9bc8b66f827"
+      },
+      {
+        "path": "src/scenes/DurationScene3D.tsx",
+        "sha256": "1402f16aef7865f90a83be68dcdf163c722445cbb5403938d65717f2a86796a0"
+      },
+      {
+        "path": "src/scenes/durationWorld.ts",
+        "sha256": "2f94bdd52015753676ffa356a07ea8de584f878f01d4649dd4a369b8b1491087"
+      },
+      {
+        "path": "src/styles/adapters.css",
+        "sha256": "6fd7ca4b4169342c000a31e130d4913116da30e159ff26a42477a4383f39e348"
+      },
+      {
+        "path": "src/styles/app.css",
+        "sha256": "f5b505177edb9ec5fb7a8ff07bcd6467fa66c659f4baee0ad0d47875c5d49e3e"
+      },
+      {
+        "path": "src/styles/book-progress.css",
+        "sha256": "c62a263a1bd2c417aecdc354d610066e221b1925ba95258ed71b5c62d931bfc9"
+      },
+      {
+        "path": "src/styles/book.css",
+        "sha256": "1104b157b5dfe91e69b155453c3a6b236e1be66a1d7cb11d80ac1bf0473e451b"
+      },
+      {
+        "path": "src/styles/lesson-pages.css",
+        "sha256": "b79bc20b96cbdb3d9c95047e678769936e0373a432ff6ce58ba61962eeed18ef"
+      },
+      {
+        "path": "src/styles/print.css",
+        "sha256": "ade5808edd5cdae189b778059fcf70f088f3c8501dea98e9770c3fe3010d95c7"
+      },
+      {
+        "path": "src/vite-env.d.ts",
+        "sha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5"
+      },
+      {
+        "path": "tests/assessment.test.ts",
+        "sha256": "52e959ad7cd1c94b8dd140d9b31ebc65ce2328f252f7099ed5dcf6c64e59a381"
+      },
+      {
+        "path": "tests/audio-transport.test.ts",
+        "sha256": "0fb697a7a4aa588720e0ffcce17aebfc2010073905831698ea20404d8d976c2c"
+      },
+      {
+        "path": "tests/audio.test.ts",
+        "sha256": "cdeb606531b0fffd6add3dcff20ba90b4f3a71b0876d6d1db1a93fc4e3a82395"
+      },
+      {
+        "path": "tests/book-audio-ownership.test.ts",
+        "sha256": "501e2969b94e090b1d2249e3247fa3db1b5087ce8750465b44850a82636bd32c"
+      },
+      {
+        "path": "tests/book-controller.test.ts",
+        "sha256": "9997714c714adbf43c91108db53631ef80253f5f8849f60d06372df969c7d409"
+      },
+      {
+        "path": "tests/book-geometry.test.ts",
+        "sha256": "231137c66356eddc6539dac62ae4df19a124b0d2208e1be2e94a3df626b16187"
+      },
+      {
+        "path": "tests/book-gesture.test.ts",
+        "sha256": "cb821dd950980415f93f4f5430f73970c770699f5b5347e28ce9f2d66965468f"
+      },
+      {
+        "path": "tests/book-lesson-scene.test.ts",
+        "sha256": "3611b809d0ba546d1a9e9a4fe3af9a828cbe6ec56e37b26da237d0db833e8e42"
+      },
+      {
+        "path": "tests/book-notation-preparation.test.ts",
+        "sha256": "2acb32cddb63ae85c2d6e326a17855f18e3a1ce076e7996f7308ac289425e561"
+      },
+      {
+        "path": "tests/book-page-projection.test.ts",
+        "sha256": "7bf44724c1781064214a50b2960b918250fa98ab10a6fec52d1d8d8e3efcfe29"
+      },
+      {
+        "path": "tests/book-page-snapshot.test.ts",
+        "sha256": "13ce0252ad2b62c76652e3b70995e20a14d6351d1e18ee3a7c659b6c3d730f06"
+      },
+      {
+        "path": "tests/book-progress-session.test.ts",
+        "sha256": "b63801905be9390114c3b6550589af986f9e17ce74d9e06115281ba265d96f8e"
+      },
+      {
+        "path": "tests/book-progress.test.ts",
+        "sha256": "7a8c5dfe4b82d9c0dfc1815200941a325f5e44440b733c736fa415a48cefcc61"
+      },
+      {
+        "path": "tests/book-scene-host.test.ts",
+        "sha256": "99d6b1709c4d4e8c6c4271e7a119c93c5a5a3c1e5a195c8acf50ffda7c621e62"
+      },
+      {
+        "path": "tests/domain.test.ts",
+        "sha256": "5c250436a89135011dde5fa5eaf438a8f189629997d22c57bc7a4165e58bd5de"
+      },
+      {
+        "path": "tests/duration-world.test.ts",
+        "sha256": "d9565e1bfa0d71548ec3f9062de2778d6313cdcf0b2bc6e9122d5c7881406f63"
+      },
+      {
+        "path": "tests/lesson.test.ts",
+        "sha256": "7b22048316f6b210b90bbbe4ebd222098cd019e50462d9edd066bb755e293330"
+      },
+      {
+        "path": "tests/persistence.test.ts",
+        "sha256": "f1071a4b165883947e785c46bdf041810cac255b90490cbc55f34233851dc889"
+      },
+      {
+        "path": "tests/qa-evidence.test.ts",
+        "sha256": "0e5c9456c16586c04676cbb6c60ecc23dd90b569f3854a1c5c030af57ce8325c"
+      },
+      {
+        "path": "tsconfig.json",
+        "sha256": "389de2b5e83ec89edf09bc990963eb716a06d3e06a6ea46ff14c1ebe11bd536e"
+      },
+      {
+        "path": "vite.config.ts",
+        "sha256": "b9833d389eb818cb91117ec2df5cc67ccea434f60459d250ad4888d0e988e9e7"
+      },
+      {
+        "path": "src/book/turnHit.ts",
+        "sha256": "3e29da662120c23f5e29da91ee215cdff4943d58406da0e0d03a5a04b2755f7d"
+      },
+      {
+        "path": "tests/book-turn-hit.test.ts",
+        "sha256": "8b1c091ace1b09efd95280081287f8be46aa8f1ff19234a02e6b918edb72e758"
+      },
+      {
+        "path": "src/book/navigationPlacement.ts",
+        "sha256": "91b1f5b4b9f920d9df269a12b83de448583891fbf8ab0b87901d764f41c3443c"
+      },
+      {
+        "path": "tests/book-navigation-placement.test.ts",
+        "sha256": "65de14277f4cba07f94a04aa2152516c260c39ce76910b210c268f72fe1f7be7"
+      }
+    ]
+  },
+  "backup": {
+    "fileCount": 202,
+    "zipSha256": "501742179116e761555af68f026ddac24ff5d15f0d33535757f52235bcba12d3",
+    "allEntriesVerified": true
+  },
+  "patches": [
+    {
+      "name": "drag-hit-fix.patch",
+      "sha256": "ccfaac06cd94a9a9eb2548ad92cb3c50dde40c79af663efa5872c1cfa197eab0"
+    },
+    {
+      "name": "bookmark-viewport-fix.patch",
+      "sha256": "389fdc810f96b1e5ae5cae0ab875be08c4a39f55423ab1fee1ec2551e5ad8a87"
+    }
+  ],
+  "actualCopyQa": {
+    "keyboardPageNavigation": true,
+    "keyboardSliderAndTextareaOwnership": true,
+    "navigationStopsAudioBeforeNaturalCompletion": true,
+    "closingStopsAudio": true,
+    "repeatedRoundTrips": 3,
+    "editedNoteIdsAndDurationsRetained": true,
+    "reloadResumeRestoresEdits": true,
+    "importPreviewAndCancelKeepStoredRaw": true,
+    "importConfirmationRestoresCoverAndMode": true,
+    "actualDownloadedFileMatchesExportedUiObject": true,
+    "downloadedBytes": 8401,
+    "downloadedSha256": "f8055e03393f357f6bb302a31ca0053f6afc0213b65f5ff9bb378ff3e3a59094",
+    "desktopAndLandscapeReady": true,
+    "portrait2d": {
+      "rootWidth": 390,
+      "rootScrollWidth": 390,
+      "minimumControlWidth": 46,
+      "minimumControlHeight": 44
+    },
+    "correctedCornerReadOnlyDomTargets": {
+      "points": [
+        {
+          "className": "book-popup-window",
+          "onActivePaper": true,
+          "protectedControl": "book-popup-window",
+          "scrollbar": false,
+          "target": "DIV",
+          "x": 964.2327880859376,
+          "y": 620.9397583007812
+        },
+        {
+          "className": "book-popup-window",
+          "onActivePaper": true,
+          "protectedControl": "book-popup-window",
+          "scrollbar": false,
+          "target": "DIV",
+          "x": 964.2327880859376,
+          "y": 634.9397583007812
+        },
+        {
+          "className": "lesson-feedback",
+          "onActivePaper": true,
+          "protectedControl": null,
+          "scrollbar": false,
+          "target": "P",
+          "x": 964.2327880859376,
+          "y": 648.9397583007812
+        },
+        {
+          "className": "book-page-scroll",
+          "onActivePaper": true,
+          "protectedControl": null,
+          "scrollbar": false,
+          "target": "DIV",
+          "x": 978.2327880859376,
+          "y": 620.9397583007812
+        },
+        {
+          "className": "book-page-scroll",
+          "onActivePaper": true,
+          "protectedControl": null,
+          "scrollbar": false,
+          "target": "DIV",
+          "x": 978.2327880859376,
+          "y": 634.9397583007812
+        },
+        {
+          "className": "book-page-scroll",
+          "onActivePaper": true,
+          "protectedControl": null,
+          "scrollbar": false,
+          "target": "DIV",
+          "x": 978.2327880859376,
+          "y": 648.9397583007812
+        },
+        {
+          "className": "book-page-scroll",
+          "onActivePaper": true,
+          "protectedControl": null,
+          "scrollbar": true,
+          "target": "DIV",
+          "x": 992.2327880859376,
+          "y": 620.9397583007812
+        },
+        {
+          "className": "book-page-scroll",
+          "onActivePaper": true,
+          "protectedControl": null,
+          "scrollbar": true,
+          "target": "DIV",
+          "x": 992.2327880859376,
+          "y": 634.9397583007812
+        },
+        {
+          "className": "book-page-scroll",
+          "onActivePaper": true,
+          "protectedControl": null,
+          "scrollbar": true,
+          "target": "DIV",
+          "x": 992.2327880859376,
+          "y": 648.9397583007812
+        }
+      ],
+      "printsReady": "true",
+      "rect": {
+        "bottom": 656.9397583007812,
+        "height": 44,
+        "left": 956.2327880859376,
+        "right": 1000.2327880859376,
+        "top": 612.9397583007812,
+        "width": 44,
+        "x": 956.2327880859376,
+        "y": 612.9397583007812
+      }
+    }
+  },
+  "userConfirmation": {
+    "at": "2026-10-28T15:49:11Z",
+    "source": "Manual result relayed by supervising task; private transcript excluded",
+    "scope": [
+      "page-grab",
+      "drag-to-turn"
+    ]
+  },
+  "bookmarkRegression": {
+    "checkedAt": "2026-10-28T16:13:31.911Z",
+    "measurement": {
+      "buttons": [
+        {
+          "className": "book-text-button",
+          "disabled": false,
+          "label": "표지로",
+          "rect": {
+            "bottom": 495.25,
+            "height": 44,
+            "left": 0,
+            "right": 44,
+            "top": 451.25,
+            "width": 44,
+            "x": 0,
+            "y": 451.25
+          }
+        },
+        {
+          "className": "book-text-button",
+          "disabled": false,
+          "label": "다음 펼침면",
+          "rect": {
+            "bottom": 491.28125,
+            "height": 44,
+            "left": 346,
+            "right": 390,
+            "top": 447.28125,
+            "width": 44,
+            "x": 346,
+            "y": 447.28125
+          }
+        }
+      ],
+      "scrollWidth": 390,
+      "width": 390
+    },
+    "secondSpread": {
+      "buttons": [
+        {
+          "disabled": false,
+          "label": "이전 펼침면",
+          "rect": {
+            "bottom": 491.28125,
+            "height": 44,
+            "left": 0,
+            "right": 44,
+            "top": 447.28125,
+            "width": 44,
+            "x": 0,
+            "y": 447.28125
+          }
+        },
+        {
+          "disabled": true,
+          "label": "다음 펼침면",
+          "rect": {
+            "bottom": 495.25,
+            "height": 44,
+            "left": 346,
+            "right": 390,
+            "top": 451.25,
+            "width": 44,
+            "x": 346,
+            "y": 451.25
+          }
+        }
+      ],
+      "scrollWidth": 390,
+      "width": 390
+    }
+  },
+  "notClaimed": [
+    "latest direct hold/reverse/cancel",
+    "physical touch",
+    "actual listening",
+    "Safari/iOS",
+    "native assistive technology",
+    "educator acceptance",
+    "matching-input subjective reference comparison"
+  ],
+  "remoteBeforePush": {
+    "repository": "kimyounggaur/Music_Rudiment_3D",
+    "branch": "main",
+    "sha": "4dd62db8dc46ca6468bffeeb586c1d295a38a793",
+    "vercelProject": "prj_rnWJfdGwpKbfCpjqfHupBAsQb8jd",
+    "priorDeployment": "dpl_5SAdoeFcu4neHaPSGxbpsLmEAHWv",
+    "priorDeploymentSha": "4dd62db8dc46ca6468bffeeb586c1d295a38a793"
+  },
+  "automatedDrag": "Previously denied; no retry or alternate path used"
+}

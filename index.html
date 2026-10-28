@@ -1,6 +1,19 @@
 <!doctype html>
 <html lang="ko">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" /><meta name="theme-color" content="#f5f4ee" /><title>음가 블록 실험실 · 3D 음악이론</title></head>
-<body><div id="root"></div><script type="module" src="/src/main.tsx"></script></body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#e9e7e1" />
+  <title>음악이론 교과서 · 소리의 길이를 펼치다</title>
+  <link rel="preload" as="image" href="/book/front-cover-preview.png" />
+</head>
+<body style="margin:0;background:#e9e7e1">
+  <div id="root">
+    <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:78vh;max-width:80vw;aspect-ratio:595.276/841.89;box-shadow:7px 10px 20px #23303b30;border-right:4px solid #647f8a;border-bottom:4px solid #647f8a">
+      <img src="/book/front-cover-preview.png" alt="아주 쉽게 배우는 음악이론 교과서의 닫힌 표지" style="display:block;width:100%;height:100%;object-fit:contain" />
+      <span role="status" style="position:absolute;bottom:9%;left:10%;width:80%;text-align:center;background:#ffffffdd;font:12px sans-serif">책을 준비하고 있어요</span>
+    </div>
+  </div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
 </html>
-
