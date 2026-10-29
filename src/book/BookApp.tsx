@@ -4,13 +4,14 @@ import type { BookEvent } from './controller.ts';
 import { BOOK_MOTION, tween } from './motion.ts';
 import type { BookStage, StageLayout, StageUpdate } from './stage.ts';
 import { pageStyle } from './pageProjection.ts';
-import { BOOK_MANIFEST, spreadIndex, turningLeaf } from './manifest.ts';
+import { BOOK_MANIFEST, pagePrintIds, spreadIndex, turningLeaf } from './manifest.ts';
 import type { PageId, SpreadId } from './manifest.ts';
 import type { Texture } from 'three';
 import { arrowNavigationDirection, createTurnDrag, turnReleaseDecision, updateTurnDrag } from './gesture.ts';
 import type { TurnDragState } from './gesture.ts';
 import { pointOnScrollbar, turnCornerAtPoint, turnCornerRegion, turnInputAvailability, turnTargetOwnsInput } from './turnHit.ts';
 import { navigationButtonPosition } from './navigationPlacement.ts';
+import { lessonSceneCenter } from './lessonPresentation.ts';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import type { SceneHost } from './SceneHost.ts';
 import { reduceLesson } from '../lesson/controller.ts';
@@ -58,7 +59,7 @@ export default function BookApp() {
   const visited = useRef(new Set<string>());
   const restoringCancel = useRef(false);
   const restoredOpening = useRef(false);
-  const visual = useRef<StageUpdate>({ coverProgress: 0, introProgress: book.reducedMotion ? 1 : 0, currentSpreadIndex: 0, spreadCount: 2, turn: null, sceneProgress: 0 });
+  const visual = useRef<StageUpdate>({ coverProgress: 0, introProgress: book.reducedMotion ? 1 : 0, currentSpreadIndex: 0, spreadCount: BOOK_MANIFEST.length, turn: null, sceneProgress: 0 });
   const [layout, setLayout] = useState<StageLayout | null>(null);
   const [stageReady, setStageReady] = useState(false);
   const [error, setError] = useState('');
@@ -133,7 +134,8 @@ export default function BookApp() {
     muted: audioMuted, error: audioError, lastStopReason: null, lastCompletedSessionId: null,
     completedSessionId: null, activeSourceCount: 0, logicalOffset: 0, snapshotRevision: null,
     uninterrupted: false, lastUninterruptedCompletedSessionId: null }), [audioMuted, audioError]);
-  const prints = usePagePrints({ root: rootRef, revision: lesson.revision, width: pageWidth, height: pageHeight,
+  const printPageIds = useMemo(() => pagePrintIds(book.currentSpreadId), [book.currentSpreadId]);
+  const prints = usePagePrints({ root: rootRef, revision: lesson.revision, width: pageWidth, height: pageHeight, pageIds: printPageIds,
     enabled: stageReady && book.mode === '3d', preparationEpoch: book.bookEpoch, presentationKey: JSON.stringify([audioMuted, audioError,
       progress.preferences, progress.hints, progress.canSave, progress.notice, progress.backups, progress.protectedRaw,
       progress.exportedText, progress.preview]), onError: printError });
@@ -161,7 +163,7 @@ export default function BookApp() {
   };
 
   useEffect(() => {
-    const sceneId = book.currentSpreadId === 'spread-1' ? 'scene-1' : 'scene-2';
+    const sceneId = BOOK_MANIFEST[spreadIndex(book.currentSpreadId)].sceneId;
     setLesson(previous => previous.currentSceneId === sceneId ? previous : reduceLesson(previous, { type: 'navigate', sceneId }));
   }, [book.currentSpreadId]);
   useEffect(() => {
@@ -185,7 +187,7 @@ export default function BookApp() {
       const area = window.getBoundingClientRect();
       const height = layout.pageWorld.height;
       const toZ = (y: number) => ((y - paper.top) / paper.height - 0.5) * height;
-      const laneCenter = book.currentSpreadId === 'spread-1' ? 0.475 : 0.45;
+      const laneCenter = lessonSceneCenter(BOOK_MANIFEST[spreadIndex(book.currentSpreadId)].sceneId);
       stageRef.current?.setSceneWindow({ offsetZ: toZ((area.top + area.bottom) / 2) - laneCenter,
         minZ: toZ(Math.max(paper.top, area.top)), maxZ: toZ(Math.min(paper.bottom, area.bottom)),
         visible: area.bottom > paper.top && area.top < paper.bottom });
@@ -302,9 +304,10 @@ export default function BookApp() {
     setPreparedScene('');
     const token = bookToken(current);
     let prepared: LessonScene | null = null;
-    void import('./lessonScene.ts').then(({ createLessonScene }) => host.replace({ sceneId: current.currentSpreadId === 'spread-1' ? 'scene-1' : 'scene-2', load(signal) {
+    const sceneId = BOOK_MANIFEST[spreadIndex(current.currentSpreadId)].sceneId;
+    void import('./lessonScene.ts').then(({ createLessonScene }) => host.replace({ sceneId, load(signal) {
       if (signal.aborted || !tokenMatches(bookRef.current, token)) throw new DOMException('Scene preparation cancelled', 'AbortError');
-      prepared = createLessonScene(current.currentSpreadId === 'spread-1' ? 'scene-1' : 'scene-2', lessonRef.current);
+      prepared = createLessonScene(sceneId, lessonRef.current);
       return prepared;
     } }, token)).then(result => {
       if (!alive || result !== 'ready' || !tokenMatches(bookRef.current, token)) return;
@@ -429,7 +432,7 @@ export default function BookApp() {
   useEffect(() => { if (book.hidden || book.mode === '2d') cancelPointer(); }, [book.hidden, book.mode, cancelPointer]);
 
   const dragReadiness = { book, layout, stageReady, printsReady: prints.ready,
-    textureCount: prints.textures.size, preparedScene, pointerOwned: !!pointerOwner.current };
+    textureCount: prints.textures.size, requiredTextureCount: printPageIds.length, preparedScene, pointerOwned: !!pointerOwner.current };
   const dragAvailability = turnInputAvailability(dragReadiness);
   const pointerCorner = (event: ReactPointerEvent<HTMLElement>) => {
     if (event.defaultPrevented || !layout || !hostRef.current) return null;
@@ -464,7 +467,7 @@ export default function BookApp() {
     event.preventDefault();
     draw(book.reducedMotion ? { turn: null, sceneProgress: 1 }
       : { turn: { direction: direction === 'next' ? 'forward' : 'backward', progress: 0, corner } });
-    send({ type: 'TURN_DRAG_START', direction, gestureId, pointerId: event.pointerId, corner, surfacesReady: printsRef.current.size === 4,
+    send({ type: 'TURN_DRAG_START', direction, gestureId, pointerId: event.pointerId, corner, surfacesReady: prints.ready && printPageIds.every(id => printsRef.current.has(id)),
       sample: { x: event.clientX, y: event.clientY, time: event.timeStamp, velocity: 0 } });
   };
   const pointerMove = (event: ReactPointerEvent<HTMLElement>) => {
@@ -517,7 +520,7 @@ export default function BookApp() {
     send(event);
     return true;
   };
-  return <main ref={rootRef} className={`book-app ${book.mode === '2d' ? 'book-app--2d' : ''}`} data-phase={book.phase} data-camera={book.camera} data-scene={book.scene} data-transport={book.transport} data-session-id={book.transportSessionId ?? ''} data-spread={book.currentSpreadId} data-book-epoch={book.bookEpoch} data-lesson-revision={lesson.revision} data-prints-ready={prints.ready}
+  return <main ref={rootRef} className={`book-app ${book.mode === '2d' ? 'book-app--2d' : ''}`} data-phase={book.phase} data-camera={book.camera} data-scene={book.scene} data-transport={book.transport} data-session-id={book.transportSessionId ?? ''} data-spread={book.currentSpreadId} data-book-epoch={book.bookEpoch} data-lesson-revision={lesson.revision} data-prints-ready={prints.ready} data-print-count={prints.textures.size} data-print-pages={printPageIds.join(',')}
     data-drag-hover={dragHover && (dragAvailability.next || dragAvailability.prev)} data-drag-active={!!book.gesture?.pointerActive}
     onPointerDown={event => { const hit = pointerCorner(event); if (hit) pointerDown(event, hit.direction, hit.corner); }}
     onPointerMove={event => { if (pointerOwner.current) pointerMove(event); else setDragHover(!!pointerCorner(event)); }}
@@ -572,11 +575,11 @@ export default function BookApp() {
       {book.phase === 'coverIdle' && !progress.canSave && <p className="book-cover-storage-notice" role="status">{progress.notice} 책 안의 ‘기록과 설정’에서 원문을 내보낼 수 있어요.</p>}
       {error && book.mode === '2d' && <div className="book-cover-message" role="status">{error}<button onClick={retry3D}>3D 다시 시도</button></div>}
     </div>}
-    {BOOK_MANIFEST.map((spread, index) => {
+    {BOOK_MANIFEST.map(spread => {
       const active = livePagesVisible && book.currentSpreadId === spread.spreadId;
       // Lifecycle input ownership belongs to the inert page wrapper. Keeping the
       // ready appearance avoids a disabled-style flash when DOM becomes print.
-      const props = { lesson, sceneId: index === 0 ? 'scene-1' as const : 'scene-2' as const, interactive: true,
+      const props = { lesson, sceneId: spread.sceneId, interactive: true,
         playback: active ? playback : stoppedPlayback, playingLane: active ? playingLane : null, onCommand: command, onPlay: play, onPause: pause, onResume: resume, onStop: () => stop('user-stop'), onMute: () => updatePreferences({ muted: !progress.preferences.muted }),
         onMode: changeReadingMode, mode: book.mode, pageWidth: book.mode === '2d' ? undefined : Math.max(120, pageWidth - 34), reducedMotion: book.reducedMotion,
         hints: progress.hints, onHint: progress.setHint, preparationEpoch: book.bookEpoch,

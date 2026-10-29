@@ -9,6 +9,7 @@ import { bookCanInteract, bookToken } from './controller.ts';
 import type { BookState } from './controller.ts';
 import { BOOK_MANIFEST } from './manifest.ts';
 import { audioOwnerIsCurrent, sameAudioOwner } from './audioOwnership.ts';
+import { lessonPlaybackDuration } from './lessonPresentation.ts';
 import type { BookAudioOwner } from './audioOwnership.ts';
 
 export interface BookAudioOptions {
@@ -134,7 +135,7 @@ export function useBookAudio(options: BookAudioOptions): BookAudio {
     owner.current = candidate;
     // Invoke directly in the click/key handler; do not defer gesture unlock to
     // an effect. AudioEngine makes its own immutable validated event snapshot.
-    const operation = engine.play({ events, tempo: { bpm: candidate.tempo, unit: frac(1, 4) }, logicalDuration: frac(1, 1) }, { loop: false, revision: candidate.revision });
+    const operation = engine.play({ events, tempo: { bpm: candidate.tempo, unit: frac(1, 4) }, logicalDuration: lessonPlaybackDuration(lesson, spread.sceneId, laneId) }, { loop: false, revision: candidate.revision });
     return trackOperation(candidate, engine, operation);
   }, [isCurrent, stop, trackOperation]);
 

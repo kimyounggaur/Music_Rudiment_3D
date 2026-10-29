@@ -1,0 +1,27 @@
+{
+  "baselineCommit": "4f3111a5de4c40bad2ac6f79aaabe96727e90a96",
+  "scope": "Six book spreads; existing first two preserved, remaining four ported onto the same music and storage model",
+  "checkedAt": "2026-10-29T04:49:40.813Z",
+  "commands": {"tests": "288/288, zero failed/skipped/cancelled/todo", "typecheck": 0, "lint": 0, "build": 0},
+  "priorAssertions": "All original assertion lines and test names preserved; explicit two-spread G1 fixture retained",
+  "fixed": [
+    "Printed page identity follows the exposed manifest instead of rejecting page-5..12",
+    "Current and immediate-neighbour print textures are bounded at four or six",
+    "Empty scene6 notation loading text toggled the native scrollbar: staff width alternated 326/316 CSS pixels, repeatedly cancelling preparation. Stable scrollbar gutter plus a non-supporting-browser 3D fallback breaks this feedback loop"
+  ],
+  "browserEvidence": [
+    "Combination A/B/C exact-length and kinds rules; delete invalidates current success; undo restores",
+    "Rest toggle retains event IDs/onsets/durations; silent sample intervals and source appointment regression preserved",
+    "Tempo60/120 actual logical audio duration4/2seconds; reference events and relative geometry unchanged; edit disabled during playback and pause",
+    "Scene6 empty draft not playable or complete; same-duration note/rest rejected as one kind",
+    "Scene6 half note + quarter rest + eighth + eighth meets music conditions; explicit explanation self-check required",
+    "Scene6 overflow rejected without modifying pattern; removal clears current achievement but preserves ever; undo restores exact pattern",
+    "Post-fix 16 frame observation: fixed316px staff width, six ready prints, unchanged preparation request, no repeated cancellation",
+    "Scene6 play/pause/stop and edit locks; control ArrowLeft does not turn page",
+    "Scene6 390x844 and844x390 3D/2D layout observations; tab-scoped metric overrides cleared; older scene patterns preserved"
+  ],
+  "evidenceLocation": "Local output/qa-v2.1 and workspace drag-hit-evidence; generated browser traces/images are not committed",
+  "unverified": ["current manual hold/reverse/cancel", "physical touchscreen", "actual speaker/headphone listening", "Safari/iOS", "native assistive technology", "physical printer", "educator or classroom acceptance", "subjective reference equivalence"],
+  "automatedDrag": "Previously denied path not retried or worked around",
+  "deployment": "Local verification record; deployment result is verified separately after the approved release"
+}

@@ -10,3 +10,8 @@
 .book-popup-window{pointer-events:auto}
 .book-cover-choices{position:absolute;bottom:5%;left:8%;width:84%;display:grid;gap:7px;pointer-events:auto}.book-cover-choices button{width:100%;padding:7px 5px;font-size:clamp(11px,1.2vw,15px);background:#f7faf4f5}.book-cover-storage-notice{position:absolute;bottom:30%;left:8%;width:84%;max-height:35%;overflow:auto;padding:9px;background:#fff8e9f5;font-size:12px;line-height:1.5;pointer-events:auto}
 @media(max-width:700px){.book-app--2d .book-paper-dom:not(.book-paper-dom--preparing){display:block;width:calc(100% - 24px);height:calc(100% - 24px);margin:12px;overflow-y:auto;overscroll-behavior:contain}.book-app--2d .book-paper-dom:not(.book-paper-dom--preparing) .book-page{height:auto;min-height:calc(100dvh - 42px);border-bottom:1px solid #bcb5a0}.book-app--2d .book-page-scroll{height:auto;overflow:visible;padding:22px 24px 64px}.book-app--2d .book-navigation{bottom:18px}.book-app--2d .book-navigation--prev{left:14px}.book-app--2d .book-navigation--next{right:14px}}
+/* Keep a pending notation message from changing available staff width. Without
+   a stable gutter a borderline-height page alternates its scrollbar, causing
+   ResizeObserver -> redraw -> print cancellation on every animation frame. */
+.book-page-scroll{scrollbar-gutter:stable}
+@supports not (scrollbar-gutter:stable){.book-app:not(.book-app--2d) .book-page-scroll{overflow-y:scroll}}

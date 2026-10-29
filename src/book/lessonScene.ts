@@ -1,14 +1,15 @@
 import * as Three from 'three';
 import type { Mesh, Object3D } from 'three';
 import { getScene } from '../content/lesson.ts';
-import type { MusicEvent } from '../content/types.ts';
+import type { MusicEvent, SceneId } from '../content/types.ts';
 import { sceneEvents, sceneState } from '../lesson/controller.ts';
 import type { LessonState } from '../lesson/controller.ts';
 import { BAR_WIDTH, createDurationWorld } from '../scenes/durationWorld.ts';
 import { BOOK_DIMENSIONS } from './geometry.ts';
 import type { PreparedScene } from './SceneHost.ts';
+import { LESSON_LANE_Z } from './lessonPresentation.ts';
 
-export type BookLessonSceneId = 'scene-1' | 'scene-2';
+export type BookLessonSceneId = SceneId;
 export type LessonScenePick = Readonly<{ laneId: string; eventId: string }>;
 export type LessonScenePlayback = Readonly<{
   laneId: string;
@@ -47,10 +48,6 @@ const WIDTH = BOOK_DIMENSIONS.pageWidth - INSET_X * 2;
 const SCALE = WIDTH / BAR_WIDTH;
 // The axes lie -0.03 local units below the blocks; this lift keeps them above the paper.
 const PAPER_LIFT = 0.008;
-const LANE_Z: Readonly<Record<BookLessonSceneId, readonly number[]>> = Object.freeze({
-  'scene-1': Object.freeze([0.1, 0.85]),
-  'scene-2': Object.freeze([0.45]),
-});
 type LaneWorld = {
   laneId: string;
   events: readonly MusicEvent[];
@@ -67,6 +64,11 @@ export function createLessonScene(sceneId: BookLessonSceneId, initialLesson: Les
   let lesson = initialLesson;
   let playback: LessonScenePlayback | null = null;
   let disposed = false;
+  const guideGeometry = sceneId === 'scene-3' ? new Three.BufferGeometry().setFromPoints([
+    new Three.Vector3(INSET_X + WIDTH / 2, PAPER_LIFT, -0.12),
+    new Three.Vector3(INSET_X + WIDTH / 2, PAPER_LIFT, 1.22),
+  ]) : null;
+  const guideMaterial = guideGeometry ? new Three.LineBasicMaterial({ color: 0x8d6534 }) : null;
 
   function refreshPicks(): void {
     pickTargets.length = 0;
@@ -100,6 +102,8 @@ export function createLessonScene(sceneId: BookLessonSceneId, initialLesson: Les
     picks.clear();
     pickTargets.length = 0;
     for (const { world } of lanes) world.dispose();
+    guideGeometry?.dispose();
+    guideMaterial?.dispose();
   }
 
   try {
@@ -110,7 +114,7 @@ export function createLessonScene(sceneId: BookLessonSceneId, initialLesson: Les
       lanes.push({ laneId: lane.laneId, events, world });
       world.group.name = `${sceneId}-${lane.laneId}`;
       world.group.scale.setScalar(SCALE);
-      world.group.position.set(INSET_X, PAPER_LIFT, LANE_Z[sceneId][index]);
+      world.group.position.set(INSET_X, PAPER_LIFT, LESSON_LANE_Z[sceneId][index]);
       // durationWorld's standalone playhead draws over its own canvas. In the book,
       // all world-owned materials must respect the turning paper's depth buffer.
       world.group.traverse((object) => {
@@ -123,6 +127,11 @@ export function createLessonScene(sceneId: BookLessonSceneId, initialLesson: Les
     }
     refreshPicks();
     refreshHighlights();
+    if (guideGeometry && guideMaterial) {
+      const guide = new Three.LineSegments(guideGeometry, guideMaterial);
+      guide.name = 'half-duration-target';
+      group.add(guide);
+    }
     group.updateMatrixWorld(true);
   } catch (error) {
     dispose();

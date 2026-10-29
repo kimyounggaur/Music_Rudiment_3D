@@ -17,7 +17,8 @@ const layout: StageLayout = {
   coverCenterErrorPx: 0, camera: { position: [], target: [], quaternion: [], span: 6 },
   bookBounds: { left: 100, right: 900, top: 100, bottom: 660 }, openWidthFraction: 0.625,
 };
-const openBook = (patch: Partial<BookState> = {}): BookState => ({ ...createBookState(), isOpen: true,
+// Preserve the corrected first-release hit/guard regression as a two-spread fixture.
+const openBook = (patch: Partial<BookState> = {}): BookState => ({ ...createBookState({ spreadCount: 2 }), isOpen: true,
   phase: 'spreadIdle', camera: 'settled', scene: 'ready', ...patch });
 const availability = (patch: Partial<Parameters<typeof turnInputAvailability>[0]> = {}) => turnInputAvailability({
   book: openBook(), layout, stageReady: true, printsReady: true, textureCount: 4,

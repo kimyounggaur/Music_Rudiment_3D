@@ -1,4 +1,4 @@
-import { adjacentSpread, spreadIndex } from './manifest.ts';
+import { BOOK_MANIFEST, adjacentSpread, spreadIndex } from './manifest.ts';
 import type { NavigationDirection, SpreadId } from './manifest.ts';
 
 export type BookPhase = 'bootLoading' | 'introReady' | 'introMoving' | 'coverIdle' | 'opening'
@@ -31,6 +31,8 @@ export type BookState = BookToken & Readonly<{
   hidden: boolean;
   isOpen: boolean;
   currentSpreadId: SpreadId;
+  /** Immutable curriculum prefix; permits the preserved two-spread G1 fixture. */
+  spreadCount: number;
   destinationSpreadId: SpreadId | null;
   direction: NavigationDirection | null;
   progress: number;
@@ -64,11 +66,13 @@ export type BookEvent =
   | (WithToken & Readonly<{ type: 'TRANSPORT_STARTING' | 'TRANSPORT_PAUSED' | 'TRANSPORT_STOPPED' | 'TRANSPORT_UNAVAILABLE' }>)
   | (WithToken & Readonly<{ type: 'TRANSPORT_PLAYING'; sessionId: number }>);
 
-export function createBookState(options: Readonly<{ reducedMotion?: boolean; mode?: '3d' | '2d' }> = {}): BookState {
+export function createBookState(options: Readonly<{ reducedMotion?: boolean; mode?: '3d' | '2d'; spreadCount?: number }> = {}): BookState {
+  const spreadCount = options.spreadCount ?? BOOK_MANIFEST.length;
+  if (!Number.isInteger(spreadCount) || spreadCount < 1 || spreadCount > BOOK_MANIFEST.length) throw new RangeError('Invalid supported spread count');
   return {
     phase: 'bootLoading', camera: 'loading', scene: 'unmounted', transport: 'locked', transportSessionId: null,
     mode: options.mode ?? '3d', reducedMotion: options.reducedMotion ?? false, hidden: false, isOpen: false,
-    currentSpreadId: 'spread-1', destinationSpreadId: null, direction: null, progress: 0, pendingIntent: null,
+    currentSpreadId: 'spread-1', spreadCount, destinationSpreadId: null, direction: null, progress: 0, pendingIntent: null,
     gesture: null, coverComplete: false, cameraComplete: false, firstSpreadReady: false,
     consumedIntroInputId: null, error: null, bookEpoch: 0, navigationToken: 0, sceneInstanceId: 0,
   };
@@ -95,7 +99,7 @@ const validSample = (sample: PointerSample) => [sample.x, sample.y, sample.time,
 const clampProgress = (progress: number) => Math.max(0, Math.min(1, progress));
 
 function beginNavigation(state: BookState, direction: NavigationDirection): BookState {
-  const destination = adjacentSpread(state.currentSpreadId, direction);
+  const destination = adjacentSpread(state.currentSpreadId, direction, state.spreadCount);
   if (!destination) return direction === 'prev' && spreadIndex(state.currentSpreadId) === 0 ? beginClose(state) : state;
   return {
     ...state, phase: 'preparingTurn', scene: 'exiting', transport: stopTransport(state), transportSessionId: null,
@@ -121,7 +125,7 @@ function acceptNavigation(state: BookState, direction: NavigationDirection): Boo
   // its destination. Guard the pending intent again after that actual landing.
   // An impossible last-page NEXT must not overwrite a previously valid PREV.
   const after = state.phase === 'cancelSettling' ? state.currentSpreadId : state.destinationSpreadId ?? state.currentSpreadId;
-  const valid = adjacentSpread(after, direction) || direction === 'prev' && spreadIndex(after) === 0;
+  const valid = adjacentSpread(after, direction, state.spreadCount) || direction === 'prev' && spreadIndex(after, state.spreadCount) === 0;
   return valid && (activeTurn(state) || state.scene === 'entering') ? { ...state, pendingIntent: direction } : state;
 }
 
@@ -178,12 +182,12 @@ export function bookReducer(state: BookState, event: BookEvent): BookState {
       return state.phase === 'introReady' || state.phase === 'introMoving' ? { ...state, phase: 'coverIdle', camera: 'settled', consumedIntroInputId: event.inputId } : state;
     case 'OPEN_BOOK':
       if (state.hidden || state.isOpen || !(state.phase === 'coverIdle' || state.phase === 'fallback2D') || state.camera !== 'settled'
-        || !state.firstSpreadReady || event.inputId === state.consumedIntroInputId || spreadIndex(event.spreadId ?? state.currentSpreadId) < 0) return state;
+        || !state.firstSpreadReady || event.inputId === state.consumedIntroInputId || spreadIndex(event.spreadId ?? state.currentSpreadId, state.spreadCount) < 0) return state;
       return { ...state, phase: 'opening', camera: 'reframing', scene: 'unmounted', coverComplete: false, cameraComplete: false,
         currentSpreadId: event.spreadId ?? state.currentSpreadId,
         navigationToken: state.navigationToken + 1, consumedIntroInputId: null, error: null };
     case 'RESTORE_CLOSED':
-      return { ...createBookState({ mode: event.mode, reducedMotion: event.reducedMotion }), hidden: state.hidden,
+      return { ...createBookState({ mode: event.mode, reducedMotion: event.reducedMotion, spreadCount: state.spreadCount }), hidden: state.hidden,
         bookEpoch: state.bookEpoch + 1, navigationToken: state.navigationToken + 1, sceneInstanceId: state.sceneInstanceId + 1 };
     case 'COVER_COMPLETE':
       return state.phase === 'opening' || state.phase === 'closing' ? completeCoverBarrier({ ...state, coverComplete: true }) : state;
@@ -215,7 +219,7 @@ export function bookReducer(state: BookState, event: BookEvent): BookState {
         direction: null, progress: 0, gesture: null, scene: 'entering', sceneInstanceId: state.sceneInstanceId + 1 };
     }
     case 'TURN_DRAG_START': {
-      if (!bookCanInteract(state) || !event.surfacesReady || !validSample(event.sample) || !adjacentSpread(state.currentSpreadId, event.direction)) return state;
+      if (!bookCanInteract(state) || !event.surfacesReady || !validSample(event.sample) || !adjacentSpread(state.currentSpreadId, event.direction, state.spreadCount)) return state;
       const navigating = beginNavigation(state, event.direction);
       return { ...navigating, gesture: { id: event.gestureId, pointerId: event.pointerId, corner: event.corner,
         pointerActive: true, activated: false, latest: { ...event.sample }, releaseDecision: null } };

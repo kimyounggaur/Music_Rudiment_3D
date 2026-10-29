@@ -1,8 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { BOOK_MANIFEST, adjacentSpread, spreadAt, spreadIndex, turningLeaf } from '../src/book/manifest.ts';
-import { bookCanInteract, bookReducer, bookToken, createBookState } from '../src/book/controller.ts';
+import { G1_MANIFEST as BOOK_MANIFEST, adjacentSpread as fullAdjacentSpread, spreadAt as fullSpreadAt, spreadIndex as fullSpreadIndex, turningLeaf as fullTurningLeaf } from '../src/book/manifest.ts';
+import type { NavigationDirection, SpreadId } from '../src/book/manifest.ts';
+import { bookCanInteract, bookReducer, bookToken, createBookState as fullBookState } from '../src/book/controller.ts';
 import type { BookEvent, BookState, PointerSample } from '../src/book/controller.ts';
+
+// Keep every original G1 assertion, including its two-spread boundary. V13's
+// expanded curriculum is covered independently, not by relaxing these checks.
+const createBookState = (options: Parameters<typeof fullBookState>[0] = {}) => fullBookState({ ...options, spreadCount: BOOK_MANIFEST.length });
+const adjacentSpread = (id: SpreadId, direction: NavigationDirection) => fullAdjacentSpread(id, direction, BOOK_MANIFEST.length);
+const spreadAt = (index: number) => fullSpreadAt(index, BOOK_MANIFEST.length);
+const spreadIndex = (id: SpreadId) => fullSpreadIndex(id, BOOK_MANIFEST.length);
+const turningLeaf = (from: SpreadId, to: SpreadId) => fullTurningLeaf(from, to, BOOK_MANIFEST.length);
 
 const sample = (x = 0, time = 0, velocity = 0): PointerSample => ({ x, y: 25, time, velocity });
 type Completion = 'BOOT_READY' | 'INTRO_SETTLED' | 'COVER_COMPLETE' | 'CAMERA_COMPLETE' | 'SCENE_EXITED'

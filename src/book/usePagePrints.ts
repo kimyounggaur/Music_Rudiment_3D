@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import type { RefObject } from 'react';
 import type { Texture } from 'three';
 import { ensureBookNotationReady } from './BookNotation.tsx';
+import { getScene } from '../content/lesson.ts';
 import { BOOK_MANIFEST } from './manifest.ts';
 import type { PageId } from './manifest.ts';
 import { pageNotationReady } from './notationPreparation.ts';
@@ -14,6 +15,7 @@ export type PagePrintOptions = Readonly<{
   width: number;
   height: number;
   enabled: boolean;
+  pageIds?: readonly PageId[];
   preparationEpoch?: number;
   /** Persistent UI state such as mute/error, excluding playback frame positions. */
   presentationKey?: string;
@@ -30,7 +32,11 @@ export type PagePrintState = Readonly<{
 }>;
 
 const PAGE_IDS = BOOK_MANIFEST.flatMap(spread => [spread.leftPageId, spread.rightPageId]);
-const SCORE_COUNTS: Readonly<Record<PageId, number>> = { 'page-1': 2, 'page-2': 0, 'page-3': 1, 'page-4': 0 };
+const scoreCount = (id: PageId) => {
+  const spread = BOOK_MANIFEST.find(spread => spread.leftPageId === id || spread.rightPageId === id);
+  if (!spread) throw new RangeError(`Unknown print page ${id}`);
+  return spread.leftPageId === id ? getScene(spread.sceneId).lanes.length : 0;
+};
 type PrintBatch = Map<PageId, PageSnapshot>;
 type Publication = { textures: Map<PageId, Texture>; generation: number; identity: string };
 
@@ -39,10 +45,10 @@ function disposeBatch(batch: PrintBatch): void {
   batch.clear();
 }
 
-function pageSources(root: HTMLElement, revision: number, preparationEpoch: number): Map<PageId, HTMLElement> | null {
+function pageSources(root: HTMLElement, revision: number, preparationEpoch: number, pageIds: readonly PageId[]): Map<PageId, HTMLElement> | null {
   const pages = new Map<PageId, HTMLElement>();
   let ready = true;
-  for (const id of PAGE_IDS) {
+  for (const id of pageIds) {
     const matches = root.querySelectorAll<HTMLElement>(`[data-print-page="${id}"]`);
     if (matches.length !== 1) { ready = false; continue; }
     const source = matches[0];
@@ -50,7 +56,7 @@ function pageSources(root: HTMLElement, revision: number, preparationEpoch: numb
     // Inspect every current marker before returning pending. A different score
     // still loading must not hide a renderer error in this or a later page.
     const scoreStates = scores.map(score => pageNotationReady(score, id, revision, preparationEpoch));
-    if (!source.isConnected || !source.clientWidth || !source.clientHeight || scores.length !== SCORE_COUNTS[id]
+    if (!source.isConnected || !source.clientWidth || !source.clientHeight || scores.length !== scoreCount(id)
       || scoreStates.some(value => !value)) ready = false;
     pages.set(id, source);
   }
@@ -73,10 +79,10 @@ function abortableLayoutFrames(signal: AbortSignal): Promise<void> {
   });
 }
 
-/** V07's four-page preparation barrier. Observer filters intentionally exclude
+/** Bounded adjacent-page preparation barrier. Observer filters intentionally exclude
  * score highlights, playback attributes and hover, so audio frames never bake prints.
  */
-export function usePagePrints({ root, revision, width, height, enabled, preparationEpoch = 0, presentationKey = '', onError }: PagePrintOptions): PagePrintState {
+export function usePagePrints({ root, revision, width, height, enabled, pageIds = PAGE_IDS, preparationEpoch = 0, presentationKey = '', onError }: PagePrintOptions): PagePrintState {
   const [publication, setPublication] = useState<Publication>(() => ({ textures: new Map(), generation: 0, identity: '' }));
   const [ready, setReady] = useState(false);
   const [refreshVersion, setRefreshVersion] = useState(0);
@@ -87,7 +93,7 @@ export function usePagePrints({ root, revision, width, height, enabled, preparat
   const retired = useRef<PrintBatch[]>([]);
   const onErrorRef = useRef(onError);
   onErrorRef.current = onError;
-  const identity = JSON.stringify([revision, width, height, preparationEpoch, presentationKey, refreshVersion]);
+  const identity = JSON.stringify([revision, width, height, pageIds, preparationEpoch, presentationKey, refreshVersion]);
 
   // A DOM resize commits before passive-effect cleanup. Invalidate during that
   // commit so an older async capture cannot mistake the new size for a failure.
@@ -127,6 +133,10 @@ export function usePagePrints({ root, revision, width, height, enabled, preparat
     let alive = true;
     let scheduled = 0;
     let scrollTimer: ReturnType<typeof setTimeout> | undefined;
+    const report = (phase: string, details: Record<string, unknown> = {}) => {
+      if (import.meta.env.DEV) element.dataset.printPreparation = JSON.stringify({ phase, revision,
+        pages: pageIds, request: sequence.current, ...details });
+    };
 
     const cancelScheduled = () => {
       cancelAnimationFrame(scheduled);
@@ -143,16 +153,18 @@ export function usePagePrints({ root, revision, width, height, enabled, preparat
       const current = () => alive && !controller.signal.aborted && request === sequence.current;
       const batch: PrintBatch = new Map();
       try {
+        report('fonts');
         const fonts = await ensureBookNotationReady();
         if (!current()) return;
         const captured = await withPageSnapshotLayoutRetries(async () => {
           // A retried batch never retains pages from its superseded layout.
           disposeBatch(batch);
-          const pages = pageSources(element, revision, preparationEpoch);
+          const pages = pageSources(element, revision, preparationEpoch, pageIds);
           // Notation mutations or an explicit refresh retry unready scores.
-          if (!pages) return false;
-          for (const id of PAGE_IDS) {
+          if (!pages) { report('notation-pending'); return false; }
+          for (const id of pageIds) {
             if (!current()) return false;
+            report('capturing', { pageId: id, completed: batch.size });
             const source = pages.get(id)!;
             assertPageSnapshotLayout(source, id, width, height);
             const print = await createPageSnapshot(source, { pageId: id, contentRevision: revision,
@@ -160,7 +172,7 @@ export function usePagePrints({ root, revision, width, height, enabled, preparat
               presentationKey, canonicalStopped: true, signal: controller.signal, isCurrent: current });
             batch.set(id, print);
           }
-          if (!pageSources(element, revision, preparationEpoch)) return false;
+          if (!pageSources(element, revision, preparationEpoch, pageIds)) return false;
           for (const [id, source] of pages) assertPageSnapshotLayout(source, id, width, height);
           return true;
         }, () => abortableLayoutFrames(controller.signal), current);
@@ -171,9 +183,11 @@ export function usePagePrints({ root, revision, width, height, enabled, preparat
         if (previous.size) retired.current.push(previous);
         const textures = new Map<PageId, Texture>([...owned.current].map(([id, print]) => [id, print.texture]));
         invalidated.current = false;
+        report('ready', { count: textures.size });
         setPublication(previousPublication => ({ textures, generation: previousPublication.generation + 1, identity }));
         setReady(true);
       } catch (reason) {
+        report(current() ? 'error' : 'cancelled', { message: reason instanceof Error ? reason.message : String(reason) });
         if (current() && !(reason instanceof DOMException && reason.name === 'AbortError')) {
           onErrorRef.current?.(reason instanceof Error ? reason : new Error(String(reason)));
         }
@@ -227,7 +241,7 @@ export function usePagePrints({ root, revision, width, height, enabled, preparat
       element.removeEventListener('input', toggle, true);
       element.removeEventListener('change', toggle, true);
     };
-  }, [root, revision, width, height, enabled, preparationEpoch, presentationKey, identity]);
+  }, [root, revision, width, height, enabled, pageIds, preparationEpoch, presentationKey, identity]);
 
   // This passive effect runs after the published map's React commit. Disposing
   // in the following frame lets BookApp's stage swap effect borrow the new map

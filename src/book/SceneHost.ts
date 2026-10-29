@@ -1,6 +1,5 @@
 import { BoxGeometry, Group, Mesh, MeshStandardMaterial } from 'three';
 import type { BookToken } from './controller.ts';
-import type { SpreadId } from './manifest.ts';
 
 export interface PreparedScene {
   readonly group: Group;
@@ -269,7 +268,7 @@ function paperPopup(sceneId: string, color: string): SceneDefinition {
 }
 
 /** V06 lifecycle inspection only; these are not music scenes or G1 evidence. */
-export const PAPER_POPUP_SCENES: Readonly<Record<SpreadId, SceneDefinition>> = Object.freeze({
+export const PAPER_POPUP_SCENES: Readonly<Record<'spread-1' | 'spread-2', SceneDefinition>> = Object.freeze({
   'spread-1': paperPopup('scene-1', '#e8d7b1'),
   'spread-2': paperPopup('scene-2', '#bad4ce'),
 });

@@ -32,15 +32,16 @@ export function turnCornerRegion(quad: StageQuad, direction: NavigationDirection
   return { tl: point(u0, v0), tr: point(u1, v0), bl: point(u0, v1), br: point(u1, v1) };
 }
 
-export function turnInputAvailability({ book, layout, stageReady, printsReady, textureCount, preparedScene, pointerOwned = false }: {
+export function turnInputAvailability({ book, layout, stageReady, printsReady, textureCount, requiredTextureCount = 4, preparedScene, pointerOwned = false }: {
   book: BookState; layout: StageLayout | null; stageReady: boolean; printsReady: boolean;
-  textureCount: number; preparedScene: string; pointerOwned?: boolean;
+  textureCount: number; requiredTextureCount?: number; preparedScene: string; pointerOwned?: boolean;
 }): TurnAvailability {
-  const ready = !pointerOwned && book.mode === '3d' && !!layout && stageReady && printsReady && textureCount === 4
+  const ready = !pointerOwned && book.mode === '3d' && !!layout && stageReady && printsReady
+    && (requiredTextureCount === 4 || requiredTextureCount === 6) && textureCount === requiredTextureCount
     && bookCanInteract(book) && preparedScene === `${book.bookEpoch}:${book.sceneInstanceId}:${book.currentSpreadId}`;
   return {
-    next: ready && !!adjacentSpread(book.currentSpreadId, 'next') && !!pageBasis(layout!.right),
-    prev: ready && !!adjacentSpread(book.currentSpreadId, 'prev') && !!pageBasis(layout!.left),
+    next: ready && !!adjacentSpread(book.currentSpreadId, 'next', book.spreadCount) && !!pageBasis(layout!.right),
+    prev: ready && !!adjacentSpread(book.currentSpreadId, 'prev', book.spreadCount) && !!pageBasis(layout!.left),
   };
 }
 

@@ -1,5 +1,8 @@
 import { CanvasTexture, SRGBColorSpace } from 'three';
+import { BOOK_MANIFEST } from './manifest.ts';
 import type { PageId } from './manifest.ts';
+
+const snapshotPageIds = new Set<PageId>(BOOK_MANIFEST.flatMap(spread => [spread.leftPageId, spread.rightPageId]));
 
 export type PageSnapshotIdentity = Readonly<{
   pageId: PageId;
@@ -105,7 +108,7 @@ export function canonicalPrintPresentation(attributes: Readonly<Record<string, s
 
 /** Every condition affecting a print is explicit; there is no implicit global cache. */
 export function pageSnapshotKey(identity: PageSnapshotIdentity): string {
-  if (!/^page-[1-4]$/.test(identity.pageId) || !Number.isSafeInteger(identity.contentRevision) || identity.contentRevision < 0) {
+  if (!snapshotPageIds.has(identity.pageId) || !Number.isSafeInteger(identity.contentRevision) || identity.contentRevision < 0) {
     throw new Error('Invalid page snapshot identity');
   }
   if (![identity.width, identity.height, identity.scale].every(value => Number.isFinite(value) && value > 0)
