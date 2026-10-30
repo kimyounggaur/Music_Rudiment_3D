@@ -46,6 +46,7 @@ export interface LessonScene extends PreparedScene {
 const INSET_X = 0.2;
 const WIDTH = BOOK_DIMENSIONS.pageWidth - INSET_X * 2;
 const SCALE = WIDTH / BAR_WIDTH;
+export const LESSON_SCENE_SCALE = SCALE;
 // The axes lie -0.03 local units below the blocks; this lift keeps them above the paper.
 const PAPER_LIFT = 0.008;
 type LaneWorld = {

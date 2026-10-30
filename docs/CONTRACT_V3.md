@@ -36,7 +36,7 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | 1 | 책갈피(EDGE-NAV)를 조작바 이전/다음으로 대체? | 대체 | 자체 승인(사용자 위임) | C9, R5 |
 | 2 | 효과음 기본 켬? | 켬. 조작바 '소리'가 음악·효과음을 함께 끔 | 자체 승인(사용자 위임) | C8, R7 |
 | 3 | 책상 질감 | 리넨(절차 생성). 원본의 나뭇결과 의도적 차이 | 자체 승인(사용자 위임) | R2 |
-| 4 | 서체 | 본문 Pretendard(OFL-1.1, npm `pretendard@1.3.9`), 제목 Noto Serif CJK KR(OFL-1.1). 둘 다 사용 문자 서브셋 WOFF2로 번들 | 자체 승인(사용자 위임) | R3 |
+| 4 | 서체 | 본문 Pretendard(OFL-1.1, npm `pretendard@1.3.9`), 제목 Noto Serif CJK KR(OFL-1.1). 둘 다 사용 문자 서브셋 WOFF2로 번들. 서브셋은 OFL상 수정본이라 예약 글꼴 이름을 쓰지 않도록 **Book Sans**(Pretendard 파생)·**Book Serif**(Noto Serif CJK KR 파생)로 이름을 바꿔 번들한다(R3, 원 저작권·라이선스 레코드 유지, `public/licenses/book-page-fonts.txt`) | 자체 승인(사용자 위임) | R3 |
 | 5 | 재생 시작 시 자동 샷 | 끔(설정 옵션) | 자체 승인(사용자 위임) | C4, R6 |
 | 6 | 원본 화면 녹화 제공 | **미제공**. G1-C 정체성 항목 중 원본 실동작 비교가 필요한 부분은 `미관측`으로 남는다 | 사용자 자료 없음 | R9 |
 
@@ -50,7 +50,8 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | B2 | 설계서 §4 원칙 2는 `renderer: 'legacy' \| 'ink'` 두 경로를 같은 파일 안에서 분기하도록 적었다 | 분기 대신 **`src/legacy/`에 착수 커밋의 책 셸을 고정 사본**으로 두고 `?renderer=legacy`일 때 그 사본을 지연 로드한다. 새 경로는 사본을 건드리지 않고 자유롭게 바뀐다. 전후 비교 캡처의 before는 이 사본으로 만든다. R9에서 `src/legacy/`를 통째로 삭제한다 |
 | B3 | 작업 컨테이너의 Node는 22.23.4, `package.json` engines는 `>=24.14.0 <25` | engines는 바꾸지 않는다. 로컬 검사는 Node 22(타입 제거 기본 켬)로 실행하고, 브랜치 push 시 GitHub Actions(Node 24.14.0)의 typecheck·lint·test·build 결과를 함께 기록한다 |
 | B4 | 기존 e2e 스크립트(`keyboard-e2e.ts`, `quiz-e2e.ts`, `http-e2e.ts` 등)는 특정 산출물 SHA256과 Windows Chromium 경로에 고정된 과거 증거 스크립트다 | 수정하지 않고 과거 증거로 보존한다. v3 동작 검증은 새 `scripts/refactor-capture.ts`(R1, R9에서 `visual-baseline.ts`로 확장)와 `scripts/book-v3-e2e.ts`가 맡는다 |
-| B5 | 설계서 R3는 페이지 핫스폿을 "모든 화면에서 44 px 이상"으로 적었다 | 844×390에서 펼친 쪽의 화면 높이는 약 290 px라 16분음표 16칸을 44 px로 인쇄할 수 없다(물리 한계). 인쇄 핫스폿은 **1280×720에서 44 px 목표, 모든 지원 크기에서 24 px(WCAG 2.2 AA 2.5.8) 이상**으로 하고, 44 px 대체 경로(조작바, 접근성 거울의 키보드 조작, '크게 읽기' 2D 책)를 항상 둔다. v2.1 계약의 "44px를 확보할 수 없는 작은 화면에서는 책 안 조작 배치를 재조정" 조항을 따른 것이다 |
+| B5 | 설계서 R3는 페이지 핫스폿을 "모든 화면에서 44 px 이상"으로 적었다. R0에서 "1280×720 44 px 목표, 모든 지원 크기 24 px 이상"으로 1차 개정했다 | **R3 실측으로 재개정.** 기본 읽기 포즈에서 펼친 쪽 하나의 화면 크기는 약 300×437 px(1280×720), 160×230 px(844×390), 140×190 px(390×844)다. 활성 인쇄 핫스폿의 가장 작은 변은 10.5 / 5.5 / 4.6 px로 24 px에도 못 미친다(`docs/qa/refactor/R3/metrics.json`). 2D와 같은 내용·조작을 한 쪽에 인쇄하는 한 물리적으로 확보할 수 없다. 그래서 인쇄 핫스폿은 **최소 크기를 요구하지 않는 포인터 편의 대상**으로 두고, WCAG 2.2 2.5.8의 '동등한 조작' 예외에 따라 같은 기능을 같은 화면에서 항상 함께 제공한다: ① 조작바(책 밖, 44 px) '크게 읽기'로 여는 2D 책 — 모든 조작 44 px, ② 접근성 거울의 키보드·보조기술 조작, ③ R6 '쪽 가까이 보기' 샷(계획). 표지·이전/다음·조작바 단추는 44 px다. 모드 전환으로 제공하는 동등 조작이라는 해석은 R9 사람 검수 항목이다 |
+| B6 | 설계서 §3.1과 R3 완료 기준은 본문 x-height ≥ 7 px(1280×720), ≥ 5.5 px(844×390)이고, "본문 = 쪽 세로의 1.55% → 1280×720에서 약 9.5 px x-height"로 계산했다 | **실측 미달, 기록 후 안내 인쇄.** 본문 26 logical(쪽 세로의 1.77%), Book Sans(Pretendard) x-height 0.530 em에서 본문 글자는 7.7 / 4.0 / 3.3 px, x-height는 **4.1 px(1280×720), 2.1 px(844×390), 1.8 px(390×844)**다. 설계서의 9.5 px는 쪽이 화면에서 약 1,170 px 높이일 때만 성립하는 계산 오류다(실제 쪽 화면 높이 약 437 px). 7 px에는 본문을 약 1.7배(쪽 세로의 3%)로 키워야 하고, 그러면 한 쪽 내용이 2–3쪽 분량이 된다. 프롬프트의 실패 시 규칙대로 해상도(settled 1280)·anisotropy(8)·여백을 먼저 검토했으나 이들은 선명도만 바꾸고 화면 크기를 바꾸지 못한다. 설계서가 허용한 대로 **모든 왼쪽 쪽 아래 여백에 '크게 읽기' 안내를 인쇄**하고(`READING_HINT`), 3D에서의 읽기 크기는 R6 '쪽 가까이 보기' 샷으로 확보한 뒤 다시 측정한다 |
 
 ## 4 유지 불변식과 검사 위치
 
@@ -65,7 +66,12 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | MU01–08 | 정확 분수·분할·조합·쉼표·템포·작곡 | `tests/domain.test.ts`, `tests/lesson.test.ts`, `tests/book-v13.test.ts`, `tests/duration-world.test.ts`(R4 이후 `duration-figure`) |
 | AU01–07 | 단일 context·예약·정지·pause/resume | `tests/audio.test.ts`, `tests/audio-transport.test.ts`, `tests/book-audio-ownership.test.ts` |
 | RC01–05 | context loss·자산 실패·자원 수명·저장 | `tests/book-controller.test.ts`(WEBGL_LOST), `tests/book-scene-host.test.ts`, `tests/book-progress.test.ts`, `tests/persistence.test.ts`; 50회 왕복 누수는 R9 `scripts/perf-budget.ts` |
-| AX21 | 키보드·스크린리더·200%·2D·reduced, focus는 보이는 책 안 | R3 이후 접근성 거울 테스트와 사람 검사(보조기술 실기는 `외부 검수 대기`) |
+| AX21 | 키보드·스크린리더·200%·2D·reduced, focus는 보이는 책 안 | `tests/hotspots.test.ts`(인쇄 조작 = 거울 조작, 2D test id, 제목·라이브 문장), `scripts/book-v3-e2e.ts`(Tab 초점 링이 state 레이어에 그려짐), 사람 검사(보조기술 실기는 `외부 검수 대기`) |
+| BK12 | 넘김·닫기 중 쪽 DOM 없음 | `scripts/book-v3-e2e.ts`(넘김 프레임 표본에서 거울 0) |
+| C3 | 3D 쪽은 인쇄 텍스처, HTML 겹침 0 | `scripts/book-v3-e2e.ts`·캡처 `metrics.json`(`htmlPageElements` = 0) |
+| AC05 | 16분음표 16개도 고를 수 있는 대체 조작 | `tests/print-layout.test.ts`(16칸 음표 목록), 거울 `ol > li > button` |
+| 같은 revision | 인쇄·그림·소리·평가가 같은 `LessonState`에서 파생 | `tests/print-layout.test.ts`(분할 뒤 인쇄 음표 = `sceneEvents`), `tests/print-compositor.test.ts`(인쇄 키 = 장면 상태 식별) |
+| 인쇄 메모리 | 인쇄 창 텍스처 ≤ 48 MiB, 왕복 누수 0 | `tests/print-compositor.test.ts`(티어별 예산, 20회 왕복), `scripts/book-v3-e2e.ts`(실제 앱 20회 왕복) |
 | 활성 1개 | 활성 장면·오디오 세션 최대 1개 | `tests/book-scene-host.test.ts`, `tests/book-audio-ownership.test.ts` |
 | 넘김 중 카메라 불변 | 드래그·넘김·닫기 중 카메라 이동 없음 | `tests/book-camera-rig.test.ts`(suspendFit), R6 `tests/shots.test.ts` |
 

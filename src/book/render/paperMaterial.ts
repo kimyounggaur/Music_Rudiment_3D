@@ -6,9 +6,9 @@ import type { Texture } from 'three';
 
 /**
  * v3 R2 lit paper (CONTRACT_V3 C7). A print texture is ink on white (or transparent paper);
- * the shader multiplies it into the paper colour and a procedural fibre, then mixes an RGBA
- * state layer (selection, focus, pressed, stamps) on top. The result is lit like any other
- * surface: no `toneMapped:false`, no unlit MeshBasicMaterial.
+ * the shader multiplies it into the paper colour and a procedural fibre, then multiplies an RGBA
+ * state layer (selection, focus, pressed; v3 R3) over it like a translucent marker. The result is
+ * lit like any other surface: no `toneMapped:false`, no unlit MeshBasicMaterial.
  */
 export const PAPER_TOKENS = Object.freeze({ paper: '#f4eedc', roughness: 0.94, fibreRepeat: 7, fibreLow: 0.955 });
 
@@ -80,7 +80,8 @@ export const PAPER_FRAGMENT = /* glsl */`
   vec4 stateSample = texture2D( uPaperState, vMapUv );
   float fibre = texture2D( uPaperFibre, vMapUv * uPaperFibreRepeat ).r;
   vec3 albedo = uPaperColor * mix( uPaperFibreLow, 1.0, fibre ) * ink;
-  albedo = mix( albedo, stateSample.rgb, stateSample.a );
+  // The state layer is translucent marker ink: it tints paper but never washes out printed ink.
+  albedo *= mix( vec3( 1.0 ), stateSample.rgb, stateSample.a );
   diffuseColor.rgb *= albedo;
 #endif
 `;
@@ -108,7 +109,7 @@ uniform float uPaperFibreRepeat;
 uniform float uPaperFibreLow;`)
       .replace('#include <map_fragment>', PAPER_FRAGMENT);
   };
-  material.customProgramCacheKey = () => 'v3-paper-1';
+  material.customProgramCacheKey = () => 'v3-paper-2';
   Object.defineProperty(material, 'print', { get: () => print });
   material.setPrint = (texture) => {
     print = texture;

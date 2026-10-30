@@ -30,3 +30,12 @@ docs/qa/refactor/
 ---
 
 
+
+## 명령
+
+두 스크립트 모두 dev 서버(`npm run dev`, 기본 `http://127.0.0.1:4173/`)가 떠 있어야 하며 `--base`로 바꿀 수 있다. 실행 중에 `src/`를 고치면 HMR이 페이지를 다시 읽어 측정이 깨지므로 끝날 때까지 손대지 않는다.
+
+| 용도 | 명령 |
+|---|---|
+| 단계 캡처·metrics | `node scripts/refactor-capture.ts --stage R{n} --phase after --renderer ink [--quality high]`<br>`node scripts/refactor-capture.ts --stage R{n} --phase after --renderer legacy --states spread1,turn50,spread2,2d` |
+| v3 e2e (R3부터) | `node scripts/book-v3-e2e.ts --viewport 1280x720 --out docs/qa/refactor/R{n}/e2e-1280x720.json` (844x390, 390x844도 같은 방식) |

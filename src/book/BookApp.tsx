@@ -3,28 +3,39 @@ import { bookCanInteract, bookReducer, bookToken, createBookState, tokenMatches 
 import type { BookEvent } from './controller.ts';
 import { BOOK_MOTION, tween } from './motion.ts';
 import type { BookStage, StageLayout, StageUpdate } from './stage.ts';
-import { pageStyle, quadSize } from './pageProjection.ts';
+import { pageStyle } from './pageProjection.ts';
 import { BOOK_MANIFEST, pagePrintIds, spreadIndex, turningLeaf } from './manifest.ts';
 import type { PageId, SpreadId } from './manifest.ts';
-import type { Texture } from 'three';
 import { arrowNavigationDirection, createTurnDrag, turnReleaseDecision, updateTurnDrag } from './gesture.ts';
 import type { TurnDragState } from './gesture.ts';
-import { pointOnScrollbar, turnCornerAtPoint, turnCornerRegion, turnInputAvailability, turnTargetOwnsInput } from './turnHit.ts';
+import { turnCornerAtPoint, turnCornerRegion, turnInputAvailability, turnTargetOwnsInput } from './turnHit.ts';
 import { navigationButtonPosition } from './navigationPlacement.ts';
-import { lessonSceneCenter } from './lessonPresentation.ts';
+import { LESSON_FIGURE_RAISE_Z, lessonSceneCenter } from './lessonPresentation.ts';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import type { SceneHost } from './SceneHost.ts';
-import { reduceLesson } from '../lesson/controller.ts';
+import { reduceLesson, sceneState } from '../lesson/controller.ts';
 import type { LessonCommand, LessonState } from '../lesson/controller.ts';
 import type { LessonScene } from './lessonScene.ts';
 import { LessonLeftPage, LessonRightPage } from './LessonPages.tsx';
 import { useBookAudio } from './useBookAudio.ts';
-import { usePagePrints } from './usePagePrints.ts';
 import type { PlaybackSnapshot } from '../audio/AudioEngine.ts';
+import { usePageCompositor } from './print/usePageCompositor.ts';
+import type { PageSurface } from './print/pageCompositor.ts';
+import { AccessibleMirror } from './print/AccessibleMirror.tsx';
+import type { MirrorPage } from './print/AccessibleMirror.tsx';
+import { hitTest, PAGE_LOGICAL } from './print/pageLayout.ts';
+import type { PageHotspot } from './print/pageLayout.ts';
+import type { PageInteraction } from './print/hotspots.ts';
+import type { PagePlayback, PageUiState } from './print/pageSpec.ts';
 import { loadInitialBookProgress, supportsStoredSpread, useBookProgress } from './useBookProgress.ts';
 import { BookProgressTools } from './BookProgressTools.tsx';
 import { currentProfile } from './profile.ts';
 import type { BookPreferences } from '../persistence/bookProgress.ts';
+
+/** A pointer on a printed page of the committed spread (logical page units, origin top-left). */
+type PageHit = Readonly<{ pageId: PageId; side: 'left' | 'right'; x: number; y: number; hotspot: PageHotspot | null; figure: boolean }>;
+const PRESS_SLOP = 8;
+const playingState = (state: string | undefined) => state === 'starting' || state === 'playing' || state === 'paused';
 
 export default function BookApp() {
   const [initialProgress] = useState(loadInitialBookProgress);
@@ -53,7 +64,7 @@ export default function BookApp() {
   const hostRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<BookStage | null>(null);
-  const printsRef = useRef<Map<PageId, Texture>>(new Map());
+  const printsRef = useRef<ReadonlyMap<PageId, PageSurface>>(new Map());
   const sceneHostRef = useRef<SceneHost | null>(null);
   const [hostReady, setHostReady] = useState(false);
   const [preparedScene, setPreparedScene] = useState('');
@@ -77,6 +88,14 @@ export default function BookApp() {
   const pointerOwner = useRef<{ id: number; gestureId: number; drag: TurnDragState; offsetX: number; direction: 'next' | 'prev'; corner: 'top' | 'bottom'; element: HTMLElement } | null>(null);
   const [dragHover, setDragHover] = useState(false);
   const scenePointer = useRef<{ id: number; x: number; y: number } | null>(null);
+  // v3 R3 printed controls: a press is owned until release (8 px slop), like a button.
+  const hotspotPointer = useRef<{ id: number; x: number; y: number; pageId: PageId; hotspotId: string; element: HTMLElement } | null>(null);
+  const pendingHit = useRef<{ pointerId: number; hit: PageHit | null } | null>(null);
+  const [hoverId, setHoverId] = useState<string | null>(null);
+  const [pressedId, setPressedId] = useState<string | null>(null);
+  const [focusId, setFocusId] = useState<string | null>(null);
+  const [pageUi, setPageUi] = useState<PageUiState>({ composeKind: 'note' });
+  const [holdPrintUpgrades, setHoldPrintUpgrades] = useState(false);
   const focusedBookTarget = useRef('');
   const hasOpenedBook = useRef(false);
   const send = useCallback((event: BookEvent) => dispatch(event), []);
@@ -110,39 +129,38 @@ export default function BookApp() {
       value: patch.reducedMotion || matchMedia('(prefers-reduced-motion: reduce)').matches });
   }, [storePreferences, send, stop]);
 
-  // Semantic layout and print resolution change only at a settled book pose.
-  // Camera reframing still uses the live projected quads, but must not trigger
-  // notation/capture work every frame and repeatedly cancel its own barrier.
-  const printSize = useRef({ width: 400, height: 588 });
-  if (layout && ['bootLoading', 'coverIdle', 'spreadIdle', 'fallback2D'].includes(book.phase)) {
-    // A perspective page is a trapezoid; print at the larger edge lengths so the near edge stays sharp.
-    printSize.current = quadSize(layout.right);
-  }
-  const pageWidth = printSize.current.width;
-  const pageHeight = printSize.current.height;
   const printError = useCallback((reason: Error) => {
     reportError('print', reason, '페이지 그림을 준비하지 못해 2D 책으로 전환했어요. 만든 리듬과 답은 그대로예요.');
     // A failed surface cannot hold the reader behind an invisible preparing UI.
     // Recover the committed spread using the same lesson data.
     dispatch({ type: 'USE_2D' });
   }, [reportError]);
-  const audioMuted = playback?.muted ?? false;
-  const audioError = playback?.error ?? null;
-  const stoppedPlayback = useMemo<PlaybackSnapshot>(() => ({ state: 'ready', sessionId: null, startTime: null,
-    logicalDuration: 0, currentPosition: 0, relativePosition: 0, activeEventId: null, loop: false,
-    muted: audioMuted, error: audioError, lastStopReason: null, lastCompletedSessionId: null,
-    completedSessionId: null, activeSourceCount: 0, logicalOffset: 0, snapshotRevision: null,
-    uninterrupted: false, lastUninterruptedCompletedSessionId: null }), [audioMuted, audioError]);
+  const audioErrorMessage = playback?.error?.message ?? null;
   const printPageIds = useMemo(() => pagePrintIds(book.currentSpreadId), [book.currentSpreadId]);
-  const prints = usePagePrints({ root: rootRef, revision: lesson.revision, width: pageWidth, height: pageHeight, pageIds: printPageIds,
-    enabled: stageReady && book.mode === '3d', preparationEpoch: book.bookEpoch, background: '#ffffff', presentationKey: JSON.stringify([audioMuted, audioError,
-      progress.preferences, progress.hints, progress.canSave, progress.notice, progress.backups, progress.protectedRaw,
-      progress.exportedText, progress.preview]), onError: printError });
-  printsRef.current = prints.textures;
+  const currentSpread = BOOK_MANIFEST[spreadIndex(book.currentSpreadId)];
+  const currentPageIds = useMemo(() => [currentSpread.leftPageId, currentSpread.rightPageId] as const, [currentSpread]);
+  const playbackState = playback ? playback.state === 'stopping' ? 'stopped' : playback.state : 'ready';
+  // The print shows transport state, never the moving playhead (that is the state layer).
+  const pagePlayback = useMemo<PagePlayback>(() => ({ state: playbackState, laneId: playingState(playbackState) ? playingLane : null,
+    activeEventId: null, error: audioErrorMessage }), [playbackState, playingLane, audioErrorMessage]);
+  const idlePlayback = useMemo<PagePlayback>(() => ({ state: 'ready', laneId: null, activeEventId: null, error: audioErrorMessage }), [audioErrorMessage]);
+  const interactive = bookCanInteract(book);
+  const currentScene = sceneState(lesson, currentSpread.sceneId);
+  const activeEventId = playingState(playbackState) && playingLane ? playback?.activeEventId ?? null : null;
+  const interaction = useMemo<PageInteraction>(() => ({
+    focusId: interactive ? focusId : null, pressedId: interactive ? pressedId : null, hoverId: interactive ? hoverId : null,
+    selected: currentScene.selectedEventId ? { laneId: currentScene.activeLaneId, eventId: currentScene.selectedEventId } : null,
+    activeEventId, activeLaneId: activeEventId ? playingLane : null,
+  }), [interactive, focusId, pressedId, hoverId, currentScene.selectedEventId, currentScene.activeLaneId, activeEventId, playingLane]);
+  const prints = usePageCompositor({ enabled: stageReady && book.mode === '3d', tier: currentProfile().quality, lesson, hints: progress.hints, ui: pageUi,
+    pageIds: printPageIds, currentPageIds, playback: pagePlayback, idlePlayback, interaction, onError: printError, holdUpgrades: holdPrintUpgrades });
+  printsRef.current = prints.surfaces;
   // A button navigation keeps its stopped page visible (and inert) while a fresh
   // print is prepared. Direct dragging uses the already-warm stopped print.
   const waitingForPrint = (book.phase === 'preparingTurn' && !book.gesture || book.phase === 'closing') && !prints.ready;
+  // 2D reading pages are DOM; the 3D book shows prints and keeps only the hidden mirror (none mid-turn, BK12).
   const livePagesVisible = book.isOpen && (['spreadIdle', 'fallback2D'].includes(book.phase) || waitingForPrint);
+  const mirrorVisible = book.mode === '3d' && book.isOpen && book.phase === 'spreadIdle';
   const printMotionReady = book.phase === 'preparingTurn' || book.phase === 'closing' ? prints.ready : true;
   const recovered3D = book.mode === '3d' && stageReady && prints.ready && (book.phase === 'coverIdle'
     || bookCanInteract(book) && preparedScene === `${book.bookEpoch}:${book.sceneInstanceId}:${book.currentSpreadId}`);
@@ -175,26 +193,16 @@ export default function BookApp() {
     stageRef.current?.invalidate();
     if (rootRef.current) rootRef.current.dataset.audio = JSON.stringify({ ...playback, laneId: playingLane, revision: lesson.revision });
   }, [playback, playingLane, book.reducedMotion, lesson.revision]);
+  // v3 R3: the figure's window is the printed page's reserved figure rect (no DOM measurement).
+  const pageWorldHeight = layout?.pageWorld.height ?? 0;
+  const figureRect = book.mode === '3d' ? Object.values(prints.surfaces.get(currentSpread.rightPageId)?.layout.figureRects ?? {})[0] : undefined;
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root || book.mode !== '3d') return;
-    const align = () => {
-      const page = root.querySelector<HTMLElement>('.book-page--right[data-active-page="true"]');
-      const window = page?.querySelector<HTMLElement>('.book-popup-window');
-      if (!page || !window || !layout) return;
-      const paper = page.getBoundingClientRect();
-      const area = window.getBoundingClientRect();
-      const height = layout.pageWorld.height;
-      const toZ = (y: number) => ((y - paper.top) / paper.height - 0.5) * height;
-      const laneCenter = lessonSceneCenter(BOOK_MANIFEST[spreadIndex(book.currentSpreadId)].sceneId);
-      stageRef.current?.setSceneWindow({ offsetZ: toZ((area.top + area.bottom) / 2) - laneCenter,
-        minZ: toZ(Math.max(paper.top, area.top)), maxZ: toZ(Math.min(paper.bottom, area.bottom)),
-        visible: area.bottom > paper.top && area.top < paper.bottom });
-    };
-    align();
-    root.addEventListener('scroll', align, true);
-    return () => root.removeEventListener('scroll', align, true);
-  }, [layout, preparedScene, book.currentSpreadId, book.phase, book.mode, lesson.revision]);
+    if (!figureRect || !pageWorldHeight) return;
+    const toZ = (y: number) => (y / PAGE_LOGICAL.height - 0.5) * pageWorldHeight;
+    // Centre the lanes' visual extent: raised top faces reach LESSON_FIGURE_RAISE_Z further up the page.
+    stageRef.current?.setSceneWindow({ offsetZ: toZ(figureRect.y + figureRect.h / 2) - lessonSceneCenter(currentSpread.sceneId) + LESSON_FIGURE_RAISE_Z / 2,
+      minZ: toZ(figureRect.y), maxZ: toZ(figureRect.y + figureRect.h), visible: true });
+  }, [figureRect, pageWorldHeight, preparedScene, currentSpread]);
   const command = (event: LessonCommand) => {
     if (bookRef.current.scene !== 'ready' || !bookRef.current.isOpen || bookRef.current.hidden) return;
     setLesson(previous => reduceLesson(previous, event, { playing: playback?.state === 'playing' || playback?.state === 'starting' || playback?.state === 'paused' }));
@@ -205,7 +213,28 @@ export default function BookApp() {
     let alive = true;
     let cleanup: (() => void) | undefined;
     void import('./inspector.ts').then(({ attachBookInspector }) => {
-      if (alive) cleanup = attachBookInspector({ getStage: () => stageRef.current, getVisual: () => visual.current, draw, getRoot: () => rootRef.current });
+      if (alive) cleanup = attachBookInspector({ getStage: () => stageRef.current, getVisual: () => visual.current, draw, getRoot: () => rootRef.current,
+        getPrintStats: () => printStatsRef.current(),
+        holdPrintUpgrades: setHoldPrintUpgrades,
+        getPrintImage: (pageId, layer) => {
+          const surface = printsRef.current.get(pageId as PageId);
+          const image = (layer === 'state' ? surface?.state?.image : surface?.print.image) as HTMLCanvasElement | undefined;
+          return image?.toDataURL?.('image/png') ?? null;
+        },
+        getPages: () => {
+          const stage = stageRef.current;
+          const spread = BOOK_MANIFEST[spreadIndex(bookRef.current.currentSpreadId)];
+          return [...printsRef.current.values()].map(surface => {
+            const side = surface.pageId === spread.leftPageId ? 'left' as const : surface.pageId === spread.rightPageId ? 'right' as const : null;
+            return { pageId: surface.pageId, side, resolution: surface.resolution, upgrading: surface.upgrading, printVersion: surface.printVersion,
+              stateVersion: surface.stateVersion, scale: surface.layout.scale, overflow: surface.layout.overflow, figureRects: surface.layout.figureRects,
+              figures: Object.entries(surface.layout.figureRects).map(([id, rect]) => ({ id, rect,
+                center: side && stage ? stage.pagePoint(side, (rect.x + rect.w / 2) / PAGE_LOGICAL.width, (rect.y + rect.h / 2) / PAGE_LOGICAL.height) : null })),
+              hotspots: surface.layout.hotspots.map(hotspot => ({ id: hotspot.id, role: hotspot.role, label: hotspot.label, enabled: hotspot.enabled,
+                testId: hotspot.testId ?? null, rect: hotspot.rect,
+                center: side && stage ? stage.pagePoint(side, (hotspot.rect.x + hotspot.rect.w / 2) / PAGE_LOGICAL.width, (hotspot.rect.y + hotspot.rect.h / 2) / PAGE_LOGICAL.height) : null })) };
+          });
+        } });
     });
     return () => { alive = false; cleanup?.(); };
   }, [draw]);
@@ -246,7 +275,9 @@ export default function BookApp() {
       stageRef.current = owned;
       owned?.update(visual.current);
       const spread = BOOK_MANIFEST[spreadIndex(bookRef.current.currentSpreadId)];
-      owned?.setPageTextures({ staticLeft: printsRef.current.get(spread.leftPageId) ?? null, staticRight: printsRef.current.get(spread.rightPageId) ?? null });
+      const surface = (id: PageId) => printsRef.current.get(id);
+      owned?.setPageTextures({ staticLeft: surface(spread.leftPageId)?.print ?? null, staticRight: surface(spread.rightPageId)?.print ?? null,
+        staticLeftState: surface(spread.leftPageId)?.state ?? null, staticRightState: surface(spread.rightPageId)?.state ?? null });
     }).catch((reason: unknown) => {
       if (!alive) return;
       reportError('render', reason, '입체 화면을 준비하지 못해 2D 책으로 전환했어요. 만든 리듬과 답은 그대로예요.');
@@ -262,17 +293,25 @@ export default function BookApp() {
     const current = BOOK_MANIFEST[spreadIndex(book.currentSpreadId)];
     const leaf = book.destinationSpreadId ? turningLeaf(book.currentSpreadId, book.destinationSpreadId) : null;
     const leafVisible = leaf && !book.reducedMotion && (book.phase !== 'preparingTurn' || !!bookRef.current.gesture);
-    const texture = (id: PageId) => printsRef.current.get(id) ?? null;
-    const live = livePagesVisible;
+    // v3 R3: the static pages always show their prints (no HTML overlay). A page and the leaf face that
+    // carries it share one texture object, so a turn never swaps or re-prints a surface.
+    const print = (id: PageId) => printsRef.current.get(id)?.print ?? null;
+    const state = (id: PageId) => printsRef.current.get(id)?.state ?? null;
     stageRef.current?.setPageTextures(leafVisible ? {
-      staticLeft: texture(leaf.stationaryLeftPageId), staticRight: texture(leaf.stationaryRightPageId),
-      turnFront: texture(leaf.frontPageId), turnBack: texture(leaf.backPageId),
-    } : { staticLeft: live ? null : texture(current.leftPageId), staticRight: live ? null : texture(current.rightPageId),
-      turnFront: leaf ? texture(leaf.frontPageId) : null, turnBack: leaf ? texture(leaf.backPageId) : null });
+      staticLeft: print(leaf.stationaryLeftPageId), staticRight: print(leaf.stationaryRightPageId),
+      turnFront: print(leaf.frontPageId), turnBack: print(leaf.backPageId),
+      staticLeftState: state(leaf.stationaryLeftPageId), staticRightState: state(leaf.stationaryRightPageId),
+      turnFrontState: state(leaf.frontPageId), turnBackState: state(leaf.backPageId),
+    } : { staticLeft: print(current.leftPageId), staticRight: print(current.rightPageId),
+      turnFront: leaf ? print(leaf.frontPageId) : null, turnBack: leaf ? print(leaf.backPageId) : null,
+      staticLeftState: state(current.leftPageId), staticRightState: state(current.rightPageId),
+      turnFrontState: leaf ? state(leaf.frontPageId) : null, turnBackState: leaf ? state(leaf.backPageId) : null });
+    // Same texture objects with new content (needsUpdate) still need a frame.
+    stageRef.current?.invalidate();
     if (leafVisible) draw({ turn: { direction: leaf.direction === 'next' ? 'forward' : 'backward', progress: bookRef.current.progress, corner: bookRef.current.gesture?.corner ?? 'bottom' } });
     if (!leaf || book.reducedMotion) draw({ currentSpreadIndex: spreadIndex(book.currentSpreadId), turn: null,
       ...(book.reducedMotion && book.gesture?.pointerActive ? { sceneProgress: 1 } : {}) });
-  }, [book.currentSpreadId, book.destinationSpreadId, book.phase, book.isOpen, book.reducedMotion, book.gesture?.pointerActive, stageReady, prints.generation, livePagesVisible, draw]);
+  }, [book.currentSpreadId, book.destinationSpreadId, book.phase, book.isOpen, book.reducedMotion, book.gesture?.pointerActive, stageReady, prints.generation, draw]);
 
   useEffect(() => {
     if (!stageReady || book.mode === '2d') return;
@@ -419,6 +458,10 @@ export default function BookApp() {
   const cancelPointer = useCallback(() => {
     setDragHover(false);
     scenePointer.current = null;
+    const press = hotspotPointer.current;
+    hotspotPointer.current = null;
+    setPressedId(null);
+    if (press?.element.hasPointerCapture(press.id)) press.element.releasePointerCapture(press.id);
     const owner = pointerOwner.current;
     if (!owner) return;
     pointerOwner.current = null;
@@ -433,22 +476,32 @@ export default function BookApp() {
   useEffect(() => { if (book.hidden || book.mode === '2d') cancelPointer(); }, [book.hidden, book.mode, cancelPointer]);
 
   const dragReadiness = { book, layout, stageReady, printsReady: prints.ready,
-    textureCount: prints.textures.size, requiredTextureCount: printPageIds.length, preparedScene, pointerOwned: !!pointerOwner.current };
+    textureCount: prints.surfaces.size, requiredTextureCount: printPageIds.length, preparedScene, pointerOwned: !!pointerOwner.current || !!hotspotPointer.current };
   const dragAvailability = turnInputAvailability(dragReadiness);
-  const pointerCorner = (event: ReactPointerEvent<HTMLElement>) => {
-    if (event.defaultPrevented || !layout || !hostRef.current) return null;
-    if (!(event.target instanceof Element) || !event.target.closest('.book-page[data-active-page="true"]')) return null;
+  /** The 3D page is the WebGL canvas: only a pointer on the stage (not a toolbar/navigation control) reaches the paper. */
+  const onPaper = (event: ReactPointerEvent<HTMLElement>) => {
+    if (bookRef.current.mode !== '3d' || !(event.target instanceof Element) || !event.target.closest('.book-stage')) return false;
     const path = event.nativeEvent.composedPath();
-    if (turnTargetOwnsInput(event.target) || path.some(turnTargetOwnsInput)) return null;
+    return !turnTargetOwnsInput(event.target) && !path.some(turnTargetOwnsInput);
+  };
+  const pageHit = (clientX: number, clientY: number): PageHit | null => {
+    const point = stageRef.current?.pagePointer(clientX, clientY);
+    if (!point) return null;
+    const spread = BOOK_MANIFEST[spreadIndex(bookRef.current.currentSpreadId)];
+    const pageId = point.side === 'left' ? spread.leftPageId : spread.rightPageId;
+    const surfaceLayout = printsRef.current.get(pageId)?.layout;
+    if (!surfaceLayout) return null;
+    const x = point.u * PAGE_LOGICAL.width, y = point.v * PAGE_LOGICAL.height;
+    const figure = Object.values(surfaceLayout.figureRects).some(rect => x >= rect.x && x <= rect.x + rect.w && y >= rect.y && y <= rect.y + rect.h);
+    return { pageId, side: point.side, x, y, hotspot: hitTest(surfaceLayout, x, y), figure };
+  };
+  const pointerCorner = (event: ReactPointerEvent<HTMLElement>) => {
+    if (event.defaultPrevented || !layout || !hostRef.current || !onPaper(event)) return null;
     const point = { x: event.clientX, y: event.clientY };
-    if (path.some(node => node instanceof HTMLElement && node.matches('.book-page-scroll')
-      && pointOnScrollbar(point, { rect: node.getBoundingClientRect(), offsetWidth: node.offsetWidth,
-        offsetHeight: node.offsetHeight, clientWidth: node.clientWidth, clientHeight: node.clientHeight,
-        clientLeft: node.clientLeft, clientTop: node.clientTop }))) return null;
     const rect = hostRef.current.getBoundingClientRect();
     // Read the print getter now: a scroll/refresh can invalidate it before React commits.
     const available = turnInputAvailability({ ...dragReadiness, book: bookRef.current,
-      printsReady: prints.ready, pointerOwned: !!pointerOwner.current });
+      printsReady: prints.ready, pointerOwned: !!pointerOwner.current || !!hotspotPointer.current });
     return turnCornerAtPoint(layout, { x: point.x - rect.left, y: point.y - rect.top }, available);
   };
   const pointerDown = (event: ReactPointerEvent<HTMLElement>, direction: 'next' | 'prev', corner: 'top' | 'bottom') => {
@@ -494,6 +547,56 @@ export default function BookApp() {
     if (owner.element.hasPointerCapture(owner.id)) owner.element.releasePointerCapture(owner.id);
   };
 
+  /** One command path for printed hotspots and their mirror controls: the same LessonCommand / audio calls as 2D. */
+  const runHotspot = (hotspot: PageHotspot) => {
+    const action = hotspot.command;
+    if (!hotspot.enabled || !action || !bookCanInteract(bookRef.current)) return;
+    switch (action.type) {
+      case 'lesson': action.commands.forEach(item => command(item)); break;
+      case 'play': play(action.laneId); break;
+      case 'pause': pause(); break;
+      case 'resume': resume(); break;
+      case 'stop': stop('user-stop'); break;
+      case 'flap': progress.setHint(action.key, progress.hints[action.key] !== 1); break;
+      case 'ui': setPageUi(previous => ({ ...previous, ...action.patch })); break;
+      // Shots (R6) and contents jumps (R8) are printed later; keep a trace while they are inert.
+      case 'shot': case 'goto': if (import.meta.env.DEV && rootRef.current) rootRef.current.dataset.lastInertCommand = JSON.stringify(action); break;
+    }
+  };
+  const runHotspotRef = useRef(runHotspot);
+  runHotspotRef.current = runHotspot;
+  const activateMirror = useCallback((hotspot: PageHotspot) => runHotspotRef.current(hotspot), []);
+  const focusMirror = useCallback((id: string | null) => setFocusId(id), []);
+  // The mirror follows page layouts only; hover/focus/press repaint the state layer without touching it.
+  const leftLayout = prints.surfaces.get(currentSpread.leftPageId)?.layout;
+  const rightLayout = prints.surfaces.get(currentSpread.rightPageId)?.layout;
+  const mirrorPages = useMemo<readonly MirrorPage[]>(() => leftLayout && rightLayout
+    ? [{ pageId: currentSpread.leftPageId, side: 'left', layout: leftLayout }, { pageId: currentSpread.rightPageId, side: 'right', layout: rightLayout }] : [],
+  [leftLayout, rightLayout, currentSpread]);
+  const printStatsRef = useRef(prints.stats);
+  printStatsRef.current = prints.stats;
+  const beginPress = (event: ReactPointerEvent<HTMLElement>, hit: PageHit, hotspot: PageHotspot) => {
+    const element = event.currentTarget;
+    hotspotPointer.current = { id: event.pointerId, x: event.clientX, y: event.clientY, pageId: hit.pageId, hotspotId: hotspot.id, element };
+    element.setPointerCapture(event.pointerId);
+    setPressedId(hotspot.id);
+    setDragHover(false);
+    event.preventDefault();
+  };
+  const finishPress = (event: ReactPointerEvent<HTMLElement>) => {
+    const press = hotspotPointer.current;
+    if (!press || press.id !== event.pointerId) return false;
+    hotspotPointer.current = null;
+    setPressedId(null);
+    if (press.element.hasPointerCapture(press.id)) press.element.releasePointerCapture(press.id);
+    if (Math.hypot(event.clientX - press.x, event.clientY - press.y) >= PRESS_SLOP) return true;
+    // Re-read the hotspot: its command and enabled state follow the latest print.
+    const hotspot = printsRef.current.get(press.pageId)?.layout.hotspots.find(item => item.id === press.hotspotId);
+    if (hotspot) runHotspot(hotspot);
+    return true;
+  };
+  const playbackStatus = playbackState === 'starting' ? '소리를 준비해요' : playbackState === 'paused' ? '일시정지' : playbackState === 'playing' ? '재생 중' : '정지 상태';
+
   const intro = book.phase === 'introReady' || book.phase === 'introMoving';
   const coverVisible = !book.isOpen && book.phase !== 'opening';
   const open = (spreadId: SpreadId = 'spread-1', resumeSaved = false) => {
@@ -515,18 +618,37 @@ export default function BookApp() {
     const predicted = bookReducer(current, event);
     if (pointerOwner.current || predicted === current) return false;
     stop('page-navigation');
-    // Only a new turn/close advances this token. Updating the pending intent
-    // must keep the in-flight capture; repeated taps otherwise restart it.
-    if (predicted.navigationToken !== current.navigationToken) prints.refresh();
     send(event);
     return true;
   };
-  return <main ref={rootRef} className={`book-app ${book.mode === '2d' ? 'book-app--2d' : ''}`} data-phase={book.phase} data-camera={book.camera} data-scene={book.scene} data-transport={book.transport} data-session-id={book.transportSessionId ?? ''} data-spread={book.currentSpreadId} data-book-epoch={book.bookEpoch} data-lesson-revision={lesson.revision} data-prints-ready={prints.ready} data-print-count={prints.textures.size} data-print-pages={printPageIds.join(',')}
-    data-drag-hover={dragHover && (dragAvailability.next || dragAvailability.prev)} data-drag-active={!!book.gesture?.pointerActive}
-    onPointerDown={event => { const hit = pointerCorner(event); if (hit) pointerDown(event, hit.direction, hit.corner); }}
-    onPointerMove={event => { if (pointerOwner.current) pointerMove(event); else setDragHover(!!pointerCorner(event)); }}
-    onPointerUp={pointerUp} onPointerCancel={cancelPointer}
-    onPointerLeave={() => { if (!pointerOwner.current) setDragHover(false); }} onKeyDown={event => {
+  return <main ref={rootRef} className={`book-app ${book.mode === '2d' ? 'book-app--2d' : ''}`} data-phase={book.phase} data-camera={book.camera} data-scene={book.scene} data-transport={book.transport} data-session-id={book.transportSessionId ?? ''} data-spread={book.currentSpreadId} data-book-epoch={book.bookEpoch} data-lesson-revision={lesson.revision} data-prints-ready={prints.ready} data-print-count={prints.surfaces.size} data-print-pages={printPageIds.join(',')}
+    data-renderer="ink" data-print-generation={prints.generation} data-focus-hotspot={interaction.focusId ?? ''} data-pressed-hotspot={interaction.pressedId ?? ''}
+    data-drag-hover={dragHover && (dragAvailability.next || dragAvailability.prev)} data-drag-active={!!book.gesture?.pointerActive} data-hotspot-hover={!!interaction.hoverId}
+    onPointerDown={event => {
+      const pending = pendingHit.current?.pointerId === event.pointerId ? pendingHit.current.hit : null;
+      pendingHit.current = null;
+      if (pending?.hotspot && event.button === 0 && event.isPrimary && !pointerOwner.current) {
+        // A printed control owns its paper, enabled or not: it never starts a page drag (as DOM controls in v2).
+        if (pending.hotspot.enabled && bookCanInteract(bookRef.current)) beginPress(event, pending, pending.hotspot);
+        return;
+      }
+      const hit = pointerCorner(event);
+      if (hit) pointerDown(event, hit.direction, hit.corner);
+    }}
+    onPointerMove={event => {
+      const press = hotspotPointer.current;
+      if (press) {
+        if (event.pointerId === press.id && Math.hypot(event.clientX - press.x, event.clientY - press.y) >= PRESS_SLOP) cancelPointer();
+        return;
+      }
+      if (pointerOwner.current) { pointerMove(event); return; }
+      const hit = onPaper(event) && bookCanInteract(bookRef.current) ? pageHit(event.clientX, event.clientY) : null;
+      const hover = hit?.hotspot?.enabled ? hit.hotspot.id : null;
+      setHoverId(hover);
+      setDragHover(!hover && !!pointerCorner(event));
+    }}
+    onPointerUp={event => { if (!finishPress(event)) pointerUp(event); }} onPointerCancel={cancelPointer}
+    onPointerLeave={() => { if (!pointerOwner.current) { setDragHover(false); setHoverId(null); } }} onKeyDown={event => {
     if (event.key === 'Escape' && intro) { event.preventDefault(); send({ type: 'SKIP_INTRO', inputId: ++inputId.current }); }
     else if (event.key === 'Escape' && pointerOwner.current) { event.preventDefault(); cancelPointer(); }
     else {
@@ -540,7 +662,8 @@ export default function BookApp() {
     }
   }} onPointerDownCapture={event => {
     if ((pointerOwner.current && pointerOwner.current.id !== event.pointerId)
-      || (scenePointer.current && scenePointer.current.id !== event.pointerId)) {
+      || (scenePointer.current && scenePointer.current.id !== event.pointerId)
+      || (hotspotPointer.current && hotspotPointer.current.id !== event.pointerId)) {
       cancelPointer();
       // Do not let a different primary pointer type start a new drag from the
       // still-current React render. Leave browser pan/pinch defaults untouched.
@@ -548,8 +671,14 @@ export default function BookApp() {
       return;
     }
     scenePointer.current = null;
-    const target = event.target as HTMLElement;
-    if (book.scene === 'ready' && !pointerOwner.current && target.closest('.book-popup-window') && event.button === 0 && event.isPrimary) scenePointer.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    // One raycast per press: the bubble handler reads the same page hit.
+    const paper = onPaper(event);
+    const hit = paper ? pageHit(event.clientX, event.clientY) : null;
+    pendingHit.current = { pointerId: event.pointerId, hit };
+    // The figure is the printed window plus whatever of the standing figure the eye sees above it.
+    const scene = musicSceneRef.current;
+    const figure = !hit?.hotspot && (hit?.figure || paper && !!scene && !!stageRef.current?.pickScene(event.clientX, event.clientY, scene.pickTargets));
+    if (book.scene === 'ready' && !pointerOwner.current && figure && event.button === 0 && event.isPrimary) scenePointer.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
   }} onPointerUpCapture={event => {
     const owner = scenePointer.current;
     scenePointer.current = null;
@@ -560,7 +689,7 @@ export default function BookApp() {
     if (pick) { command({ type: 'selectLane', laneId: pick.laneId }); command({ type: 'select', id: pick.eventId }); }
   }} onPointerCancelCapture={() => { scenePointer.current = null; }} onLostPointerCapture={event => {
     if (scenePointer.current?.id === event.pointerId) scenePointer.current = null;
-    if (pointerOwner.current?.id === event.pointerId) cancelPointer();
+    if (pointerOwner.current?.id === event.pointerId || hotspotPointer.current?.id === event.pointerId) cancelPointer();
   }}>
     <div ref={hostRef} className="book-stage" aria-hidden="true" />
     {(!stageReady || book.mode === '2d') && !book.isOpen && <div className="book-first-paint"><img src="/book/front-cover-preview.png" alt="" /><span>{book.phase === 'bootLoading' ? '책을 준비하고 있어요' : ''}</span></div>}
@@ -576,33 +705,48 @@ export default function BookApp() {
       {book.phase === 'coverIdle' && !progress.canSave && <p className="book-cover-storage-notice" role="status">{progress.notice} 책 안의 ‘기록과 설정’에서 원문을 내보낼 수 있어요.</p>}
       {error && book.mode === '2d' && <div className="book-cover-message" role="status">{error}<button onClick={retry3D}>3D 다시 시도</button></div>}
     </div>}
-    {BOOK_MANIFEST.map(spread => {
-      const active = livePagesVisible && book.currentSpreadId === spread.spreadId;
-      // Lifecycle input ownership belongs to the inert page wrapper. Keeping the
-      // ready appearance avoids a disabled-style flash when DOM becomes print.
+    {book.mode === '2d' && BOOK_MANIFEST.filter(spread => livePagesVisible && book.currentSpreadId === spread.spreadId).map(spread => {
+      // v3 R3: DOM pages are the 2D reading book only. The 3D book is printed (no .book-page in 3D).
+      const progressTools = <>
+        {!progress.canSave && <p className="book-page-error" role="status">자동 저장을 멈췄어요. {progress.notice}</p>}
+        <BookProgressTools key={`${book.bookEpoch}:${spread.spreadId}`} busy={!bookCanInteract(book) || playingState(playback?.state)}
+          notice={progress.notice} protectedRaw={progress.protectedRaw} backups={progress.backups} exportedText={progress.exportedText}
+          preview={progress.preview} preferences={progress.preferences} onPreferences={updatePreferences}
+          onOpen={() => stop('record-tools')} onExport={progress.exportCurrent} onPreviewImport={progress.previewImport}
+          onConfirmImport={progress.confirmImport} onCancelImport={progress.cancelImport} onDelete={progress.deleteAll} />
+      </>;
       const props = { lesson, sceneId: spread.sceneId, interactive: true,
-        playback: active ? playback : stoppedPlayback, playingLane: active ? playingLane : null, onCommand: command, onPlay: play, onPause: pause, onResume: resume, onStop: () => stop('user-stop'), onMute: () => updatePreferences({ muted: !progress.preferences.muted }),
-        onMode: changeReadingMode, mode: book.mode, pageWidth: book.mode === '2d' ? undefined : Math.max(120, pageWidth - 34), reducedMotion: book.reducedMotion,
-        hints: progress.hints, onHint: progress.setHint, preparationEpoch: book.bookEpoch,
-        progressTools: <>
-          {!progress.canSave && <p className="book-page-error" role="status">자동 저장을 멈췄어요. {progress.notice}</p>}
-          <BookProgressTools key={`${book.bookEpoch}:${spread.spreadId}`} busy={!active || !bookCanInteract(book) || !!playback && ['starting', 'playing', 'paused'].includes(playback.state)}
-            notice={progress.notice} protectedRaw={progress.protectedRaw} backups={progress.backups} exportedText={progress.exportedText}
-            preview={progress.preview} preferences={progress.preferences} onPreferences={updatePreferences}
-            onOpen={() => stop('record-tools')} onExport={progress.exportCurrent} onPreviewImport={progress.previewImport}
-            onConfirmImport={progress.confirmImport} onCancelImport={progress.cancelImport} onDelete={progress.deleteAll} />
-        </> };
-      return <div key={spread.spreadId} className={`book-paper-dom${active ? '' : ' book-paper-dom--preparing'}`} data-book-surface="true" inert={!active || !bookCanInteract(book)} aria-hidden={!active}>
-        {(['left', 'right'] as const).map(side => <section key={side} className={`book-page book-page--${side}`} data-active-page={active} style={active && layout && book.mode === '3d' ? pageStyle(layout[side], { width: pageWidth, height: pageHeight }) : active && book.mode === '2d' ? undefined : { width: pageWidth, height: pageHeight }}>
+        playback, playingLane, onCommand: command, onPlay: play, onPause: pause, onResume: resume, onStop: () => stop('user-stop'), onMute: () => updatePreferences({ muted: !progress.preferences.muted }),
+        onMode: changeReadingMode, mode: book.mode, reducedMotion: book.reducedMotion,
+        hints: progress.hints, onHint: progress.setHint, preparationEpoch: book.bookEpoch, progressTools };
+      return <div key={spread.spreadId} className="book-paper-dom" data-book-surface="true" inert={!bookCanInteract(book)}>
+        {(['left', 'right'] as const).map(side => <section key={side} className={`book-page book-page--${side}`} data-active-page="true">
           <div className="book-page-scroll" data-print-page={side === 'left' ? spread.leftPageId : spread.rightPageId}>
             {side === 'left' ? <LessonLeftPage {...props} /> : <LessonRightPage {...props} />}
-            {active && side === 'right' && error && book.mode === '2d' && <p className="book-page-error" role="status" data-snapshot-exclude="true">
+            {side === 'right' && error && <p className="book-page-error" role="status" data-snapshot-exclude="true">
               {error}<button onClick={retry3D}>3D 다시 시도</button>
             </p>}
           </div>
         </section>)}
       </div>;
     })}
+    {mirrorVisible && mirrorPages.length === 2 && <AccessibleMirror key={`${book.bookEpoch}:${book.sceneInstanceId}`} spreadId={book.currentSpreadId} pages={mirrorPages}
+      inert={!interactive} onActivate={activateMirror} onFocusHotspot={focusMirror} />}
+    {book.mode === '3d' && book.isOpen && book.phase !== 'closing' && <nav className="book-toolbar" aria-label="책 도구">
+      {/* Provisional R3 toolbar (C1): global controls live outside the printed page; R5 completes it. */}
+      <button type="button" className="book-text-button" data-testid="reading-mode" aria-label="크게 읽기, 2D 책으로 전환" onClick={changeReadingMode}>크게 읽기</button>
+      <button type="button" className="book-text-button" aria-pressed={progress.preferences.muted}
+        onClick={() => updatePreferences({ muted: !progress.preferences.muted })}>{progress.preferences.muted ? '음소거 해제' : '음소거'}</button>
+      <span className="book-sr-only" role="status">{playbackStatus}</span>
+      <div className="book-toolbar-records">
+        {!progress.canSave && <p className="book-page-error" role="status">자동 저장을 멈췄어요. {progress.notice}</p>}
+        <BookProgressTools key={book.bookEpoch} busy={!interactive || playingState(playback?.state)}
+          notice={progress.notice} protectedRaw={progress.protectedRaw} backups={progress.backups} exportedText={progress.exportedText}
+          preview={progress.preview} preferences={progress.preferences} onPreferences={updatePreferences}
+          onOpen={() => stop('record-tools')} onExport={progress.exportCurrent} onPreviewImport={progress.previewImport}
+          onConfirmImport={progress.confirmImport} onCancelImport={progress.cancelImport} onDelete={progress.deleteAll} />
+      </div>
+    </nav>}
     {book.isOpen && book.phase !== 'closing' && <>
       <div className="book-navigation book-navigation--prev" style={layout && book.mode === '3d' ? navigationButtonPosition(layout, 'prev') : undefined}>
         <button data-testid="book-prev" className="book-text-button" aria-label={book.currentSpreadId === 'spread-1' ? '표지로' : '이전 펼침면'} onClick={() => navigate('prev', 'button')}>←</button>

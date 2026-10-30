@@ -8,7 +8,8 @@ export interface BookInspector {
 }
 
 // The live book's inspector owns the global Window typing; this frozen copy writes the same slot untyped.
-type InspectorWindow = Window & { __bookInspector?: BookInspector };
+// The live v3 inspector owns the global Window declaration; the frozen copy uses its own shape.
+type InspectorWindow = { __bookInspector?: BookInspector };
 
 export type BookInspectorOptions = Readonly<{
   getStage: () => BookStage | null;
@@ -99,14 +100,14 @@ export function attachBookInspector(options: BookInspectorOptions): () => void {
     reset,
     snapshot,
   };
-  (window as InspectorWindow).__bookInspector = inspector;
+  (window as unknown as InspectorWindow).__bookInspector = inspector;
   return () => {
     if (disposed) return;
     try {
       reset();
     } finally {
       disposed = true;
-      if ((window as InspectorWindow).__bookInspector === inspector) delete (window as InspectorWindow).__bookInspector;
+      if ((window as unknown as InspectorWindow).__bookInspector === inspector) delete (window as unknown as InspectorWindow).__bookInspector;
     }
   };
 }

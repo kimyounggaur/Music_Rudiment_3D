@@ -10,6 +10,12 @@ export const LESSON_LANE_Z: Readonly<Record<SceneId, readonly number[]>> = Objec
   'scene-5': Object.freeze([0.45]), 'scene-6': Object.freeze([0.45]),
 });
 export const lessonSceneCenter = (id: SceneId) => (LESSON_LANE_Z[id][0] + LESSON_LANE_Z[id].at(-1)!) / 2;
+/**
+ * v3 R3: how far (page Z) a lane block's raised top face reaches toward the far edge on screen
+ * at the reading pose: block height × scene scale / tan(62°). The printed figure window centres
+ * the lanes' visual extent, not their bases (tests/book-lesson-scene checks the constant).
+ */
+export const LESSON_FIGURE_RAISE_Z = 0.0453;
 
 export function lessonEditsAllowed(interactive: boolean, state: AudioState | undefined): boolean {
   return interactive && state !== 'starting' && state !== 'playing' && state !== 'paused';

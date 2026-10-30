@@ -53,7 +53,14 @@ export interface StageTextures {
   staticRight: Texture | null;
   turnFront: Texture | null;
   turnBack: Texture | null;
+  /** v3 R3 state layers (selection, playback note, hover, pressed, focus) for the same faces. */
+  staticLeftState: Texture | null;
+  staticRightState: Texture | null;
+  turnFrontState: Texture | null;
+  turnBackState: Texture | null;
 }
+/** A point on the printed page: u from the left edge, v from the top edge (print canvas orientation). */
+export type PagePointerHit = Readonly<{ side: 'left' | 'right'; u: number; v: number }>;
 export interface StageMetrics {
   renderedFrames: number;
   geometries: number;
@@ -78,6 +85,10 @@ export interface BookStage {
   setSceneWindow(window: StageSceneWindow | null): void;
   pickScene(clientX: number, clientY: number, targets: Mesh[]): Mesh | null;
   pointerProjection(clientX: number, clientY: number, grabbedOffsetX?: number): { x: number; y: number; z: number; u: number; v: number; turnProgress?: number } | null;
+  /** v3 R3: the printed page under a client point (raycast on the curved page meshes), when the book is open and still. */
+  pagePointer(clientX: number, clientY: number): PagePointerHit | null;
+  /** v3 R3: client coordinates of a page-local point (u right, v down), for inspection and tests. */
+  pagePoint(side: 'left' | 'right', u: number, v: number): StagePoint | null;
   getLayout(): StageLayout | null;
   invalidate(): void;
   dispose(): void;
@@ -257,7 +268,8 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
   }
 
   let state: StageUpdate = { coverProgress: 0, introProgress: 0, currentSpreadIndex: 0, spreadCount: 6, turn: null, sceneProgress: 0, suspendFit: false };
-  const textures: StageTextures = { staticLeft: null, staticRight: null, turnFront: null, turnBack: null };
+  const textures: StageTextures = { staticLeft: null, staticRight: null, turnFront: null, turnBack: null,
+    staticLeftState: null, staticRightState: null, turnFrontState: null, turnBackState: null };
   let width = 0;
   let height = 0;
   let layout: StageLayout | null = null;
@@ -509,6 +521,10 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       rightMaterial.setPrint(textures.staticRight);
       leafFrontMaterial.setPrint(textures.turnFront);
       leafBackMaterial.setPrint(textures.turnBack);
+      leftMaterial.setState(textures.staticLeftState);
+      rightMaterial.setState(textures.staticRightState);
+      leafFrontMaterial.setState(textures.turnFrontState);
+      leafBackMaterial.setState(textures.turnBackState);
       invalidate();
     },
     setSceneGroup(group) {
@@ -547,6 +563,27 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
         x: rayHit.x, y: rayHit.y, z: rayHit.z, u: rayHit.x / D.pageWidth, v: rayHit.z / D.pageHeight + 0.5,
         turnProgress: state.turn ? leafProgressFromX(D.pageWidth, D.pageHeight, rayHit.x - grabbedOffsetX, state.turn.corner, state.turn.direction) : undefined,
       };
+    },
+    pagePointer(clientX, clientY) {
+      if (disposed || !layout || state.turn || unitProgress(state.coverProgress) < 1) return null;
+      const rect = renderer.domElement.getBoundingClientRect();
+      if (!(rect.width > 0 && rect.height > 0)) return null;
+      pointer.set((clientX - rect.left) / rect.width * 2 - 1, 1 - (clientY - rect.top) / rect.height * 2);
+      raycaster.setFromCamera(pointer, camera);
+      const hit = raycaster.intersectObjects([leftPage, rightPage], false)[0];
+      if (!hit?.uv) return null;
+      // Page geometry UV is (u, 1 - row); the print canvas runs top-down.
+      return { side: hit.object === leftPage ? 'left' : 'right', u: hit.uv.x, v: 1 - hit.uv.y };
+    },
+    pagePoint(side, u, v) {
+      if (disposed || !layout || ![u, v].every(Number.isFinite)) return null;
+      const mesh = side === 'left' ? leftPage : rightPage;
+      const spine: SpineSide = side === 'left' ? 'end' : 'start';
+      const amplitude = geometryState[side].amplitude;
+      const local = new Vector3(u * D.pageWidth, amplitude * spreadHeight(spine === 'start' ? u : 1 - u), (v - 0.5) * D.pageHeight);
+      const point = project(local.applyMatrix4(mesh.matrixWorld));
+      const rect = renderer.domElement.getBoundingClientRect();
+      return { x: rect.left + point.x, y: rect.top + point.y };
     },
     pickScene(clientX, clientY, targets) {
       if (disposed || !sceneAnchor.visible || state.turn || sceneWindow?.visible === false) return null;

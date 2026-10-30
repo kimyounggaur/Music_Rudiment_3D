@@ -16,3 +16,19 @@
    ResizeObserver -> redraw -> print cancellation on every animation frame. */
 .book-page-scroll{scrollbar-gutter:stable}
 @supports not (scrollbar-gutter:stable){.book-app:not(.book-app--2d) .book-page-scroll{overflow-y:scroll}}
+
+/* v3 R3 ink book: 3D pages are WebGL prints. The accessible mirror is visually hidden but focusable
+   (focus is drawn on the paper by the state layer). It sits inside the visible box so focusing it
+   never scrolls the book. */
+.book-mirror{position:absolute;left:0;top:0;width:1px;height:1px;margin:0;padding:0;border:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;pointer-events:none}
+.book-app[data-hotspot-hover="true"]{cursor:pointer}
+/* Provisional R3 toolbar outside the book (C1). R5 replaces it with the full one-line bar. */
+.book-toolbar{position:absolute;z-index:4;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:flex-start;gap:6px;max-width:calc(100% - 20px);pointer-events:auto}
+.book-toolbar .book-text-button{padding:8px 12px;font-size:13px;background:#f7f4eae6;border-color:#8aa3ab}
+.book-toolbar-records{position:relative;min-width:0}
+.book-toolbar .book-progress-tools{margin:0;padding:0 12px;border:1px solid #8aa3ab;border-radius:3px;background:#f7f4eae6}
+.book-toolbar .book-progress-tools>summary{padding:12px 0;min-height:44px;font-size:13px}
+.book-toolbar .book-progress-tools[open]>.book-progress-content{position:absolute;right:0;top:calc(100% + 6px);width:min(380px,calc(100vw - 20px));max-height:calc(100dvh - 72px);overflow:auto;padding:12px;background:#fbf9f0;border:1px solid #8aa3ab;border-radius:3px;box-shadow:0 8px 22px #23303b33}
+.book-toolbar .book-progress-tools p{margin:0 0 9px;font-size:12px;line-height:1.55}
+.book-toolbar .book-page-error{position:absolute;right:0;top:calc(100% + 6px);width:min(300px,calc(100vw - 20px));margin:0;font-size:12px}
+.book-app[data-inspection="true"] .book-toolbar{visibility:hidden}

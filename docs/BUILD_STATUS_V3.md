@@ -11,7 +11,7 @@
 | R0 | V3-00 | 계약 개정 | 통과 |
 | R1 | V19 | 원근 카메라 리그 | 통과 |
 | R2 | V20 | 종이·조명·환경·후처리 | 통과 |
-| R3 | V21 | 캔버스 페이지 인쇄 시스템 | 미착수 |
+| R3 | V21 | 캔버스 페이지 인쇄 시스템 | 일부 완료 (x-height B6, 핫스폿 B5, 보조기술 외부 검수 대기) |
 | R4 | V22 | 잉크 그림 시스템 + 음가 그림 | 미착수 |
 | R5 | V23 | 조작부 재배치 | 미착수 |
 | R6 | V24 | 레슨 카메라 연출(샷) | 미착수 |
@@ -114,3 +114,54 @@ G1-C 체크리스트(부록 B) 영향 항목과 현재 판정:
   4. 표지 원화 재질은 조명을 받는 MeshStandardMaterial(roughness 0.62)이며 Neutral 톤매핑을 받는다(ΔE ≤ 6 확인).
   5. 종이 음영 측정은 설계서의 "좌우 끝과 책등 사이 휘도 차"를 네 여백 표본의 폭으로 정의했다. 광원 방향 때문에 오른쪽 거터는 빛을 향해 더 밝다.
 - **G1-C 체크리스트 영향 항목과 현재 판정:** 2번(종이 조명·곡면·그림자) — 정지 음영 4–5%, 거터 dip·처짐·잎 그림자 확인. 원본 실동작 비교는 미관측.
+
+---
+
+## R3 (V21) 캔버스 페이지 인쇄 시스템 — 일부 완료
+
+- **단계 ID와 상태:** R3 **일부 완료**. 인쇄 경로·핫스폿·접근성 거울·상태 레이어는 자동 검사와 e2e를 통과했다. 본문 x-height 기준(1280×720 ≥ 7 px)은 **미달**로 측정되어 설계서가 허용한 '크게 읽기' 안내 인쇄로 처리했고(CONTRACT_V3 B6), 인쇄 핫스폿 크기는 B5 재개정으로 처리했다. 실제 보조기술 검수는 **외부 검수 대기**(R9 사람 항목).
+- **실제로 가능한 사용자 행동:** 3D 책의 두 쪽이 종이에 인쇄된 그림으로 보인다(글자·오선·인쇄형 단추·라디오·접힘 탭·도장 칸). 종이 위 인쇄 단추를 눌러 듣기·일시정지·정지·나누기·합치기·추가·되돌리기·문항 응답·접힘 열기를 한다(누르는 동안 종이가 눌린 듯 어두워짐, 마우스를 올리면 엷게 표시). 인쇄된 악보 음표나 음표 목록 칸을 눌러 음표를 고른다. 키보드는 숨은 접근성 거울로 같은 조작을 하며 Tab 초점이 종이 위 호박색 링으로 보인다. 책 밖 오른쪽 위 임시 조작바에서 '크게 읽기', 음소거, '기록과 설정'을 쓴다. 모서리 드래그·화살표 넘김·2D 전환은 그대로다.
+- **변경 경로와 이유:**
+  - 신규 `src/book/print/`: `pageSpec.ts`(인쇄 DSL), `pageLayout.ts`(순수 배치·줄바꿈·핫스폿·거울 노드·figureRects), `pagePainter.ts`(흰 바탕 잉크 인쇄), `notationRaster.ts`(VexFlow CanvasContext로 쪽 캔버스에 직접 판각), `pageFonts.ts`·`pageFonts.generated.ts`(번들 글꼴), `pageCompositor.ts`(쪽마다 텍스처 1개, draft→settled, 예산), `usePageCompositor.ts`(React 소유자), `hotspots.ts`(상태 레이어·거울 순서), `AccessibleMirror.tsx`(시각 숨김 거울).
+  - 신규 `src/content/pages/`: `lessonPages.ts`(12쪽 PageSpec), `pageText.ts`(2D·3D 공용 문장), `index.ts`.
+  - 수정 `src/book/BookApp.tsx`(3D에서 `.book-paper-dom` 제거, 컴포지터 텍스처·상태 텍스처 연결, 핫스폿·그림 창·모서리 입력 라우팅, 거울, 임시 조작바, inspector 확장), `src/book/stage.ts`(state 텍스처 4면, `pagePointer` 곡면 raycast, `pagePoint`), `src/book/render/paperMaterial.ts`(상태 레이어를 곱하기 마커로 합성), `src/book/LessonPages.tsx`(공용 문장 사용), `src/book/lessonPresentation.ts`·`lessonScene.ts`(그림 창 보정 상수), `src/book/inspector.ts`, `src/styles/book.css`, `src/legacy/book/inspector.ts`(전역 타입 단언만).
+  - 글꼴: `scripts/extract-page-fonts.mjs`, `scripts/rename-subset-font.py`, `public/fonts/book-{sans-regular,sans-semibold,serif-bold}.subset.woff2`(합 153 KB, 546자), `public/licenses/book-page-fonts.txt`.
+  - 검증: `scripts/book-v3-e2e.ts`(B4의 v3 e2e), `scripts/refactor-capture.ts`(R3 인쇄 측정 추가). 테스트 신규 `tests/print-layout.test.ts`(10), `tests/print-compositor.test.ts`(6), `tests/hotspots.test.ts`(4), `tests/page-fonts.test.ts`(2), `tests/book-lesson-scene.test.ts`에 1개 추가, 공용 스텁 `tests/support/`.
+- **실행 명령과 종료 결과:** `npm run typecheck` 0, `npm run lint` 0, `npm test` 327/327, `npm run build` 0(500 kB 경고 1건은 R1과 같은 three 공유 청크). `node scripts/book-v3-e2e.ts` 17/17 통과 × 3 viewport(1280×720, 844×390, 390×844). `node scripts/refactor-capture.ts --stage R3 …` ink 18장 + legacy 12장.
+- **기기와 브라우저 및 commit:** Linux 컨테이너, Node 22.23.4, Playwright 1.60 + headless Chromium 1243(SwiftShader WebGL), DPR 1. 캡처는 `?quality=high`.
+- **실제 캡처 영상 로그 경로:** [qa/refactor/R3/index.md](qa/refactor/R3/index.md)(after ink 18장, legacy 12장, before = R2 after), e2e JSON 3개, settled 교체 전후 프레임 3장.
+- **측정값:** 3D DOM의 HTML 쪽 요소 **0개**(3 viewport). 본문 글자 7.7 / 4.0 / 3.3 px, x-height **4.1 / 2.1 / 1.8 px**(1280×720 / 844×390 / 390×844; 목표 7 / 5.5 px 미달 → CONTRACT_V3 B6). 가장 작은 인쇄 핫스폿 10.5 / 5.5 / 4.6 px(→ B5). 인쇄 텍스처 37.3 MiB(첫 펼침면, 4쪽) / 46.1 MiB(6쪽 창), 예산 48 MiB, 20회 왕복 뒤 증가 0. `print:draft` 측정 최대 5.2 ms(3 viewport, 1280×720은 1.4 ms; 배치+그리기 명령, 래스터화는 업로드 때), settled 인쇄 ≤ 23 ms. 클릭→렌더 프레임 0.03–3.3 s(SwiftShader 소프트웨어 GL, 대표값 아님). settled 교체: draft·settled 프레임 잉크 교차상관 최적 오프셋 (0,0), 같은 내용 재인쇄 픽셀 동일. draw calls 114(spread1, R2와 같음) / 93(spread2). 책 폭 0.625 / 0.499 / 0.884, far/near 0.847 / 0.851 / 0.938, 종이 음영 4.4 / 4.9 %(R2와 같은 범위). 페이지 오류 0. 글꼴 153 KB.
+- **미실행 항목과 정확한 이유:** 실제 스크린리더(NVDA·VoiceOver·TalkBack) 읽기 순서와 숨은 거울 탐색, 실기기 터치로 인쇄 핫스폿 누르기, 200% 확대 — 사람 검사(R9). 실 GPU에서 편집→화면 지연(SwiftShader는 프레임 하나에 0.8–3 s라 대표값이 아님). 아래 사람 검사 항목.
+- **남은 결함과 재현 절차:**
+  1. 본문 x-height 미달(B6): 1280×720에서 spread1을 열면 본문이 약 7.7 px 글자로 인쇄된다. 왼쪽 쪽 아래 '크게 읽기' 안내, R6 가까이 보기 샷으로 보완 예정.
+  2. 인쇄 핫스폿이 24 px 미만(B5): 같은 조작을 조작바 '크게 읽기'(2D, 44 px)와 키보드 거울로 제공.
+  3. (과도기) 그림은 아직 R2 색 블록이다(R4에서 잉크 그림). 블록 윗면이 원근으로 떠 보이는 만큼 그림 창을 보정했다.
+  4. (과도기) 접힘 탭은 인쇄된 탭 + 쐐기 표시다. 접힌 종이 메시는 R5.
+  5. (과도기) 조작바는 오른쪽 위 임시 배치, 이전/다음 단추는 아직 쪽 바깥 변에 있다(R5에서 하단 한 줄 조작바로).
+- **객관적 게이트와 선택적 사용자 피드백 상태:** 3D DOM의 `.book-page`/`.book-paper-dom` 0개(3 viewport), BK12(넘김 중 거울 없음, 프레임 표본), draft 인쇄 ≤ 60 ms, settled 교체 jump 0(교차상관 최적 오프셋 (0,0)), 메모리 ≤ 48 MiB(20회 왕복 뒤 증가 0), 같은 revision 파생(단위 테스트·e2e). 사람 피드백 없음.
+- **다음 허용 단계와 막힌 단계:** R4 허용(그림 창은 `figureRects`, 상태 레이어·컴포지터 준비됨). R5는 R4 뒤.
+- **전후 캡처 경로와 metrics.json 요약:** index.md 표 참고.
+- **renderer 플래그 상태:** 기본 `ink`(인쇄 책), `?renderer=legacy`는 착수 커밋 고정 사본(정상, 캡처 12장).
+- **R1 과도기 결함과 R2 known-offset:** 3D에 HTML 쪽이 없으므로 R1의 matrix3d 기울어진 HTML 글자와 R2의 곡면과 어긋나는 HTML 글자(최대 약 5 px)는 **해소**됐다. 글자는 곡면 쪽 텍스처에 인쇄된다.
+- **설계서 대비 편차와 사유:**
+  1. **DSL 모양**: 설계서 (1)의 13종 블록 대신 여섯 장면(B1)에 필요한 블록(heading 1–3, buttons(열·compact), checklist, checkbox, flap(중첩·hintKey), secondsAxis, when, stampSlot)과 상태에 따른 값(Dynamic)을 쓴다. 러닝헤드·쪽번호는 PageSpec 필드다.
+  2. **콘텐츠 파일**: spread-1/spread-2 대신 `content/pages/lessonPages.ts` 하나가 여섯 펼침면 12쪽을 만든다(B1). 2D와 3D가 같은 문장을 쓰도록 공용 문장은 `pageText.ts`로 모았다(완전한 DSL 해석기는 R8). 2D에 있던 재생 도움말을 인쇄 쪽에도 넣고, 인쇄 일시정지 단추 이름을 2D와 같은 '일시정지'로 맞췄다.
+  3. **악보 래스터**: `renderNotation()` SVG를 Image로 디코드하는 대신 VexFlow `CanvasContext`로 쪽 캔버스에 직접 그린다(같은 판각 규칙). 인쇄가 동기식이 되어 넘김 barrier가 디코드를 기다리지 않는다. VexFlow는 그릴 때 음표머리 x를 정하므로, 음표 상자는 보이지 않는 측정 캔버스에 한 번 그린 뒤 읽는다(먼저 읽으면 상자가 오선 시작점으로 늘어나는 결함을 캡처에서 찾아 수정).
+  4. **해상도·예산**: settled 1280(low 1024) / draft 768(low 640) / state 512. 설계서의 1536 settled와 512×724 state는 밉맵(×4/3)을 빼고 48 MB를 계산했다. 밉맵을 넣은 6쪽 창은 46.1 MiB다.
+  5. **같은 텍스처 객체**: 쪽마다 CanvasTexture 하나를 창 안에서 유지하고 해상도만 바꾼다(크기가 바뀌면 GPU 저장소를 해제 후 재업로드). 정지 쪽과 넘김 잎이 같은 객체라 넘김 시작에 교체가 없다.
+  6. **입력 우선순위**: 설계서는 모서리 → 핫스폿 순서였으나, 1280×720에서 44 px 모서리가 오른쪽 쪽 위 듣기 단추를 덮는다. v2 불변식("투명 hit overlay가 조작을 빼앗지 않는다", `turnTargetOwnsInput`)에 따라 **인쇄 조작(비활성 포함) → 모서리 드래그 → 그림 선택** 순서로 했다.
+  7. **인쇄 외관**: 인쇄는 항상 상호작용 가능한 외관으로 찍는다. 넘김·진입 중 입력 차단은 `bookCanInteract`와 거울 `inert`가 맡는다. 넘김 시작에 버튼이 흐려지며 다시 인쇄되는 일을 막는다(v2의 "ready appearance" 규칙).
+  8. **상태 레이어 합성**: mix 대신 곱하기(마커). 선택 칠 아래 잉크가 바래지 않는다(`v3-paper-2`).
+  9. **e2e**: 과거 증거 스크립트(quiz/keyboard/notation-e2e)는 B4대로 보존하고, 같은 검사(문항·키보드·악보 선택·분할)를 `scripts/book-v3-e2e.ts`가 거울과 인쇄 핫스폿으로 한다.
+  10. **글꼴 이름**: 서브셋은 OFL의 수정본이라 예약 글꼴 이름(Pretendard)을 쓸 수 없다. 서브셋 이름을 **Book Sans**(Pretendard 파생)·**Book Serif**(Noto Serif CJK KR 파생)로 바꾸고 원 저작권·상표·라이선스 레코드는 유지했다(`tests/page-fonts.test.ts`). 결정 4(서체 선택)는 그대로다. `font-license-audit.ts` 확장 대신 이 테스트가 매 CI에서 검사한다.
+  11. 줄바꿈은 `Intl.Segmenter` 대신 공백 단위 keep-all + 넘치는 한 단어만 글자 분할(한국어 어절 = 공백 단위). 음표 목록은 2열 대신 4열(16개가 4줄): 44 px 칸이 물리적으로 불가능해 B5로 처리.
+- **G1-C 체크리스트 영향 항목과 현재 판정:** 3번(페이지가 인쇄물로 보임) — HTML 겹침 0, 종이 조명을 받는 인쇄 텍스처. 4번(조작부 위치) — 전역 조작은 책 밖 임시 조작바로 이동(R5에서 완성). 원본 실동작 비교는 미관측.
+
+### R3 사람 검사 항목 (`docs/qa/refactor/R3/after/`)
+
+- 쪽의 글자·오선이 종이에 인쇄된 것처럼 보이는가(HTML 단추·라디오·스크롤 영역이 없음).
+- 400% 확대 캡처에서 글자가 흐리지 않은가(x-height 미달은 B6로 기록).
+- 분할 단추를 10번 눌렀을 때 쪽이 깜빡이거나 튀지 않는가(e2e 프레임 비교 jump 0).
+- 키보드 Tab으로 조작을 옮길 때 종이 위에 초점 링이 보이는가.
+- 2D(크게 읽기) 책이 이전과 같은 내용·조작을 주는가.
+- 실제 스크린리더로 거울을 읽었을 때 순서가 [ACCESSIBILITY.md](qa/ACCESSIBILITY.md) R3 절과 같은가(미실행).

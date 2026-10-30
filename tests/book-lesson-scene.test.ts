@@ -144,3 +144,12 @@ test('dispose releases scene resources once, detaches its group, and makes old c
   assert.equal(scene.getSnapshot().playbackLaneId, null);
   for (const resource of resources) assert.equal(counts.get(resource), 1);
 });
+
+test('v3 R3: the printed figure window allows for the raised block tops at the reading pose', async () => {
+  const { LESSON_SCENE_SCALE } = await import('../src/book/lessonScene.ts');
+  const { LESSON_FIGURE_RAISE_Z } = await import('../src/book/lessonPresentation.ts');
+  const { BLOCK_HEIGHT } = await import('../src/scenes/durationWorld.ts');
+  const { READING_POSE } = await import('../src/book/render/cameraRig.ts');
+  const expected = BLOCK_HEIGHT * LESSON_SCENE_SCALE / Math.tan(READING_POSE.elevationDeg * Math.PI / 180);
+  assert.ok(Math.abs(LESSON_FIGURE_RAISE_Z - expected) < 5e-4, `${LESSON_FIGURE_RAISE_Z} vs ${expected}`);
+});

@@ -14,6 +14,12 @@ import { resolve } from 'node:path';
 import { chromium } from 'playwright';
 import type { Page } from 'playwright';
 import { applyHomography, homographyFromUnitSquare } from '../src/book/render/homography.ts';
+import { PAGE_LOGICAL, PRINT_TYPE } from '../src/book/print/pageLayout.ts';
+
+/** Book Sans Regular (renamed Pretendard Regular subset) OS/2 sxHeight / unitsPerEm (1086 / 2048): body Latin x-height. */
+const BODY_X_HEIGHT = 1086 / 2048;
+type InspectorPage = { pageId: string; side: 'left' | 'right' | null; scale: number; overflow: number; resolution: string;
+  hotspots: { id: string; enabled: boolean; rect: { x: number; y: number; w: number; h: number } }[] };
 
 type Point = { x: number; y: number };
 type Quad = { tl: Point; tr: Point; br: Point; bl: Point };
@@ -126,6 +132,39 @@ function layoutMetrics(layout: Layout | null, open: boolean): Record<string, num
   return result;
 }
 
+/**
+ * v3 R3 print metrics: on-screen body size and x-height (design §3.1: ≥ 7 px at 1280×720), the
+ * smallest printed hotspot, HTML page elements left in 3D (must be 0) and compositor memory.
+ */
+async function inkMetrics(page: Page, layout: Layout | null): Promise<Record<string, unknown>> {
+  const dom = await page.evaluate(() => ({
+    htmlPageElements: document.querySelectorAll('.book-page, .book-paper-dom').length,
+    mirrorControls: document.querySelectorAll('.book-mirror button, .book-mirror input').length,
+    mirrorPresent: !!document.querySelector('.book-mirror'),
+  }));
+  const pages = await page.evaluate(() => (window as unknown as { __bookInspector?: { pages(): unknown[] } }).__bookInspector?.pages() ?? []) as InspectorPage[];
+  const stats = await page.evaluate(() => (window as unknown as { __bookInspector?: { printStats(): unknown } }).__bookInspector?.printStats() ?? null) as
+    { bytes: number; budgetBytes: number; settled: number; drafts: number; states: number; lastDraftMs: number; lastSettledMs: number } | null;
+  const result: Record<string, unknown> = { ...dom };
+  if (stats) result.print = { MiB: Number((stats.bytes / 1048576).toFixed(2)), budgetMiB: stats.budgetBytes / 1048576, settled: stats.settled, drafts: stats.drafts,
+    states: stats.states, lastDraftMs: Number(stats.lastDraftMs.toFixed(2)), lastSettledMs: Number(stats.lastSettledMs.toFixed(2)) };
+  if (!layout) return result;
+  for (const item of pages) {
+    if (!item.side) continue;
+    const quad = layout[item.side];
+    // Screen pixels per logical page unit: side edges for vertical, top/bottom edges for horizontal.
+    const vertical = (distance(quad.tl, quad.bl) + distance(quad.tr, quad.br)) / 2 / PAGE_LOGICAL.height;
+    const horizontal = (distance(quad.tl, quad.tr) + distance(quad.bl, quad.br)) / 2 / PAGE_LOGICAL.width;
+    const body = PRINT_TYPE.body.size * item.scale * vertical;
+    const enabled = item.hotspots.filter(hotspot => hotspot.enabled);
+    const minimum = enabled.length ? Math.min(...enabled.map(hotspot => Math.min(hotspot.rect.w * horizontal, hotspot.rect.h * vertical))) : null;
+    result[item.side] = { pageId: item.pageId, resolution: item.resolution, layoutScale: item.scale, overflow: Number(item.overflow.toFixed(1)),
+      pxPerUnitV: Number(vertical.toFixed(4)), pxPerUnitH: Number(horizontal.toFixed(4)), bodyFontPx: Number(body.toFixed(2)),
+      bodyXHeightPx: Number((body * BODY_X_HEIGHT).toFixed(2)), hotspotMinPx: minimum === null ? null : Number(minimum.toFixed(1)), hotspots: enabled.length };
+  }
+  return result;
+}
+
 const captures: Capture[] = [];
 const browser = await chromium.launch({ headless: true, executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined,
   args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
@@ -185,8 +224,9 @@ try {
         // Spread of lit paper across the four printed margins: 0 means a flat, unlit sheet.
         samples.paperShadingPercent = Number(((Math.max(...margins) - Math.min(...margins)) / Math.max(...margins) * 100).toFixed(2));
       }
+      const ink = renderer === 'ink' && open && ['spread1', 'spread2', 'turn50'].includes(state) ? await inkMetrics(page, layout) : undefined;
       captures.push({ file: `${phase}/${file}`, viewport: name, state, renderer, phase, time: new Date().toISOString(),
-        data: await rootData(page), layout: layoutMetrics(layout, open), luminance: samples, extra });
+        data: await rootData(page), layout: layoutMetrics(layout, open), luminance: samples, extra: ink ? { ...extra, ink } : extra });
       process.stdout.write(`captured ${phase}/${file}\n`);
     }
 

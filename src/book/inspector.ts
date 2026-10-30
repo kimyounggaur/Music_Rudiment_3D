@@ -5,6 +5,16 @@ export interface BookInspector {
   pose(patch: Partial<StageUpdate>): BookInspectorSnapshot;
   reset(): void;
   snapshot(): BookInspectorSnapshot;
+  /** v3 R3: printed pages in the window, their hotspots and on-screen centres (client px) for tests. */
+  pages(): readonly unknown[];
+  /** v3 R3: compositor memory, paint counts and recent paint durations. */
+  printStats(): unknown;
+  /** v3 R3: the uploaded print (or state layer) of a page in the window as a PNG data URL. */
+  printImage(pageId: string, layer?: 'print' | 'state'): string | null;
+  /** v3 R3: hold settled upgrades so a draft frame can be compared with its settled frame. */
+  holdPrintUpgrades(hold: boolean): void;
+  /** v3 R3: client coordinates of a page-local point (u right, v down) on the open spread. */
+  pagePoint(side: 'left' | 'right', u: number, v: number): { x: number; y: number } | null;
 }
 
 declare global {
@@ -18,6 +28,10 @@ export type BookInspectorOptions = Readonly<{
   getVisual: () => StageUpdate;
   draw: (patch: Partial<StageUpdate>) => void;
   getRoot: () => HTMLElement | null;
+  getPages?: () => readonly unknown[];
+  getPrintStats?: () => unknown;
+  getPrintImage?: (pageId: string, layer: 'print' | 'state') => string | null;
+  holdPrintUpgrades?: (hold: boolean) => void;
 }>;
 
 const poseKeys = new Set(['coverProgress', 'introProgress', 'currentSpreadIndex', 'turn', 'inspectionWireframe']);
@@ -101,6 +115,11 @@ export function attachBookInspector(options: BookInspectorOptions): () => void {
     },
     reset,
     snapshot,
+    pages: () => structuredClone(options.getPages?.() ?? []),
+    printStats: () => structuredClone(options.getPrintStats?.() ?? null),
+    printImage: (pageId, layer = 'print') => options.getPrintImage?.(pageId, layer) ?? null,
+    holdPrintUpgrades: hold => options.holdPrintUpgrades?.(Boolean(hold)),
+    pagePoint: (side, u, v) => options.getStage()?.pagePoint(side === 'left' ? 'left' : 'right', Number(u), Number(v)) ?? null,
   };
   window.__bookInspector = inspector;
   return () => {
