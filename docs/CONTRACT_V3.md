@@ -47,7 +47,7 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | # | 편차 | 처리 |
 |---|---|---|
 | B1 | `5f2f7bb`에서 이미 여섯 펼침면(장면 1–6)이 HTML 경로로 구현됨(`manifest.ts` 6개, `LessonPages.tsx` 장면별 조작, `book-v13.test.ts` 323행) | R3·R4는 처음부터 여섯 펼침면 전체를 대상으로 한다. R8의 범위는 **목차·마침 펼침면 + GO_TO 다중 잎 + 장식 그림**으로 줄어든다 |
-| B2 | 설계서 §4 원칙 2는 `renderer: 'legacy' \| 'ink'` 두 경로를 같은 파일 안에서 분기하도록 적었다 | 분기 대신 **`src/legacy/`에 착수 커밋의 책 셸을 고정 사본**으로 두고 `?renderer=legacy`일 때 그 사본을 지연 로드한다. 새 경로는 사본을 건드리지 않고 자유롭게 바뀐다. 전후 비교 캡처의 before는 이 사본으로 만든다. R9에서 `src/legacy/`를 통째로 삭제한다 |
+| B2 | 설계서 §4 원칙 2는 `renderer: 'legacy' \| 'ink'` 두 경로를 같은 파일 안에서 분기하도록 적었다 | 분기 대신 **`src/legacy/`에 착수 커밋의 책 셸을 고정 사본**으로 두고 `?renderer=legacy`일 때 그 사본을 지연 로드한다. 새 경로는 사본을 건드리지 않고 자유롭게 바뀐다. 전후 비교 캡처의 before는 이 사본으로 만든다. R9에서 `src/legacy/`를 통째로 삭제한다. **R9-b에서 삭제했다**(`?renderer=legacy` 분기 포함, 남은 링크의 파라미터는 무시). 마지막 legacy 캡처는 R9 기준선 매트릭스 |
 | B3 | 작업 컨테이너의 Node는 22.23.4, `package.json` engines는 `>=24.14.0 <25` | engines는 바꾸지 않는다. 로컬 검사는 Node 22(타입 제거 기본 켬)로 실행하고, 브랜치 push 시 GitHub Actions(Node 24.14.0)의 typecheck·lint·test·build 결과를 함께 기록한다 |
 | B4 | 기존 e2e 스크립트(`keyboard-e2e.ts`, `quiz-e2e.ts`, `http-e2e.ts` 등)는 특정 산출물 SHA256과 Windows Chromium 경로에 고정된 과거 증거 스크립트다 | 수정하지 않고 과거 증거로 보존한다. v3 동작 검증은 새 `scripts/refactor-capture.ts`(R1, R9에서 `visual-baseline.ts`로 확장)와 `scripts/book-v3-e2e.ts`가 맡는다 |
 | B5 | 설계서 R3는 페이지 핫스폿을 "모든 화면에서 44 px 이상"으로 적었다. R0에서 "1280×720 44 px 목표, 모든 지원 크기 24 px 이상"으로 1차 개정했다 | **R3 실측으로 재개정.** 기본 읽기 포즈에서 펼친 쪽 하나의 화면 크기는 약 300×437 px(1280×720), 160×230 px(844×390), 140×190 px(390×844)다. 활성 인쇄 핫스폿의 가장 작은 변은 10.5 / 5.5 / 4.6 px로 24 px에도 못 미친다(`docs/qa/refactor/R3/metrics.json`). 2D와 같은 내용·조작을 한 쪽에 인쇄하는 한 물리적으로 확보할 수 없다. 그래서 인쇄 핫스폿은 **최소 크기를 요구하지 않는 포인터 편의 대상**으로 두고, WCAG 2.2 2.5.8의 '동등한 조작' 예외에 따라 같은 기능을 같은 화면에서 항상 함께 제공한다: ① 조작바(책 밖, 44 px) '크게 읽기'로 여는 2D 책 — 모든 조작 44 px, ② 접근성 거울의 키보드·보조기술 조작, ③ R6 '쪽 가까이 보기' 샷(계획). 표지·이전/다음·조작바 단추는 44 px다. 모드 전환으로 제공하는 동등 조작이라는 해석은 R9 사람 검수 항목이다 |
@@ -63,7 +63,7 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | EN02 | 방향키 소유권·큐·modifier/IME/repeat | `tests/book-gesture.test.ts`(arrowNavigationDirection), `tests/book-controller.test.ts`(pendingIntent) |
 | BK05–07 | leave→turn→arrive, snapshot/revisit | `tests/book-scene-host.test.ts`, `tests/book-controller.test.ts`, `tests/book-v13.test.ts` |
 | BK13–16 | 직접 drag·hold·reverse·release·cancel·lostcapture | `tests/book-controller.test.ts`, `tests/book-turn-hit.test.ts`, `tests/book-gesture.test.ts`, 사람 검사(실기기 터치) |
-| MU01–08 | 정확 분수·분할·조합·쉼표·템포·작곡 | `tests/domain.test.ts`, `tests/lesson.test.ts`, `tests/book-v13.test.ts`, `tests/duration-world.test.ts`(legacy 세계), `tests/duration-figure.test.ts`(R4 잉크 그림: 의미 6개 이전) |
+| MU01–08 | 정확 분수·분할·조합·쉼표·템포·작곡 | `tests/domain.test.ts`, `tests/lesson.test.ts`, `tests/book-v13.test.ts`, `tests/duration-figure.test.ts`(R4 잉크 그림: legacy 세계 테스트의 의미 6개 이전, `duration-world.test.ts`는 R9에서 삭제) |
 | AU01–07 | 단일 context·예약·정지·pause/resume | `tests/audio.test.ts`, `tests/audio-transport.test.ts`, `tests/book-audio-ownership.test.ts` |
 | RC01–05 | context loss·자산 실패·자원 수명·저장 | `tests/book-controller.test.ts`(WEBGL_LOST), `tests/book-scene-host.test.ts`, `tests/book-progress.test.ts`, `tests/persistence.test.ts`; 50회 왕복 누수는 R9 `scripts/perf-budget.ts` |
 | AX21 | 키보드·스크린리더·200%·2D·reduced, focus는 보이는 책 안 | `tests/hotspots.test.ts`(인쇄 조작 = 거울 조작, 2D test id, 제목·라이브 문장), `scripts/book-v3-e2e.ts`(Tab 초점 링이 state 레이어에 그려짐), 사람 검사(보조기술 실기는 `외부 검수 대기`) |
@@ -73,7 +73,7 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | 같은 revision | 인쇄·그림·소리·평가가 같은 `LessonState`에서 파생 | `tests/print-layout.test.ts`(분할 뒤 인쇄 음표 = `sceneEvents`), `tests/print-compositor.test.ts`(인쇄 키 = 장면 상태 식별) |
 | 인쇄 메모리 | 인쇄 창 텍스처 ≤ 48 MiB, 왕복 누수 0 | `tests/print-compositor.test.ts`(티어별 예산, 20회 왕복), `scripts/book-v3-e2e.ts`(실제 앱 20회 왕복) |
 | 활성 1개 | 활성 장면·오디오 세션 최대 1개 | `tests/book-scene-host.test.ts`, `tests/book-audio-ownership.test.ts` |
-| C6·C12 잉크 그림 | 의미는 `durationWorld`에서 import(x = onset×10, 폭 = 길이×10, 높이·깊이 고정), 피킹은 일어선 위치의 투명 상자(lift 0/1 동일), 쉼표는 면 없는 점선, 세로 scale 없이 평면도→입체 보간 + 펜 그리기 | `tests/duration-figure.test.ts`, `tests/figure.test.ts`, `tests/book-lesson-scene.test.ts` |
+| C6·C12 잉크 그림 | 의미는 `durationWorld`(R9부터 의미만 남음)에서 import(x = onset×10, 폭 = 길이×10, 높이·깊이 고정), 피킹은 일어선 위치의 투명 상자(lift 0/1 동일), 쉼표는 면 없는 점선, 세로 scale 없이 평면도→입체 보간 + 펜 그리기 | `tests/duration-figure.test.ts`, `tests/figure.test.ts`, `tests/book-lesson-scene.test.ts` |
 | 데이터 먼저 | 분할·합치기는 데이터가 바로 바뀌고 그림만 240 ms 획으로 보간 | `tests/duration-figure.test.ts`, `scripts/book-v3-e2e.ts`('R4: split draws…') |
 | 잉크 선 폭 | 화면 1.2–1.6 px, 거리 무관(정확한 폭의 안티앨리어싱) | `tests/ink-lines.test.ts`(셰이더), `scripts/figure-capture.ts`(캡처에서 FWHM 측정, 400% 크롭) |
 | 그림 예산 | 그림 ≤ 3,000 세그먼트, 장면 ≤ 6,000, 장식 ≤ 400, 장면 draw call ≤ 40 | `tests/book-lesson-scene.test.ts`, `tests/duration-figure.test.ts`, `scripts/book-v3-e2e.ts`, 캡처 `metrics.json`(`figure.calls`) |
@@ -92,6 +92,8 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | 목차·마침 파생 | 목차 체크·마침 체크·마침 도장 = `isSceneComplete`에서 파생, 새 저장 필드 없음. 마침의 문장은 `content/lesson.ts` 원문(제목·목표)과 쪽 이름표뿐 | `tests/print-layout.test.ts`(R8 2개) |
 | C10 관문(R9) | 부록 B 13항목을 일치 / 의도적 차이 / 불일치 / 미관측으로 판정. 정체성 5항목에 불일치가 있으면 확장·배포 금지, 미관측은 통과가 아니다. 원본 녹화(결정 6)가 없으면 미관측으로 둔다 | `docs/qa/BOOK_EXPERIENCE_GATE_V3.md`, `docs/qa/MOTION_COMPARISON.md`, `docs/qa/HUMAN_REVIEW_V3.md` |
 | 성능 예산(R9) | 첫 펼침면 draw calls ≤ 150, 레슨 장면 ≤ 40, 인쇄 텍스처 ≤ 48 MiB, 50회 왕복 뒤 geometries·textures·programs 증가 0. 넘김 p95 frame ≤ 33 ms는 headless에서 참고치 | `scripts/perf-budget.ts`(`docs/qa/refactor/R9/perf-budget*.json`, 실패 시 exit 1) |
+| 단일 렌더러(R9) | 책은 인쇄 잉크 렌더러 하나. `main.tsx`는 책만 띄우고, 남은 `?renderer=…` 링크는 오류 없이 무시 | `tests/book-spread-surface.test.ts`(profile), `scripts/refactor-capture.ts`(캡처마다 `renderer === 'ink'`) |
+| 빌드 조건(R9) | `npm run build` = 내용 검증 → 글꼴 라이선스 감사(기보 글꼴 OFL 고지, 쪽 글꼴 이름 바꿈·OFL 기록) → vite build. three·react는 따로 청크 | `scripts/font-license-audit.ts`, `vite.config.ts`(`manualChunks`) |
 
 ## 5 고정 수치(설계서 부록 D, 제안값)
 

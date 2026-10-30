@@ -1,0 +1,211 @@
+{
+  "time": "2026-10-30T11:51:45.476Z",
+  "viewport": "1280x720",
+  "checks": [
+    {
+      "name": "first spread draw calls",
+      "value": 101,
+      "limit": "≤ 150",
+      "pass": true,
+      "gated": true
+    },
+    {
+      "name": "lesson scene draw calls",
+      "value": 14,
+      "limit": "≤ 40",
+      "pass": true,
+      "gated": true
+    },
+    {
+      "name": "print textures (page compositor window)",
+      "value": 46.1,
+      "limit": "≤ 48 MiB",
+      "pass": true,
+      "gated": true,
+      "note": "6 pages: 2 settled, 4 draft, 2 state layers"
+    },
+    {
+      "name": "turn p95 frame interval",
+      "value": 6283,
+      "limit": "≤ 33 ms",
+      "pass": false,
+      "gated": false,
+      "note": "headless SwiftShader reference only (2 frames); real devices are a human check"
+    },
+    {
+      "name": "geometries after 50 round trips",
+      "value": {
+        "before": 17,
+        "after": 17
+      },
+      "limit": "growth 0",
+      "pass": true,
+      "gated": true
+    },
+    {
+      "name": "textures after 50 round trips",
+      "value": {
+        "before": 29,
+        "after": 29
+      },
+      "limit": "growth 0",
+      "pass": true,
+      "gated": true
+    },
+    {
+      "name": "programs after 50 round trips",
+      "value": {
+        "before": 20,
+        "after": 20
+      },
+      "limit": "growth 0",
+      "pass": true,
+      "gated": true
+    },
+    {
+      "name": "page errors",
+      "value": 0,
+      "limit": 0,
+      "pass": true,
+      "gated": true
+    }
+  ],
+  "budget": {
+    "drawCalls": 150,
+    "sceneDrawCalls": 40,
+    "printBytes": "48 MiB",
+    "p95FrameMs": 33
+  },
+  "first": {
+    "drawCalls": 101,
+    "sceneCalls": {
+      "total": 101,
+      "withoutScene": 87,
+      "scene": 14,
+      "figure": {
+        "segments": 572,
+        "ink": 480,
+        "dashed": 0,
+        "accent": 92,
+        "fills": 5,
+        "hits": 5,
+        "labels": 3
+      }
+    },
+    "textures": 30,
+    "geometries": 18
+  },
+  "print": {
+    "pages": 6,
+    "bytes": 48335530.66666667,
+    "budgetBytes": 50331648,
+    "settled": 2,
+    "drafts": 4,
+    "states": 2,
+    "printPaints": 12,
+    "statePaints": 4,
+    "lastDraftMs": 0.09999999776482582,
+    "lastSettledMs": 0.20000000298023224,
+    "recent": [
+      {
+        "pageId": "page-13",
+        "layer": "draft",
+        "ms": 3.600000001490116
+      },
+      {
+        "pageId": "page-14",
+        "layer": "draft",
+        "ms": 0.9000000022351742
+      },
+      {
+        "pageId": "page-1",
+        "layer": "draft",
+        "ms": 5.900000002235174
+      },
+      {
+        "pageId": "page-1",
+        "layer": "state",
+        "ms": 0.5
+      },
+      {
+        "pageId": "page-2",
+        "layer": "draft",
+        "ms": 1.3999999985098839
+      },
+      {
+        "pageId": "page-2",
+        "layer": "state",
+        "ms": 0.10000000149011612
+      },
+      {
+        "pageId": "page-3",
+        "layer": "draft",
+        "ms": 1.699999999254942
+      },
+      {
+        "pageId": "page-4",
+        "layer": "draft",
+        "ms": 6.199999999254942
+      },
+      {
+        "pageId": "page-1",
+        "layer": "settled",
+        "ms": 2.2999999970197678
+      },
+      {
+        "pageId": "page-2",
+        "layer": "settled",
+        "ms": 0.8000000007450581
+      },
+      {
+        "pageId": "page-1",
+        "layer": "draft",
+        "ms": 0.5
+      },
+      {
+        "pageId": "page-1",
+        "layer": "state",
+        "ms": 0
+      },
+      {
+        "pageId": "page-2",
+        "layer": "draft",
+        "ms": 0.09999999776482582
+      },
+      {
+        "pageId": "page-2",
+        "layer": "state",
+        "ms": 0.09999999776482582
+      },
+      {
+        "pageId": "page-1",
+        "layer": "settled",
+        "ms": 0.5999999977648258
+      },
+      {
+        "pageId": "page-2",
+        "layer": "settled",
+        "ms": 0.20000000298023224
+      }
+    ]
+  },
+  "turn": {
+    "frames": 2,
+    "p95": 6283.100000000002,
+    "median": 6283.100000000002
+  },
+  "trips": {
+    "count": 50,
+    "before": {
+      "geometries": 17,
+      "textures": 29,
+      "programs": 20
+    },
+    "after": {
+      "geometries": 17,
+      "textures": 29,
+      "programs": 20
+    }
+  },
+  "errors": []
+}

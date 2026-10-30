@@ -1,6 +1,6 @@
 import type { Group, Mesh } from 'three';
 import { BAR_WIDTH, BLOCK_DEPTH, BLOCK_HEIGHT, clampedPosition, durationBounds } from '../../../scenes/durationWorld.ts';
-import type { DurationEvent } from '../../../scenes/DurationScene2D.tsx';
+import type { DurationEvent } from '../../../scenes/durationWorld.ts';
 import { BOOK_MOTION } from '../../motion.ts';
 import { createInkFigure } from '../figure.ts';
 import type { FigureBuilder, FigureSurface, InkFigure } from '../figure.ts';

@@ -6,7 +6,7 @@ import type { ShotSpec } from './render/shots.ts';
 import { BOOK_MOTION, tween } from './motion.ts';
 import type { BookStage, StageLayout, StageUpdate } from './stage.ts';
 import type { StageFlap } from './render/flaps.ts';
-import { pageStyle } from './pageProjection.ts';
+import { pageStyle } from './ui/coverOverlay.ts';
 import { BOOK_MANIFEST, BOOK_SPREADS, bookIndex, bookLeaves, bookSpread, bookTurnPrintIds, goToFrame, goToSchedule, leafProgresses } from './manifest.ts';
 import type { PageId, SpreadId } from './manifest.ts';
 import { arrowNavigationDirection, createTurnDrag, turnReleaseDecision, updateTurnDrag } from './gesture.ts';

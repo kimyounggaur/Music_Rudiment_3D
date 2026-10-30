@@ -1,5 +1,6 @@
 /** Rendering profile: renderer path and quality tier. Pure, so tests can run it without a DOM. */
-export type RendererKind = 'legacy' | 'ink';
+/** v3 R9: the printed ink book is the only renderer (the legacy comparison path was removed). */
+export type RendererKind = 'ink';
 export type QualityTier = 'high' | 'medium' | 'low';
 
 export type ProfileNavigator = Readonly<{ hardwareConcurrency?: number; userAgent?: string; maxTouchPoints?: number }>;
@@ -24,14 +25,13 @@ export function pickQualityTier(nav: ProfileNavigator, devicePixelRatio: number,
 }
 
 /**
- * `?renderer=legacy` mounts the frozen 5f2f7bb shell for before/after comparison until R9.
  * `?quality=high|medium|low` forces a tier for captures; otherwise a stored reader choice wins
- * over the device heuristic.
+ * over the device heuristic. A leftover `?renderer=…` from v3 comparison links is ignored.
  */
 export function resolveProfile(search: string, nav: ProfileNavigator, devicePixelRatio: number,
   canvasCssPixels: number, storedQuality: string | null = null): BookProfile {
   const params = new URLSearchParams(search);
-  const renderer: RendererKind = params.get('renderer') === 'legacy' ? 'legacy' : 'ink';
+  const renderer: RendererKind = 'ink';
   const forced = params.get('quality');
   if (isQualityTier(forced)) return { renderer, quality: forced, qualitySource: 'url' };
   if (isQualityTier(storedQuality)) return { renderer, quality: storedQuality, qualitySource: 'stored' };

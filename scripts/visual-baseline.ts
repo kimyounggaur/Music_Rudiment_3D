@@ -1,8 +1,10 @@
 /**
  * v3 R9 visual baseline (REFACTOR_PROMPTS_V3 R9-a 1; v2.1 V16): the capture matrix
- * 3 viewports × {cover, opening50, spread1, turn50, spread2, shot, 2d} × {legacy, ink}.
+ * 3 viewports × {cover, opening50, spread1, turn50, spread2, shot, 2d} × {legacy, ink}. The legacy
+ * renderer was removed in R9-b; its 18 cells were captured before that (docs/qa/refactor/R9), so a
+ * new run takes `--renderers ink` (the default).
  *
- *   node scripts/visual-baseline.ts [--out docs/qa/refactor/R9] [--base http://127.0.0.1:4173/]
+ *   node scripts/visual-baseline.ts [--out docs/qa/refactor/R9] [--base http://127.0.0.1:4173/] [--renderers ink]
  *
  * It runs scripts/refactor-capture.ts (the R1 capture, kept under its name so earlier stage
  * evidence stays reproducible) for each renderer and writes `baseline/matrix.json`: one row per
@@ -21,7 +23,7 @@ const outRoot = resolve(args.get('out') ?? 'docs/qa/refactor/R9');
 const base = args.get('base') ?? 'http://127.0.0.1:4173/';
 const VIEWPORTS = ['1280x720', '844x390', '390x844'] as const;
 const STATES = ['cover', 'opening50', 'spread1', 'turn50', 'spread2', 'shot', '2d'] as const;
-const RENDERERS = ['legacy', 'ink'] as const;
+const RENDERERS = (args.get('renderers') ?? 'ink').split(',').filter((item): item is 'legacy' | 'ink' => item === 'legacy' || item === 'ink');
 const stage = outRoot.split('/').at(-1) ?? 'R9';
 
 for (const renderer of RENDERERS) {

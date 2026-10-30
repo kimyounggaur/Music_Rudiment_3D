@@ -2,14 +2,26 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import * as THREE from 'three';
 import { add, frac } from '../src/domain/index.ts';
-import type { DurationEvent } from '../src/scenes/DurationScene2D.tsx';
-import { BAR_WIDTH, BLOCK_DEPTH, BLOCK_HEIGHT, clampedPosition, durationBounds, frameDurationCamera } from '../src/scenes/durationWorld.ts';
+import { BAR_WIDTH, BLOCK_DEPTH, BLOCK_HEIGHT, clampedPosition, durationBounds } from '../src/scenes/durationWorld.ts';
+import type { DurationEvent } from '../src/scenes/durationWorld.ts';
 import { createDurationFigure, DURATION_FIGURE, durationBoundaries, durationFrontZ } from '../src/book/figures/music/durationFigure.ts';
 import { createSpreadDecor, DECOR_BUDGET, DECOR_KIND, decorExtent, fractionSummary } from '../src/book/figures/music/decor.ts';
 import { BOOK_MOTION } from '../src/book/motion.ts';
 import { LESSON_FIGURE_LAYOUT, LESSON_FIGURE_RAISE_PER_HEIGHT } from '../src/book/lessonPresentation.ts';
 
-/** v3 R4: the six durationWorld meaning cases, moved to the ink figure API (tests/duration-world.test.ts keeps the legacy world). */
+/** v3 R4: the six durationWorld meaning cases, moved to the ink figure API (R9 removed the v1 world and its test). */
+/** The two fixed orthographic views of the removed v1 world, kept here as a picking fixture. */
+function frameView(camera: THREE.OrthographicCamera, width: number, height: number, view: 'default' | 'shallow') {
+  const aspect = Math.max(1, width) / Math.max(1, height);
+  const frameHeight = Math.max(3.15, (BAR_WIDTH + 1.2) / aspect);
+  const frameWidth = frameHeight * aspect;
+  camera.left = -frameWidth / 2; camera.right = frameWidth / 2; camera.top = frameHeight / 2; camera.bottom = -frameHeight / 2;
+  camera.position.set(BAR_WIDTH / 2, view === 'default' ? 7 : 3.6, view === 'default' ? 8 : 10);
+  camera.lookAt(BAR_WIDTH / 2, 0, 0);
+  camera.updateProjectionMatrix();
+  camera.updateMatrixWorld(true);
+}
+
 function pattern(denominators: readonly number[], restIndices: readonly number[] = []): DurationEvent[] {
   let onset = frac(0);
   const names: Record<number, string> = { 1: 'whole', 2: 'half', 4: 'quarter', 8: 'eighth', 16: 'sixteenth' };
@@ -98,7 +110,7 @@ test('projection and raycasting select all sixteen event IDs at both fixed views
       figure.setLift(lift);
       for (const [width, height] of [[844, 220], [390, 164], [320, 220]]) {
         for (const view of ['default', 'shallow'] as const) {
-          frameDurationCamera(camera, width, height, view);
+          frameView(camera, width, height, view);
           figure.group.updateMatrixWorld(true);
           for (const event of events) {
             const mesh = figure.views.get(event.id)!.hit;

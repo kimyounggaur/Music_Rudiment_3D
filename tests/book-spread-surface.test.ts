@@ -116,7 +116,8 @@ test('quality tiers: high adds AO, medium drops AO, low renders directly; pixel 
   assert.equal(pickQualityTier(desktop, 2, 1920 * 1080), 'medium');
   assert.equal(pickQualityTier({ ...desktop, hardwareConcurrency: 4 }, 1, 1280 * 720), 'medium');
   assert.equal(pickQualityTier({ userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0)' }, 3, 390 * 844), 'low');
-  assert.deepEqual(resolveProfile('?renderer=legacy&quality=low', desktop, 1, 1), { renderer: 'legacy', quality: 'low', qualitySource: 'url' });
+  // v3 R9: the legacy comparison renderer is gone; an old `?renderer=legacy` link opens the ink book.
+  assert.deepEqual(resolveProfile('?renderer=legacy&quality=low', desktop, 1, 1), { renderer: 'ink', quality: 'low', qualitySource: 'url' });
   assert.deepEqual(resolveProfile('', desktop, 1, 1280 * 720, 'medium'), { renderer: 'ink', quality: 'medium', qualitySource: 'stored' });
   assert.deepEqual(resolveProfile('?quality=ultra', desktop, 1, 1280 * 720, 'bogus'), { renderer: 'ink', quality: 'high', qualitySource: 'auto' });
 });

@@ -43,7 +43,8 @@ const base = new URL(args.get('base') ?? 'http://127.0.0.1:4173/');
 assert.equal(base.hostname, '127.0.0.1', 'Captures use the local dev server only.');
 assert.match(stage, /^R\d(-[a-z])?$/);
 assert.ok(['before', 'after'].includes(phase));
-assert.ok(['legacy', 'ink'].includes(renderer));
+// v3 R9 removed the legacy comparison renderer; its captures stay in docs/qa/refactor/R1–R9 (R9 baseline).
+assert.equal(renderer, 'ink', 'Only the ink renderer exists since R9 (legacy captures are kept in the stage evidence).');
 const states = (args.get('states') ?? 'cover,opening50,spread1,turn50,spread2,2d').split(',').filter(Boolean);
 const viewports = (args.get('viewports') ?? '1280x720,844x390,390x844').split(',').map(text => {
   const [width, height] = text.split('x').map(Number);

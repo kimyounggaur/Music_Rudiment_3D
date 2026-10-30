@@ -17,7 +17,7 @@
 | R6 | V24 | 레슨 카메라 연출(샷) | 통과 |
 | R7 | V25 | 효과음·마감 | 통과 (청취 외부 검수 대기) |
 | R8 | V26 | 콘텐츠 확장(목차·마침·GO_TO) | 통과 (renderer 텍스처 수 ≤ 14 미달 기록, 실기기 연속감 미관측) |
-| R9 | V27 | 검증 관문 개편·정리 | 진행 중 (R9-a 통과: 정체성 불일치 0 · 미관측 5, 기준선 39/39, 성능 예산 7/7) |
+| R9 | V27 | 검증 관문 개편·정리 | 통과 (정체성 불일치 0 · 미관측 5 → 원본 체감 C·배포 E 미완료, 사람 검수 외부 대기) |
 
 v2.1 단계 지도와의 대응: R1→V19, R2→V20, R3→V21, R4→V22, R5→V23, R6→V24, R7→V25, R8→V26, R9→V27. v2 기록은 [BUILD_STATUS_V2.md](BUILD_STATUS_V2.md)에 그대로 있다.
 
@@ -365,7 +365,7 @@ G1-C 체크리스트(부록 B) 영향 항목과 현재 판정:
 - 여섯 펼침면과 목차·마침이 같은 종이·잉크 톤인가. 글자가 넘치거나 겹치지 않는가.
 - 2D 모드('크게 읽기')에서도 여섯 펼침면과 목차·마침이 모두 조작되는가.
 
-## R9 (V27) 검증 관문 개편·정리 — 진행 중(R9-a 통과)
+## R9 (V27) 검증 관문 개편·정리 — 통과(정체성 미관측 5, 사람 검수 외부 대기)
 
 **정체성 5항목: 불일치 0 · 의도적 차이 0 · 미관측 5(원본 녹화 없음).** 관문은 R9-b(레거시 정리)를 막지 않는다. 미관측은 통과가 아니므로 원본 체감(C)과 배포 판단(E)은 완료로 쓰지 않는다.
 
@@ -394,3 +394,50 @@ G1-C 체크리스트(부록 B) 영향 항목과 현재 판정:
   2. **legacy 샷 칸**: legacy(착수 커밋 사본)에는 레슨 샷이 없어 3칸은 '해당 없음'이다.
   3. **텍스처 '≤ 48 MB'**: 성능 예산은 인쇄 창 텍스처(페이지 compositor)를 잰다. renderer 전체 텍스처 수는 기록만 한다(R8 편차 7).
 - **G1-C 체크리스트 영향 항목과 현재 판정:** 13항목 모두 미관측(정체성 5 포함), 불일치 0.
+
+### R9-b 레거시 삭제·문서·라이선스
+
+- **단계 ID와 상태:** R9-b **통과**(삭제 뒤 typecheck·lint·단위 테스트·빌드·라이선스 감사 0, e2e·성능 예산 다시 통과). 완료 수준은 아래 V17 분류.
+- **실제로 가능한 사용자 행동:** 책은 그대로다. 남은 `?renderer=legacy` 링크로 열어도 오류 없이 같은 잉크 책이 열린다. v1 실험실 화면은 없다(이미 R0부터 진입점이 책이었다).
+- **삭제 목록(설계서 §4 표 + 그것만 쓰던 파일):** 프롬프트는 삭제 전에 목록을 보고하고 사용자 확인을 받으라고 했다(P00 13항). 이번 작업은 사용자가 "묻지 말고 스스로 승인하며 진행"하라고 지시해 **스스로 승인**했다. 지운 파일은 모두 Git 기록(`d25fe06` 이전 커밋)에 남아 있고, 정적 import 그래프로 앱(`src/main.tsx`)에서 닿지 않음을 확인했다.
+  - v1 실험실 셸: `src/App.tsx`, `src/scenes/DurationScene3D.tsx`, `src/scenes/DurationScene2D.tsx`(타입 `DurationEvent`는 `durationWorld.ts`로), `src/components/ConceptQuiz.tsx`, `src/components/SceneBoundary.tsx`, `src/notation/NotationView.tsx`, `src/styles/app.css`, `adapters.css`, `print.css`.
+  - legacy 렌더러: `src/legacy/`(착수 커밋 사본 30파일: `book/*` 26, `entry.tsx`, `styles/*` 3), `?renderer=legacy` 분기(`main.tsx`·`profile.ts`).
+  - HTML 겹침·스냅샷 경로: `src/book/pageSnapshot.ts`, `usePagePrints.ts`, `notationPreparation.ts`, `pagePrint.ts`. `src/book/pageProjection.ts`는 표지 조작 겹침에만 남아 `src/book/ui/coverOverlay.ts`로 옮김.
+  - `src/scenes/durationWorld.ts`의 표현부(Three 상자 세계): 의미(`DurationEvent`, `BAR_WIDTH`·`BLOCK_HEIGHT`·`BLOCK_DEPTH`, `clampedPosition`, `durationBounds`, `durationNames`, `eventLabel`)만 남김.
+  - 테스트: `tests/book-page-projection.test.ts`, `book-page-snapshot.test.ts`, `book-notation-preparation.test.ts`, `duration-world.test.ts`(의미 6개는 R4에서 `duration-figure.test.ts`로 옮겨져 있음), `book-v13.test.ts`의 스냅샷 테스트 1개.
+  - 그것만 쓰던 스크립트: `scripts/notation-e2e.ts`, `notation-font-retry.ts`, `three-http-e2e.ts`, `recovery-http-e2e.ts`.
+  - 남긴 것: `src/book/inspector.ts`(R1–R8 동안 v3 inspector로 고쳐 씀, DEV 전용 snapshot·pose·metrics), v1·v2 이력 QA 문서와 표준 독립 파일 스크립트(B4: 과거 증거로 보존).
+- **변경 경로와 이유:** 위 삭제, `src/main.tsx`(책만), `src/book/profile.ts`(`RendererKind = 'ink'`, URL 파라미터 무시), import 경로(`decor`·`durationFigure`·`BookNotation`·`BookApp`), `tests/book-spread-surface.test.ts`(옛 링크 = 잉크 책), `tests/duration-figure.test.ts`(고정 데이터 `frameView`를 파일 안으로), `scripts/refactor-capture.ts`(renderer = ink 확인), `scripts/visual-baseline.ts`(`--renderers`, 기본 ink), `scripts/font-license-audit.ts`(쪽 글꼴 절: 이름 바꿈·OFL 기록 확인), `package.json`(`build` = 내용 검증 → 라이선스 감사 → vite build, `license:audit`, `test:e2e` = v3 e2e), `vite.config.ts`(`manualChunks`: three · react), `README.md`·`docs/ARCHITECTURE.md`·`docs/KNOWN_LIMITATIONS.md`·`docs/CONTRACT_V3.md`(v3 기준으로 다시 씀).
+- **실행 명령과 종료 결과:** `npm run typecheck` 0, `npm run lint` 0, `npm test` 362/362, `npm run build` 0(500 kB 경고 0), `npm run license:audit` 0. `node scripts/perf-budget.ts --out docs/qa/refactor/R9/perf-budget-after-cleanup.json` 0(7/7). `node scripts/book-v3-e2e.ts --viewport …` 41/41 × 4 viewport.
+- **기기와 브라우저 및 commit:** 위와 같음. R9-a `d25fe06` 다음, 이 기록과 같은 커밋.
+- **실제 캡처 영상 로그 경로:** [qa/refactor/R9/index.md](qa/refactor/R9/index.md) — `perf-budget-after-cleanup.json`, `e2e-*.json`.
+- **측정값:** 빌드 청크: three 694.6 kB, vexflow-core 330.8 kB, 기보 글꼴 396.8 kB, react 192.6 kB, 앱 entry 234.9 kB(삭제 전에는 three가 든 공유 청크 802.3 kB로 경고 1건 → 0). 성능 예산(삭제 뒤, 1280×720): 첫 펼침면 draw calls 101, 레슨 장면 14, 인쇄 46.1 MiB, 50회 왕복 geometries 17 → 17 · textures 29 → 29 · programs 20 → 20, 페이지 오류 0. 단위 테스트 385 → 362(삭제한 legacy·스냅샷 테스트 23개, 의미 테스트는 R4에서 잉크 그림으로 옮겨 둠).
+- **미실행 항목과 정확한 이유:** 배포·push to main(지시에 따라 하지 않음), `vercel.json` 변경(빌드 명령이 이미 typecheck · lint · test · build이고 build가 라이선스 감사를 포함하므로 바꿀 것이 없음). 실기기·청취·보조기술·음악 교육자 검수는 외부 대기.
+- **남은 결함과 재현 절차:** [KNOWN_LIMITATIONS](KNOWN_LIMITATIONS.md)의 '기준에 못 미친 수치' 표(먼/가까운 변 비율, 책 폭, x-height, 인쇄 핫스폿 크기, 선 폭, 390×844 high 티어 종이 음영, renderer 텍스처 수)가 그대로 남아 있다. R9는 수치를 고치는 단계가 아니라 관문·정리 단계라 기준을 완화하지 않고 기록만 했다.
+- **객관적 게이트와 선택적 사용자 피드백 상태:** 삭제 후 전체 검사 0, 라이선스 감사 0, e2e·성능 예산 통과. 사람 피드백 없음.
+- **다음 허용 단계와 막힌 단계:** v3 리팩터 단계(R0–R9)는 끝났다. 남은 것은 사람 검수(외부 대기)와 그 결과에 따른 수정이다. 배포는 B–D가 끝나기 전에는 막혀 있다(C10).
+- **renderer 플래그 상태:** 없음(`ink` 하나). `?renderer=…`는 무시.
+- **설계서 대비 편차와 사유:**
+  1. **삭제 확인**: 위 '삭제 목록' — 사용자 지시에 따라 스스로 승인.
+  2. **inspector**: 새 파일로 바꾸지 않고 같은 파일을 v3 inspector로 유지(이미 v3 전용).
+  3. **500 kB 경고**: `manualChunks`로 three(약 695 kB)·react를 나눴다. three 청크 하나가 500 kB를 넘으므로 `chunkSizeWarningLimit`을 720 kB로 두었다(경고 0). vexflow는 이미 따로 지연 로드되는 청크(`vexflow-core`, 기보 글꼴)다. 앱 entry는 약 235 kB.
+  4. **`vercel.json`**: 바꾸지 않음(위).
+- **G1-C 체크리스트 영향 항목과 현재 판정:** 바뀐 것 없음(13항목 미관측, 불일치 0).
+
+### 완료 수준 (v2.1 V17)
+
+| 수준 | 상태 | 근거 |
+|---|---|---|
+| A 개발 검증 | **완료** | typecheck · lint · 단위 테스트 · 빌드(라이선스 감사 포함) 0, e2e 4 viewport, 캡처·측정, 성능 예산 |
+| B 책 경험 | **부분** | headless 자동 검사로 본 범위만. 실기기 터치·60 fps·청취·보조기술은 [사람 검수 패킷](qa/HUMAN_REVIEW_V3.md) 대기 |
+| C 원본 체감 | **미완료** | 원본 녹화 없음 → 정체성 5항목 미관측 |
+| D 수업 시험 준비 | **미완료** | 음악 교육자 검수 대기 |
+| E 배포 판단 | **미완료** | B–D가 끝나지 않음. 배포하지 않았다 |
+
+A만으로 B–E를 완료로 쓰지 않는다.
+
+### R9 사람 검사 항목
+
+- [책 경험 관문 v3](qa/BOOK_EXPERIENCE_GATE_V3.md)의 정체성 5항목 판정과 증거가 직접 본 캡처와 일치하는가.
+- 원본 녹화를 제공하면 나란히 비교해 13항목을 다시 판정한다. 그 전까지는 미관측이다.
+- 위 삭제 목록에 되살리고 싶은 파일이 있는가(Git 기록에서 되살릴 수 있다).

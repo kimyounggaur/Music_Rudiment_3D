@@ -1,7 +1,7 @@
 import type { Group } from 'three';
 import type { SceneId } from '../../../content/types.ts';
-import type { DurationEvent } from '../../../scenes/DurationScene2D.tsx';
 import { BAR_WIDTH } from '../../../scenes/durationWorld.ts';
+import type { DurationEvent } from '../../../scenes/durationWorld.ts';
 import { createInkFigure } from '../figure.ts';
 import type { FigureBuilder, FigureStats, FigureSurface, InkFigure } from '../figure.ts';
 import type { Vec3 } from '../inkLines.ts';
