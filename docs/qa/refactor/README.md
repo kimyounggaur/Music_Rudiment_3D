@@ -39,3 +39,4 @@ docs/qa/refactor/
 |---|---|
 | 단계 캡처·metrics | `node scripts/refactor-capture.ts --stage R{n} --phase after --renderer ink [--quality high]`<br>`node scripts/refactor-capture.ts --stage R{n} --phase after --renderer legacy --states spread1,turn50,spread2,2d` |
 | v3 e2e (R3부터) | `node scripts/book-v3-e2e.ts --viewport 1280x720 --out docs/qa/refactor/R{n}/e2e-1280x720.json` (844x390, 390x844도 같은 방식) |
+| 잉크 그림 연속 캡처·선 폭 (R4부터) | `node scripts/figure-capture.ts --viewport 1280x720 --out docs/qa/refactor/R{n}` (등장 12프레임, 글로, 분할 0/120/240 ms, 선 폭 FWHM과 400% 크롭, 장면 draw call) |

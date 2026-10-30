@@ -63,7 +63,7 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | EN02 | 방향키 소유권·큐·modifier/IME/repeat | `tests/book-gesture.test.ts`(arrowNavigationDirection), `tests/book-controller.test.ts`(pendingIntent) |
 | BK05–07 | leave→turn→arrive, snapshot/revisit | `tests/book-scene-host.test.ts`, `tests/book-controller.test.ts`, `tests/book-v13.test.ts` |
 | BK13–16 | 직접 drag·hold·reverse·release·cancel·lostcapture | `tests/book-controller.test.ts`, `tests/book-turn-hit.test.ts`, `tests/book-gesture.test.ts`, 사람 검사(실기기 터치) |
-| MU01–08 | 정확 분수·분할·조합·쉼표·템포·작곡 | `tests/domain.test.ts`, `tests/lesson.test.ts`, `tests/book-v13.test.ts`, `tests/duration-world.test.ts`(R4 이후 `duration-figure`) |
+| MU01–08 | 정확 분수·분할·조합·쉼표·템포·작곡 | `tests/domain.test.ts`, `tests/lesson.test.ts`, `tests/book-v13.test.ts`, `tests/duration-world.test.ts`(legacy 세계), `tests/duration-figure.test.ts`(R4 잉크 그림: 의미 6개 이전) |
 | AU01–07 | 단일 context·예약·정지·pause/resume | `tests/audio.test.ts`, `tests/audio-transport.test.ts`, `tests/book-audio-ownership.test.ts` |
 | RC01–05 | context loss·자산 실패·자원 수명·저장 | `tests/book-controller.test.ts`(WEBGL_LOST), `tests/book-scene-host.test.ts`, `tests/book-progress.test.ts`, `tests/persistence.test.ts`; 50회 왕복 누수는 R9 `scripts/perf-budget.ts` |
 | AX21 | 키보드·스크린리더·200%·2D·reduced, focus는 보이는 책 안 | `tests/hotspots.test.ts`(인쇄 조작 = 거울 조작, 2D test id, 제목·라이브 문장), `scripts/book-v3-e2e.ts`(Tab 초점 링이 state 레이어에 그려짐), 사람 검사(보조기술 실기는 `외부 검수 대기`) |
@@ -73,6 +73,11 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | 같은 revision | 인쇄·그림·소리·평가가 같은 `LessonState`에서 파생 | `tests/print-layout.test.ts`(분할 뒤 인쇄 음표 = `sceneEvents`), `tests/print-compositor.test.ts`(인쇄 키 = 장면 상태 식별) |
 | 인쇄 메모리 | 인쇄 창 텍스처 ≤ 48 MiB, 왕복 누수 0 | `tests/print-compositor.test.ts`(티어별 예산, 20회 왕복), `scripts/book-v3-e2e.ts`(실제 앱 20회 왕복) |
 | 활성 1개 | 활성 장면·오디오 세션 최대 1개 | `tests/book-scene-host.test.ts`, `tests/book-audio-ownership.test.ts` |
+| C6·C12 잉크 그림 | 의미는 `durationWorld`에서 import(x = onset×10, 폭 = 길이×10, 높이·깊이 고정), 피킹은 일어선 위치의 투명 상자(lift 0/1 동일), 쉼표는 면 없는 점선, 세로 scale 없이 평면도→입체 보간 + 펜 그리기 | `tests/duration-figure.test.ts`, `tests/figure.test.ts`, `tests/book-lesson-scene.test.ts` |
+| 데이터 먼저 | 분할·합치기는 데이터가 바로 바뀌고 그림만 240 ms 획으로 보간 | `tests/duration-figure.test.ts`, `scripts/book-v3-e2e.ts`('R4: split draws…') |
+| 잉크 선 폭 | 화면 1.2–1.6 px, 거리 무관(정확한 폭의 안티앨리어싱) | `tests/ink-lines.test.ts`(셰이더), `scripts/figure-capture.ts`(캡처에서 FWHM 측정, 400% 크롭) |
+| 그림 예산 | 그림 ≤ 3,000 세그먼트, 장면 ≤ 6,000, 장식 ≤ 400, 장면 draw call ≤ 40 | `tests/book-lesson-scene.test.ts`, `tests/duration-figure.test.ts`, `scripts/book-v3-e2e.ts`, 캡처 `metrics.json`(`figure.calls`) |
+| 그림 창 | 레인·숫자·장식을 합친 그림이 인쇄 쪽의 그림 칸 안에 들어감 | `tests/book-lesson-scene.test.ts`(여섯 장면, 읽기 포즈의 올라선 윗면 포함) |
 | 넘김 중 카메라 불변 | 드래그·넘김·닫기 중 카메라 이동 없음 | `tests/book-camera-rig.test.ts`(suspendFit), R6 `tests/shots.test.ts` |
 
 ## 5 고정 수치(설계서 부록 D, 제안값)

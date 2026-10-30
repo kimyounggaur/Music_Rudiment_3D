@@ -1,4 +1,6 @@
 import type { BookStage, StageLayout, StageUpdate } from './stage.ts';
+import type { LessonScene } from './lessonScene.ts';
+import { figureEntryFrame } from './figures/choreography.ts';
 
 export type BookInspectorSnapshot = Readonly<{ layout: StageLayout | null; visual: StageUpdate }>;
 export interface BookInspector {
@@ -15,6 +17,18 @@ export interface BookInspector {
   holdPrintUpgrades(hold: boolean): void;
   /** v3 R3: client coordinates of a page-local point (u right, v down) on the open spread. */
   pagePoint(side: 'left' | 'right', u: number, v: number): { x: number; y: number } | null;
+  /** v3 R4: the live scene figure (lift, reveal, segment counts, split/merge strokes). */
+  figure(): unknown;
+  /** v3 R4: pose the first-entry figure frame `ms` after entering (pen reveal + lift); reset() restores. */
+  figureEntry(ms: number): BookInspectorSnapshot;
+  /** v3 R4: pin split/merge strokes `ms` after they start (null resumes real time). */
+  holdFigureStrokes(ms: number | null): void;
+  /** v3 R4: show a playback display on the figure (playhead + glowing note) without audio; null clears. */
+  figurePlayback(laneId: string | null, activeIndex?: number | null, position?: number): void;
+  /** v3 R4: draw calls of one frame with and without the figure (renders the stage twice). */
+  sceneDrawCalls(): unknown;
+  /** v3 R4: client coordinates of lane-unit figure points (x 0..10 along the bar, y up, z toward the reader). */
+  figurePoints(laneId: string, points: readonly (readonly [number, number, number])[]): ({ x: number; y: number } | null)[];
 }
 
 declare global {
@@ -28,26 +42,27 @@ export type BookInspectorOptions = Readonly<{
   getVisual: () => StageUpdate;
   draw: (patch: Partial<StageUpdate>) => void;
   getRoot: () => HTMLElement | null;
+  getScene?: () => LessonScene | null;
   getPages?: () => readonly unknown[];
   getPrintStats?: () => unknown;
   getPrintImage?: (pageId: string, layer: 'print' | 'state') => string | null;
   holdPrintUpgrades?: (hold: boolean) => void;
 }>;
 
-const poseKeys = new Set(['coverProgress', 'introProgress', 'currentSpreadIndex', 'turn', 'inspectionWireframe']);
+const poseKeys = new Set(['coverProgress', 'introProgress', 'currentSpreadIndex', 'turn', 'inspectionWireframe', 'sceneProgress', 'sceneReveal']);
 const unitValue = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 1;
 const copyVisual = (visual: StageUpdate): StageUpdate => ({ ...visual, turn: visual.turn ? { ...visual.turn } : null });
 
 function checkedPose(patch: Partial<StageUpdate>, spreadCount: number): Partial<StageUpdate> {
   if (!patch || typeof patch !== 'object' || Array.isArray(patch) || Object.keys(patch).some(key => !poseKeys.has(key))) {
-    throw new TypeError('Inspector pose accepts only coverProgress, introProgress, currentSpreadIndex, turn, and inspectionWireframe.');
+    throw new TypeError('Inspector pose accepts only coverProgress, introProgress, currentSpreadIndex, turn, inspectionWireframe, sceneProgress and sceneReveal.');
   }
   const next: Partial<StageUpdate> = {};
   if (Object.hasOwn(patch, 'inspectionWireframe')) {
     if (typeof patch.inspectionWireframe !== 'boolean') throw new TypeError('inspectionWireframe must be a boolean.');
     next.inspectionWireframe = patch.inspectionWireframe;
   }
-  for (const key of ['coverProgress', 'introProgress'] as const) {
+  for (const key of ['coverProgress', 'introProgress', 'sceneProgress', 'sceneReveal'] as const) {
     if (Object.hasOwn(patch, key)) {
       if (!unitValue(patch[key])) throw new RangeError(`${key} must be between 0 and 1.`);
       next[key] = patch[key];
@@ -120,6 +135,35 @@ export function attachBookInspector(options: BookInspectorOptions): () => void {
     printImage: (pageId, layer = 'print') => options.getPrintImage?.(pageId, layer) ?? null,
     holdPrintUpgrades: hold => options.holdPrintUpgrades?.(Boolean(hold)),
     pagePoint: (side, u, v) => options.getStage()?.pagePoint(side === 'left' ? 'left' : 'right', Number(u), Number(v)) ?? null,
+    figure: () => structuredClone(options.getScene?.()?.getSnapshot() ?? null),
+    figureEntry(ms) {
+      if (typeof ms !== 'number' || !Number.isFinite(ms) || ms < 0) throw new RangeError('figureEntry needs a non-negative time in ms.');
+      const frame = figureEntryFrame(ms);
+      return inspector.pose({ sceneProgress: frame.lift, sceneReveal: frame.reveal });
+    },
+    holdFigureStrokes(ms) {
+      options.getScene?.()?.holdTransitions(typeof ms === 'number' && Number.isFinite(ms) ? ms : null);
+      options.getStage()?.invalidate();
+    },
+    figurePlayback(laneId, activeIndex = null, position = 0) {
+      const scene = options.getScene?.();
+      if (!scene) return;
+      if (laneId === null) scene.setPlayback(null);
+      else {
+        const lane = scene.getSnapshot().lanes.find(item => item.laneId === laneId);
+        if (!lane) throw new RangeError(`Unknown lane ${laneId}.`);
+        scene.setPlayback({ laneId, activeId: activeIndex === null ? null : lane.eventIds[activeIndex] ?? null, position: Number(position), reducedMotion: false });
+      }
+      options.getStage()?.invalidate();
+    },
+    sceneDrawCalls: () => structuredClone(options.getStage()?.measureSceneDrawCalls() ?? null),
+    figurePoints(laneId, points) {
+      const scene = options.getScene?.(), stage = options.getStage();
+      return points.map(point => {
+        const world = scene?.laneToWorld(String(laneId), [Number(point[0]), Number(point[1]), Number(point[2])]);
+        return world && stage ? stage.projectToClient(world) : null;
+      });
+    },
   };
   window.__bookInspector = inspector;
   return () => {

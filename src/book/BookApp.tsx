@@ -10,7 +10,8 @@ import { arrowNavigationDirection, createTurnDrag, turnReleaseDecision, updateTu
 import type { TurnDragState } from './gesture.ts';
 import { turnCornerAtPoint, turnCornerRegion, turnInputAvailability, turnTargetOwnsInput } from './turnHit.ts';
 import { navigationButtonPosition } from './navigationPlacement.ts';
-import { LESSON_FIGURE_RAISE_Z, lessonSceneCenter } from './lessonPresentation.ts';
+import { lessonFigureExtent } from './lessonPresentation.ts';
+import { FIGURE_ENTRY_MS, figureEntryFrame, inverseSmoothStep } from './figures/choreography.ts';
 import type { PointerEvent as ReactPointerEvent } from 'react';
 import type { SceneHost } from './SceneHost.ts';
 import { reduceLesson, sceneState } from '../lesson/controller.ts';
@@ -199,8 +200,10 @@ export default function BookApp() {
   useEffect(() => {
     if (!figureRect || !pageWorldHeight) return;
     const toZ = (y: number) => (y / PAGE_LOGICAL.height - 0.5) * pageWorldHeight;
-    // Centre the lanes' visual extent: raised top faces reach LESSON_FIGURE_RAISE_Z further up the page.
-    stageRef.current?.setSceneWindow({ offsetZ: toZ(figureRect.y + figureRect.h / 2) - lessonSceneCenter(currentSpread.sceneId) + LESSON_FIGURE_RAISE_Z / 2,
+    // v3 R4: centre the figure's visual extent at the reading pose — raised block tops, the printed
+    // axis labels and the spread's decor — in the printed window.
+    const extent = lessonFigureExtent(currentSpread.sceneId);
+    stageRef.current?.setSceneWindow({ offsetZ: toZ(figureRect.y + figureRect.h / 2) - (extent.minZ + extent.maxZ) / 2,
       minZ: toZ(figureRect.y), maxZ: toZ(figureRect.y + figureRect.h), visible: true });
   }, [figureRect, pageWorldHeight, preparedScene, currentSpread]);
   const command = (event: LessonCommand) => {
@@ -214,6 +217,7 @@ export default function BookApp() {
     let cleanup: (() => void) | undefined;
     void import('./inspector.ts').then(({ attachBookInspector }) => {
       if (alive) cleanup = attachBookInspector({ getStage: () => stageRef.current, getVisual: () => visual.current, draw, getRoot: () => rootRef.current,
+        getScene: () => musicSceneRef.current,
         getPrintStats: () => printStatsRef.current(),
         holdPrintUpgrades: setHoldPrintUpgrades,
         getPrintImage: (pageId, layer) => {
@@ -321,7 +325,12 @@ export default function BookApp() {
     void import('./SceneHost.ts').then(({ SceneHost: Host }) => {
       if (!alive) return;
       host = new Host({
-        attach(group) { draw({ sceneProgress: 0 }); stageRef.current?.setSceneGroup(group); },
+        attach(group) {
+          // A new figure starts lying flat: undrawn on a first visit, already drawn on a revisit.
+          const drawn = visited.current.has(bookRef.current.currentSpreadId) || restoringCancel.current;
+          draw({ sceneProgress: 0, sceneReveal: drawn ? 1 : 0 });
+          stageRef.current?.setSceneGroup(group);
+        },
         invalidate() { stageRef.current?.invalidate(); },
         stopAudio(reason) { stop(reason); },
         isCurrent(token) { return alive && tokenMatches(bookRef.current, token); },
@@ -347,13 +356,14 @@ export default function BookApp() {
     const sceneId = BOOK_MANIFEST[spreadIndex(current.currentSpreadId)].sceneId;
     void import('./lessonScene.ts').then(({ createLessonScene }) => host.replace({ sceneId, load(signal) {
       if (signal.aborted || !tokenMatches(bookRef.current, token)) throw new DOMException('Scene preparation cancelled', 'AbortError');
-      prepared = createLessonScene(sceneId, lessonRef.current);
+      prepared = createLessonScene(sceneId, lessonRef.current, { spread: { index: spreadIndex(current.currentSpreadId), count: BOOK_MANIFEST.length },
+        hatch: currentProfile().quality !== 'low', reducedMotion: () => bookRef.current.reducedMotion, invalidate: () => stageRef.current?.invalidate() });
       return prepared;
     } }, token)).then(result => {
       if (!alive || result !== 'ready' || !tokenMatches(bookRef.current, token)) return;
       musicSceneRef.current = prepared;
       setPreparedScene(key);
-      if (bookRef.current.scene !== 'entering') { draw({ sceneProgress: 1 }); host.markReady(token); }
+      if (bookRef.current.scene !== 'entering') { draw({ sceneProgress: 1, sceneReveal: 1 }); host.markReady(token); }
     }).catch((reason: unknown) => {
       if (!alive || !tokenMatches(bookRef.current, token)) return;
       reportError('scene', reason, '입체 장면을 준비하지 못해 2D 책으로 전환했어요. 만든 리듬과 답은 그대로예요.');
@@ -377,7 +387,7 @@ export default function BookApp() {
     const token = bookToken(current);
     const duration = (ms: number) => current.reducedMotion || current.mode === '2d' ? 0 : ms;
     if (current.hidden) {
-      draw({ coverProgress: current.isOpen ? 1 : 0, introProgress: 1, sceneProgress: current.isOpen ? 1 : 0, turn: null });
+      draw({ coverProgress: current.isOpen ? 1 : 0, introProgress: 1, sceneProgress: current.isOpen ? 1 : 0, sceneReveal: 1, turn: null });
       return;
     }
     if (current.phase === 'introReady') { send({ type: 'START_INTRO' }); return; }
@@ -417,13 +427,20 @@ export default function BookApp() {
     }
     if (current.isOpen && current.scene === 'entering') {
       if (preparedScene !== `${current.bookEpoch}:${current.sceneInstanceId}:${current.currentSpreadId}`) return;
-      const entryDuration = restoringCancel.current ? 0 : visited.current.has(current.currentSpreadId) ? BOOK_MOTION.revisit : BOOK_MOTION.enter;
+      const restoring = restoringCancel.current;
+      const revisit = visited.current.has(current.currentSpreadId);
       restoringCancel.current = false;
-      return tween(0, 1, duration(entryDuration), value => draw({ sceneProgress: value }), () => {
+      const ready = () => {
         sceneHostRef.current?.markReady(token);
         visited.current.add(current.currentSpreadId);
         send({ type: 'SCENE_READY', token });
-      });
+      };
+      // v3 R4: a drawn figure only stands up again; a first visit is drawn by the pen while it rises.
+      if (restoring || revisit) return tween(0, 1, duration(restoring ? 0 : BOOK_MOTION.revisit), value => draw({ sceneProgress: value, sceneReveal: 1 }), ready);
+      return tween(0, 1, duration(FIGURE_ENTRY_MS), value => {
+        const frame = figureEntryFrame(inverseSmoothStep(value) * FIGURE_ENTRY_MS);
+        draw({ sceneProgress: frame.lift, sceneReveal: frame.reveal });
+      }, ready);
     }
   }, [book.phase, book.scene, book.hidden, book.navigationToken, book.bookEpoch, book.sceneInstanceId, book.reducedMotion, book.mode, book.gesture?.pointerActive, preparedScene, printMotionReady, draw, send]);
 

@@ -146,6 +146,13 @@ async function inkMetrics(page: Page, layout: Layout | null): Promise<Record<str
   const stats = await page.evaluate(() => (window as unknown as { __bookInspector?: { printStats(): unknown } }).__bookInspector?.printStats() ?? null) as
     { bytes: number; budgetBytes: number; settled: number; drafts: number; states: number; lastDraftMs: number; lastSettledMs: number } | null;
   const result: Record<string, unknown> = { ...dom };
+  // v3 R4: the ink figure's segment counts and the frame's draw calls with and without it.
+  const figure = await page.evaluate(() => {
+    const inspector = (window as unknown as { __bookInspector?: { figure?(): { lift: number; reveal: number; decor: string | null; figure: unknown } | null; sceneDrawCalls?(): unknown } }).__bookInspector;
+    const snapshot = inspector?.figure?.() ?? null;
+    return snapshot ? { lift: snapshot.lift, reveal: snapshot.reveal, decor: snapshot.decor, stats: snapshot.figure, calls: inspector?.sceneDrawCalls?.() ?? null } : null;
+  });
+  if (figure) result.figure = figure;
   if (stats) result.print = { MiB: Number((stats.bytes / 1048576).toFixed(2)), budgetMiB: stats.budgetBytes / 1048576, settled: stats.settled, drafts: stats.drafts,
     states: stats.states, lastDraftMs: Number(stats.lastDraftMs.toFixed(2)), lastSettledMs: Number(stats.lastSettledMs.toFixed(2)) };
   if (!layout) return result;

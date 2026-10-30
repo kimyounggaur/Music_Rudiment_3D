@@ -14,7 +14,6 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { chromium } from 'playwright';
 import type { Page } from 'playwright';
-import { PAGE_LOGICAL } from '../src/book/print/pageLayout.ts';
 
 type Result = { name: string; pass: boolean; detail: unknown };
 type InspectorHotspot = { id: string; role: string; label: string; enabled: boolean; testId: string | null; center: { x: number; y: number } | null };
@@ -100,6 +99,18 @@ try {
     focused: document.activeElement?.matches('.book-mirror h1') ?? false, heading: document.querySelector('.book-mirror h1')?.textContent,
     testIds: [...document.querySelectorAll<HTMLElement>('.book-mirror [data-testid]')].map(element => element.dataset.testid) }));
   record('no HTML page elements in 3D', dom.pages === 0, { pages: dom.pages });
+
+  // --- R4: the first entry ends with the ink figure fully drawn and standing, within its budgets.
+  // The stage applies the timeline when it renders; the draw-call measurement renders a frame first.
+  const figureState = await page.evaluate(() => {
+    const inspector = (window as unknown as { __bookInspector: { figure(): { lift: number; reveal: number; figure: { segments: number } } | null; sceneDrawCalls(): { scene: number; total: number } | null } }).__bookInspector;
+    const calls = inspector.sceneDrawCalls();
+    const snapshot = inspector.figure();
+    return { lift: snapshot?.lift ?? null, reveal: snapshot?.reveal ?? null, segments: snapshot?.figure.segments ?? null, calls };
+  });
+  record('R4: entry ends drawn and standing; scene ≤ 40 draw calls, ≤ 6,000 segments',
+    figureState.lift !== null && figureState.lift > 0.999 && figureState.reveal === 1 && !!figureState.calls && figureState.calls.scene <= 40
+      && figureState.segments !== null && figureState.segments <= 6000, figureState);
   record('mirror h1 takes page focus', dom.focused, { heading: dom.heading });
   record('mirror keeps 2D test ids', ['play-upper', 'play-lower', 'pause-resume-audio', 'stop-audio'].every(id => dom.testIds.includes(id)), dom.testIds);
 
@@ -173,6 +184,45 @@ try {
   }
   const listed = await page.evaluate(() => document.querySelectorAll('.book-mirror [data-event-select]').length);
   record('ten splits through the mirror', splits === 10 && listed === 11, { splits, notes: listed });
+
+  // --- R4: a split changes the data at once and cuts the new boundary with a pen stroke that ends
+  // after BOOK_MOTION.splitMerge (240 ms; under SwiftShader the end lands on the next slow frame).
+  type FigureInspector = { __bookInspector: { figure(): { lanes: { eventIds: string[]; transition: { kind: string; boundaries: number[] } | null }[] } | null } };
+  const strokeTarget = await page.evaluate(() => [...document.querySelectorAll<HTMLButtonElement>('.book-mirror [data-event-select]')]
+    .find(button => !button.disabled && !/16분/.test(button.textContent ?? ''))?.dataset.hotspot ?? null);
+  if (strokeTarget) {
+    before = await root(page);
+    await mirrorClick(page, `button[data-hotspot="${strokeTarget}"]`);
+    await revisionAfter(page, before.revision);
+  }
+  before = await root(page);
+  // Sample the figure on every frame from the click on: the stroke runs on rAF for splitMerge ms.
+  const stroke = await page.evaluate(() => {
+    const button = document.querySelector<HTMLButtonElement>('.book-mirror [data-testid="split-note"]');
+    if (!button || button.disabled) return null;
+    const notes = document.querySelectorAll('.book-mirror [data-event-select]').length;
+    const samples: { events: number | null; transition: { kind: string; boundaries: number[] } | null }[] = [];
+    (window as unknown as { __strokeSamples: typeof samples }).__strokeSamples = samples;
+    const tick = () => {
+      const snapshot = (window as unknown as FigureInspector).__bookInspector.figure();
+      samples.push({ events: snapshot?.lanes[0]?.eventIds.length ?? null, transition: snapshot?.lanes[0]?.transition ?? null });
+      if (samples.length < 600) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    button.click();
+    return { notesBefore: notes };
+  });
+  await revisionAfter(page, before.revision);
+  const drawn = await page.waitForFunction(() => (window as unknown as { __strokeSamples: { transition: unknown }[] }).__strokeSamples.some(sample => sample.transition),
+    undefined, { timeout: 30_000, polling: 50 }).then(() => true, () => false);
+  const strokeEnded = await page.waitForFunction(() => (window as unknown as FigureInspector).__bookInspector.figure()?.lanes[0]?.transition === null,
+    undefined, { timeout: 30_000, polling: 100 }).then(() => true, () => false);
+  const strokeSamples = await page.evaluate(() => (window as unknown as { __strokeSamples: { events: number | null; transition: { kind: string; boundaries: number[] } | null }[] }).__strokeSamples.splice(0));
+  const firstStroke = strokeSamples.find(sample => sample.transition);
+  record('R4: split draws the new boundary as a pen stroke over 240 ms (data first)',
+    !!stroke && drawn && !!firstStroke && firstStroke.events === stroke.notesBefore + 1 && firstStroke.transition?.kind === 'draw'
+      && firstStroke.transition.boundaries.length === 1 && strokeEnded,
+    { ...stroke, firstStroke, strokeFrames: strokeSamples.filter(sample => sample.transition).length, strokeEnded });
   const draftMeasures = await page.evaluate(() => performance.getEntriesByName('print:draft').map(entry => Number(entry.duration.toFixed(2))));
   record('draft print per edit ≤ 60 ms (performance measure print:draft)', draftMeasures.length >= 10 && Math.max(...draftMeasures) <= 60,
     { maxDraftMs: Math.max(...draftMeasures), draftMeasures, clickToCommitMs: commitTimes, clickToRenderedFrameMs: frameTimes,
@@ -193,7 +243,7 @@ try {
   await pointerClick(page, split);
   const afterSplit = await revisionAfter(page, before.revision);
   const notesAfter = await page.evaluate(() => document.querySelectorAll('.book-mirror [data-event-select]').length);
-  record('pointer press on printed 둘로 나누기 splits', notesAfter === listed + 1, { revision: afterSplit, notes: notesAfter });
+  record('pointer press on printed 둘로 나누기 splits', notesAfter === listed + 2, { revision: afterSplit, notes: notesAfter });
 
 
   // --- Draft → settled upgrade keeps every printed position (jump 0). Undo + redo restore the same
@@ -286,8 +336,9 @@ try {
   // Tap the block at whichever end of the bar is not already selected.
   const atStart = selectedBefore !== listedEvents[0];
   const expected = atStart ? listedEvents[0] : listedEvents.at(-1);
-  const tap = figure && await page.evaluate(({ u, v }) => (window as unknown as { __bookInspector: { pagePoint(side: string, u: number, v: number): { x: number; y: number } | null } })
-    .__bookInspector.pagePoint('right', u, v), { u: (figure.rect.x + figure.rect.w * (atStart ? 0.03 : 0.97)) / PAGE_LOGICAL.width, v: (figure.rect.y + figure.rect.h / 2) / PAGE_LOGICAL.height });
+  // R4: the window also holds the axis labels and decor, so aim at the standing block itself (lane units).
+  const tap = figure && (await page.evaluate(x => (window as unknown as { __bookInspector: { figurePoints(lane: string, points: number[][]): ({ x: number; y: number } | null)[] } })
+    .__bookInspector.figurePoints('main', [[x, 0.19, 0]]), atStart ? 0.3 : 9.7))[0];
   if (figure && tap && expected) {
     before = await root(page);
     await page.mouse.click(tap.x, tap.y);

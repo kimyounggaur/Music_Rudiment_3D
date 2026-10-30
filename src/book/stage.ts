@@ -12,6 +12,8 @@ import type { BookEnvironment } from './render/environment.ts';
 import { createPostPipeline, tierPixelRatio } from './render/postPipeline.ts';
 import type { PostPipeline } from './render/postPipeline.ts';
 import type { QualityTier } from './profile.ts';
+import { figureControlsOf } from './figures/figure.ts';
+import type { FigureStats } from './figures/figure.ts';
 import {
   BOOK_DIMENSIONS, createFlatPageGeometry, createSpreadPageGeometry, createStackGeometry, createTurningLeafGeometry, leafProgressFromX, LEAF_THICKNESS,
   spreadAmplitude, spreadHeight, stackHeights, unitProgress, updateSpreadPageGeometry, updateStackGeometry, updateTurningLeafGeometry,
@@ -44,7 +46,10 @@ export interface StageUpdate {
   currentSpreadIndex: number;
   spreadCount: number;
   turn: { direction: BookTurnDirection; progress: number; corner: BookCorner } | null;
+  /** v3 R4: the scene figure's lift (0 = drawn flat on the paper, 1 = standing). */
   sceneProgress?: number;
+  /** v3 R4: the pen's progress over the scene figure (0 = nothing drawn, 1 = fully drawn). */
+  sceneReveal?: number;
   suspendFit?: boolean;
   inspectionWireframe?: boolean;
 }
@@ -84,6 +89,10 @@ export interface BookStage {
   setSceneGroup(group: Group | null): void;
   setSceneWindow(window: StageSceneWindow | null): void;
   pickScene(clientX: number, clientY: number, targets: Mesh[]): Mesh | null;
+  /** DEV: client coordinates of a world point (inspection and measurements). */
+  projectToClient(point: readonly [number, number, number]): StagePoint | null;
+  /** DEV: draw calls of one frame with and without the scene figure (renders twice, then restores). */
+  measureSceneDrawCalls(): Readonly<{ total: number; withoutScene: number; scene: number; figure: FigureStats | null }> | null;
   pointerProjection(clientX: number, clientY: number, grabbedOffsetX?: number): { x: number; y: number; z: number; u: number; v: number; turnProgress?: number } | null;
   /** v3 R3: the printed page under a client point (raycast on the curved page meshes), when the book is open and still. */
   pagePointer(clientX: number, clientY: number): PagePointerHit | null;
@@ -267,7 +276,7 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     });
   }
 
-  let state: StageUpdate = { coverProgress: 0, introProgress: 0, currentSpreadIndex: 0, spreadCount: 6, turn: null, sceneProgress: 0, suspendFit: false };
+  let state: StageUpdate = { coverProgress: 0, introProgress: 0, currentSpreadIndex: 0, spreadCount: 6, turn: null, sceneProgress: 0, sceneReveal: 1, suspendFit: false };
   const textures: StageTextures = { staticLeft: null, staticRight: null, turnFront: null, turnBack: null,
     staticLeftState: null, staticRightState: null, turnFrontState: null, turnBackState: null };
   let width = 0;
@@ -373,15 +382,18 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       updateTurningLeafGeometry(leafGeometry, D.pageWidth, D.pageHeight, turnProgress, turn.corner, turn.direction,
         { source: spreadAmplitude(sourceHeight), destination: spreadAmplitude(destinationHeight) });
     }
-    const growth = unitProgress(state.sceneProgress ?? 0);
-    // The current owner may fold under an early direct curl and unfold on
-    // cancellation. Depth testing keeps the leaf in front; the destination
-    // owner is attached only after the controller commits the turn.
-    // The figure base clears the page bulge (R4 replaces this with paper-conforming ink figures).
-    const bulge = geometryState.right.amplitude * 0.05;
-    sceneAnchor.visible = progress >= 1 && growth > 0 && (sceneWindow?.visible ?? true);
-    sceneAnchor.position.set(0, rightSurfaceY + bulge + 0.006 - (1 - growth) * 0.07, 0);
-    sceneAnchor.scale.set(1, Math.max(0.0001, growth), 1);
+    // v3 R4: the scene is an ink figure lying on the right page (it follows the page's curve
+    // itself). The timeline lifts it (0 flat → 1 standing) and the pen reveals it; the anchor no
+    // longer grows. The current owner may lie down under an early direct curl and stand again on
+    // cancellation; depth testing keeps the leaf in front. Once flat during a turn its ink would sit
+    // on the wrong page, so only a standing figure stays visible while a leaf moves.
+    const lift = unitProgress(state.sceneProgress ?? 0);
+    const reveal = unitProgress(state.sceneReveal ?? 1);
+    const figure = figureControlsOf(borrowedScene);
+    figure?.setLift(lift);
+    figure?.setReveal(reveal);
+    sceneAnchor.visible = progress >= 1 && (lift > 0 || (reveal > 0 && !turn)) && (sceneWindow?.visible ?? true);
+    sceneAnchor.position.set(0, rightSurfaceY, 0);
     applySceneWindow();
     bookRoot.updateMatrixWorld(true);
     visiblePoints = [];
@@ -434,6 +446,8 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     applyObjects();
     const safe = safeRect();
     fitCamera(rect, safe);
+    // Ink widths are CSS pixels of this viewport.
+    figureControlsOf(borrowedScene)?.setResolution(width, height);
     renderer.info.reset();
     post.render();
     drawCalls = renderer.info.render.calls;
@@ -505,7 +519,7 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       const turnEqual = JSON.stringify(merged.turn) === JSON.stringify(state.turn);
       if (merged.coverProgress === state.coverProgress && merged.introProgress === state.introProgress
         && merged.currentSpreadIndex === state.currentSpreadIndex && merged.spreadCount === state.spreadCount
-        && merged.sceneProgress === state.sceneProgress && merged.suspendFit === state.suspendFit
+        && merged.sceneProgress === state.sceneProgress && merged.sceneReveal === state.sceneReveal && merged.suspendFit === state.suspendFit
         && merged.inspectionWireframe === state.inspectionWireframe && turnEqual) return;
       state = merged;
       invalidate();
@@ -594,6 +608,27 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       const hit = raycaster.intersectObjects(targets, false).find(intersection => !sceneWindow
         || intersection.point.z >= sceneWindow.minZ && intersection.point.z <= sceneWindow.maxZ);
       return (hit?.object as Mesh | undefined) ?? null;
+    },
+    projectToClient(point) {
+      if (disposed || !layout || !point.every(Number.isFinite)) return null;
+      const projected = project(new Vector3(point[0], point[1], point[2]));
+      const rect = renderer.domElement.getBoundingClientRect();
+      return { x: rect.left + projected.x, y: rect.top + projected.y };
+    },
+    measureSceneDrawCalls() {
+      if (disposed || contextLost || !layout) return null;
+      // A full frame first, so the figure reflects the current timeline state.
+      if (pendingFrame !== null) cancelAnimationFrame(pendingFrame);
+      render();
+      const total = drawCalls;
+      const visible = sceneAnchor.visible;
+      sceneAnchor.visible = false;
+      renderer.info.reset();
+      post.render();
+      const withoutScene = renderer.info.render.calls;
+      sceneAnchor.visible = visible;
+      render();
+      return { total, withoutScene, scene: total - withoutScene, figure: figureControlsOf(borrowedScene)?.stats() ?? null };
     },
     getLayout: () => layout,
     invalidate,

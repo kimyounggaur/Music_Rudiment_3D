@@ -209,6 +209,15 @@ export function stackHeights(spreadIndex: number, spreadCount: number): { left: 
 }
 
 /**
+ * v3 R4: height of the open right page's paper above its flat base at page-local x (world units)
+ * for a spread at rest — the same curve the stage gives that page, so ink figures lie on it.
+ */
+export function rightPagePaper(spreadIndex: number, spreadCount: number): (pageX: number) => number {
+  const amplitude = spreadAmplitude(stackHeights(spreadIndex, spreadCount).right);
+  return (pageX: number) => amplitude * spreadHeight(pageX / BOOK_DIMENSIONS.pageWidth);
+}
+
+/**
  * Integrate a linearly varying tangent angle, retaining width-direction arc
  * length exactly. The corner changes the tangent gradient across the height.
  * No clock is involved: holding p holds the same surface, and reversing p

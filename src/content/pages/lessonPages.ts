@@ -23,7 +23,12 @@ const current = (context: PageContext) => sceneState(context.lesson, context.sce
  * Fraction of the page height reserved for the 3D figure, by lane count: the lanes' span plus the
  * block depth and the raised top faces (LESSON_FIGURE_RAISE_Z), with a small printed margin.
  */
-const figureHeight = (sceneId: SceneId) => getScene(sceneId).lanes.length >= 3 ? 0.31 : getScene(sceneId).lanes.length === 2 ? 0.29 : 0.13;
+/**
+ * Page share reserved for the 3D figure. v3 R4: spreads 1 and 2 also carry an ink decor drawing under
+ * their lanes (tests/book-lesson-scene checks every figure fits its window at the reading pose).
+ */
+const FIGURE_HEIGHT: Readonly<Partial<Record<SceneId, number>>> = Object.freeze({ 'scene-1': 0.39, 'scene-2': 0.18 });
+const figureHeight = (sceneId: SceneId) => FIGURE_HEIGHT[sceneId] ?? (getScene(sceneId).lanes.length >= 3 ? 0.31 : getScene(sceneId).lanes.length === 2 ? 0.29 : 0.13);
 
 function listenButtons(sceneId: SceneId): PrintedButton[] {
   const scene = getScene(sceneId);
