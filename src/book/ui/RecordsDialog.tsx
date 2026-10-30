@@ -26,7 +26,11 @@ export function RecordsDialog(props: RecordsDialogProps) {
       if (typeof element.showModal === 'function') element.showModal(); else element.setAttribute('open', '');
     } else if (!open && element.open) element.close();
   }, [open, onOpen]);
+  // Escape is a cancel request: close through our own state at once. The native 'close' event can
+  // arrive late (seen in Chromium on the next input), and until then the book would still treat the
+  // dialog as open; with the state already closed, that late event finds `open` false and does nothing.
   return <dialog ref={dialog} className="book-records" aria-labelledby="book-records-title" data-testid="records-dialog"
+    onCancel={event => { event.preventDefault(); if (open) props.onClose(); }}
     onClose={() => { if (open) props.onClose(); }}>
     {open && <>
       <div className="book-records-heading">
