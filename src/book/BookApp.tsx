@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { bookCanInteract, bookReducer, bookToken, createBookState, tokenMatches } from './controller.ts';
 import type { BookEvent, BookToken } from './controller.ts';
-import { findShot, shotProgress } from './render/shots.ts';
+import { findShot, shotProgress, SPREAD_SHOTS } from './render/shots.ts';
 import type { ShotSpec } from './render/shots.ts';
 import { BOOK_MOTION, tween } from './motion.ts';
 import type { BookStage, StageLayout, StageUpdate } from './stage.ts';
@@ -35,10 +35,13 @@ import { Toolbar } from './ui/Toolbar.tsx';
 import { RecordsDialog } from './ui/RecordsDialog.tsx';
 import { lessonPageNumber } from './lessonPresentation.ts';
 import { currentProfile } from './profile.ts';
-import type { BookPreferences } from '../persistence/bookProgress.ts';
+import type { BookPreferences } from './useBookProgress.ts';
+import { useBookSfx } from './sfx/useBookSfx.ts';
 
 /** A pointer on a printed page of the committed spread (logical page units, origin top-left). */
 type PageHit = Readonly<{ pageId: PageId; side: 'left' | 'right'; x: number; y: number; hotspot: PageHotspot | null; figure: boolean }>;
+/** v3 R7 cover loading line: how far each preload step has come (the cover itself is the first step). */
+const COVER_PRELOAD = Object.freeze({ waiting: 0.25, fonts: 0.4, notation: 0.65, printing: 0.85, ready: 1 });
 const PRESS_SLOP = 8;
 const playingState = (state: string | undefined) => state === 'starting' || state === 'playing' || state === 'paused';
 
@@ -65,7 +68,11 @@ export default function BookApp() {
     else if (snapshot.state === 'error' || snapshot.state === 'unavailable') dispatch({ type: 'TRANSPORT_UNAVAILABLE', token });
     else if (snapshot.state !== 'locked' || snapshot.lastStopReason) dispatch({ type: 'TRANSPORT_STOPPED', token });
   }, []);
-  const { playback, playingLane, play, pause, resume, stop, setPreferences: setAudioPreferences } = useBookAudio({ book, lesson, onFrame: onAudioFrame });
+  const { audioRef, playback, playingLane, play, pause, resume, stop, setPreferences: setAudioPreferences } = useBookAudio({ book, lesson, onFrame: onAudioFrame });
+  // v3 R7: procedural effects on the shared context — silent until the cover is opened.
+  const sfx = useBookSfx({ book, audioRef, musicPlaying: playback?.state === 'playing' || playback?.state === 'starting' });
+  const sfxRef = useRef(sfx);
+  sfxRef.current = sfx;
   const hostRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLElement>(null);
   const stageRef = useRef<BookStage | null>(null);
@@ -238,6 +245,17 @@ export default function BookApp() {
     draw({ shot: null });
   }, [book.camera, draw]);
   useEffect(() => () => { if (shotFrame.current !== null) cancelAnimationFrame(shotFrame.current); }, []);
+  // v3 R6/R7 (decision 5): optionally go into the spread's shot when playback starts (off by default).
+  const startShotRef = useRef(startShot);
+  startShotRef.current = startShot;
+  const transportWas = useRef(book.transport);
+  useEffect(() => {
+    const started = book.transport === 'playing' && transportWas.current !== 'playing';
+    transportWas.current = book.transport;
+    if (!started || !progress.preferences.autoShot || book.camera !== 'settled' || shotRef.current) return;
+    const spec = SPREAD_SHOTS[book.currentSpreadId]?.[0];
+    if (spec) startShotRef.current(spec);
+  }, [book.transport, book.camera, book.currentSpreadId, progress.preferences.autoShot]);
   const closeRecords = useCallback(() => {
     setRecordsOpen(false);
     toolbarRef.current?.querySelector<HTMLButtonElement>('[data-testid="records"]')?.focus({ preventScroll: true });
@@ -307,6 +325,7 @@ export default function BookApp() {
         holdPrintUpgrades: setHoldPrintUpgrades,
         getShot: () => { const active = shotRef.current; return active ? { id: active.spec.id, phase: active.phase, t: Number(active.t.toFixed(4)) } : null; },
         holdShot: ms => { shotClock.current = ms; stepShot.current(); },
+        getSfxLog: () => sfxRef.current.log(),
         getPrintImage: (pageId, layer) => {
           const surface = printsRef.current.get(pageId as PageId);
           const image = (layer === 'state' ? surface?.state?.image : surface?.print.image) as HTMLCanvasElement | undefined;
@@ -668,6 +687,8 @@ export default function BookApp() {
   const runHotspot = (hotspot: PageHotspot) => {
     const action = hotspot.command;
     if (!hotspot.enabled || !action || !bookCanInteract(bookRef.current)) return;
+    // v3 R7: a printed control is a pen tap; the answer flap is paper (both gated by the effects hook).
+    sfx.play(action.type === 'flap' ? 'flap' : 'pen');
     switch (action.type) {
       case 'lesson': action.commands.forEach(item => command(item)); break;
       case 'play': play(action.laneId); break;
@@ -698,6 +719,14 @@ export default function BookApp() {
   const mirrorPages = useMemo<readonly MirrorPage[]>(() => leftLayout && rightLayout
     ? [{ pageId: currentSpread.leftPageId, side: 'left', layout: leftLayout }, { pageId: currentSpread.rightPageId, side: 'right', layout: rightLayout }] : [],
   [leftLayout, rightLayout, currentSpread]);
+  // v3 R7: a newly earned stamp on the open spread thuds once (not on arrival at an already stamped page).
+  const stampedBefore = useRef<{ spread: string; stamped: Set<string> } | null>(null);
+  useEffect(() => {
+    const stamped = new Set(mirrorPages.flatMap(page => page.layout.stamps.filter(stamp => stamp.stamped).map(stamp => `${page.pageId}:${stamp.id}`)));
+    const before = stampedBefore.current;
+    stampedBefore.current = { spread: currentSpread.spreadId, stamped };
+    if (before?.spread === currentSpread.spreadId && [...stamped].some(key => !before.stamped.has(key))) sfx.play('stamp');
+  }, [mirrorPages, currentSpread.spreadId, sfx]);
   // v3 R5: each covered answer area has a paper flap that lifts in 3D over its printed place.
   const stageFlaps = useMemo<readonly StageFlap[]>(() => book.mode !== '3d' ? [] : mirrorPages.flatMap(page => page.layout.flaps.map(flap => ({
     key: `${page.pageId}:${flap.id}`, side: page.side, open: flap.open, hint: flap.hint, foldHint: flap.foldHint,
@@ -738,6 +767,8 @@ export default function BookApp() {
     const id = ++inputId.current;
     const event: BookEvent = intro ? { type: 'SKIP_INTRO', inputId: id } : { type: 'OPEN_BOOK', inputId: id, spreadId };
     if (bookReducer(bookRef.current, event) === bookRef.current) return;
+    // The reader's first gesture: effects may sound from here on (cover-open follows the transition).
+    sfx.unlock();
     if (!intro) {
       progress.activate();
       restoredOpening.current = resumeSaved;
@@ -843,6 +874,11 @@ export default function BookApp() {
         }}>이어서 펼치기 {progress.savedSpread.replace('spread-', '')}</button>
         <button className="book-cover-primary book-text-button" onClick={() => open('spread-1')}>처음부터 둘러보기</button>
       </div> : <span className="book-cover-caption" aria-hidden="true">표지를 눌러 펼쳐 보세요</span>)}
+      {/* v3 R7: loading drawn as an ink line in the hint area (cover → body fonts → notation → first prints); the text stays. */}
+      {book.mode === '3d' && !prints.ready && <svg className="book-cover-progress" viewBox="0 0 100 4" preserveAspectRatio="none" aria-hidden="true" data-preload={stageReady ? prints.preload : 'cover'}>
+        <line className="book-cover-progress-track" x1="2" y1="2" x2="98" y2="2" />
+        <line className="book-cover-progress-ink" x1="2" y1="2" x2={2 + 96 * (stageReady ? COVER_PRELOAD[prints.preload] : 0.12)} y2="2" />
+      </svg>}
       {book.phase === 'coverIdle' && !progress.canSave && <p className="book-cover-storage-notice" role="status">{progress.notice} 책을 펼친 뒤 아래 조작바의 ‘기록’에서 원문을 내보낼 수 있어요.</p>}
       {error && book.mode === '2d' && <div className="book-cover-message" role="status">{error}<button onClick={retry3D}>3D 다시 시도</button></div>}
     </div>}

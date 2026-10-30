@@ -39,6 +39,8 @@ export interface BookInspector {
   shot(): Readonly<{ id: string; phase: 'enter' | 'hold' | 'return'; t: number }> | null;
   /** v3 R6: pin the shot clock `ms` after its current phase began (null resumes real time). */
   holdShot(ms: number | null): void;
+  /** v3 R7: the last sound-effect requests (name, allowed by the gate, played by the engine). */
+  sfx(): readonly unknown[];
 }
 
 declare global {
@@ -59,6 +61,7 @@ export type BookInspectorOptions = Readonly<{
   holdPrintUpgrades?: (hold: boolean) => void;
   getShot?: () => Readonly<{ id: string; phase: 'enter' | 'hold' | 'return'; t: number }> | null;
   holdShot?: (ms: number | null) => void;
+  getSfxLog?: () => readonly unknown[];
 }>;
 
 const poseKeys = new Set(['coverProgress', 'introProgress', 'currentSpreadIndex', 'turn', 'inspectionWireframe', 'sceneProgress', 'sceneReveal']);
@@ -176,6 +179,7 @@ export function attachBookInspector(options: BookInspectorOptions): () => void {
     },
     flapAt: (clientX, clientY) => options.getStage()?.flapAt(clientX, clientY) ?? null,
     shot: () => { const shot = options.getShot?.(); return shot ? { ...shot } : null; },
+    sfx: () => structuredClone(options.getSfxLog?.() ?? []),
     holdShot(ms) {
       if (ms !== null && (typeof ms !== 'number' || !Number.isFinite(ms) || ms < 0)) throw new RangeError('holdShot takes a non-negative time in ms or null.');
       options.holdShot?.(ms);

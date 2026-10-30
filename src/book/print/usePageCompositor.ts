@@ -35,9 +35,12 @@ export type PageCompositorInput = Readonly<{
   onError?: (error: Error) => void;
 }>;
 
+/** v3 R7 preload order after the cover: body fonts → notation fonts → the first spread's prints. */
+export type PagePreload = 'waiting' | 'fonts' | 'notation' | 'printing' | 'ready';
 export type PageCompositorState = Readonly<{
   surfaces: ReadonlyMap<PageId, PageSurface>;
   ready: boolean;
+  preload: PagePreload;
   /** Changes whenever any print or state texture changed: the stage must render again. */
   generation: number;
   stats(): CompositorStats | null;
@@ -64,6 +67,7 @@ function whenIdle(callback: () => void): Idle {
 export function usePageCompositor(input: PageCompositorInput): PageCompositorState {
   const { enabled, tier, lesson, hints, ui, pageIds, currentPageIds, playback, idlePlayback, interaction, maxAnisotropy = 8, holdUpgrades = false } = input;
   const [runtime, setRuntime] = useState<{ compositor: PageCompositor; tier: QualityTier } | null>(null);
+  const [loading, setLoading] = useState<'fonts' | 'notation' | null>(null);
   const [upgrades, setUpgrades] = useState(0);
   const onError = useRef(input.onError);
   onError.current = input.onError;
@@ -72,8 +76,14 @@ export function usePageCompositor(input: PageCompositorInput): PageCompositorSta
     if (!enabled) return;
     let alive = true;
     let owned: PageCompositor | null = null;
-    void Promise.all([ensurePageFontsReady(), ensureBookNotationReady()]).then(([, notation]) => {
+    // v3 R7: one after the other, so the body fonts (needed by every page) arrive first.
+    setLoading('fonts');
+    void ensurePageFontsReady().then(() => {
+      if (alive) setLoading('notation');
+      return ensureBookNotationReady();
+    }).then(notation => {
       if (!alive) return;
+      setLoading(null);
       const engraver = createNotationEngraver(notation.module, PRINT_COLORS.ink);
       const measure = createTextMeasurer();
       owned = createPageCompositor({
@@ -151,5 +161,6 @@ export function usePageCompositor(input: PageCompositorInput): PageCompositorSta
   let generation = 0;
   for (const surface of surfaces.values()) generation += surface.printVersion * 2 + surface.stateVersion;
   const ready = enabled && !!runtime && pageIds.every(id => surfaces.has(id));
-  return { surfaces, ready, generation, stats: () => runtime?.compositor.stats() ?? null };
+  const preload: PagePreload = ready ? 'ready' : !enabled ? 'waiting' : loading ?? (runtime ? 'printing' : 'fonts');
+  return { surfaces, ready, preload, generation, stats: () => runtime?.compositor.stats() ?? null };
 }

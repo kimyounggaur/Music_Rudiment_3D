@@ -25,3 +25,5 @@
 /* v3 R5: the 2D reading book sits above the toolbar row. */
 .book-app--2d .book-paper-dom{height:calc(100% - var(--book-toolbar-height,52px) - 4dvh);margin:2dvh auto calc(var(--book-toolbar-height,52px) + 2dvh)}
 @media(max-width:700px){.book-app--2d .book-paper-dom:not(.book-paper-dom--preparing){height:calc(100% - var(--book-toolbar-height,52px) - 24px)}}
+/* v3 R7: the cover's loading line, an ink stroke under the hint. */
+.book-cover-progress{position:absolute;left:12%;width:76%;bottom:calc(4% - 10px);height:4px;overflow:visible;pointer-events:none}.book-cover-progress-track{stroke:#25272133;stroke-width:1.2;vector-effect:non-scaling-stroke}.book-cover-progress-ink{stroke:#252721;stroke-width:1.6;stroke-linecap:round;vector-effect:non-scaling-stroke}

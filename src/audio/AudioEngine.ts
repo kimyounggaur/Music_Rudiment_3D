@@ -50,6 +50,11 @@ export interface AudioEngineOptions {
   startLeadSeconds?: number;
   /** Keep the baseline scheduler available; the book explicitly selects buffer. */
   rendering?: 'oscillator' | 'buffer';
+  /**
+   * v3 R7: builds one named sound effect into `destination` at `when` and returns how many nodes it
+   * made. The engine only supplies its context and the effects gain; the synthesis lives with the book.
+   */
+  sfx?: (name: string, context: AudioContextLike, destination: GainNodeLike, when: number) => number;
 }
 type SourceHandle = { source: ScheduledSourceLike; gain: GainNodeLike; cycle: number; start: number; end: number; started: boolean };
 type Session = {
@@ -114,6 +119,9 @@ export class AudioEngine {
   private context: AudioContextLike | null = null;
   private master: GainNodeLike | null = null;
   private learning: GainNodeLike | null = null;
+  /** v3 R7 effects channel: its own gain under master, made on the first effect (never at construction). */
+  private effects: GainNodeLike | null = null;
+  private effectsEnabled = true;
   private state: AudioState = 'locked';
   private session: Session | null = null;
   private request = 0;
@@ -148,6 +156,7 @@ export class AudioEngine {
       clearTimer: options.clearTimer ?? ((handle) => globalThis.clearTimeout(handle as ReturnType<typeof setTimeout>)),
       startLeadSeconds: options.startLeadSeconds ?? 0.035,
       rendering: options.rendering ?? 'oscillator',
+      sfx: options.sfx ?? (() => 0),
     };
     if (!Number.isFinite(this.options.startLeadSeconds) || this.options.startLeadSeconds < 0 || this.options.startLeadSeconds > 0.25) {
       throw new AudioPlaybackError('LEAD_RANGE', '시작 여유 시간 범위가 올바르지 않습니다.');
@@ -451,6 +460,28 @@ export class AudioEngine {
     }
   }
 
+  /**
+   * v3 R7: play a procedural effect on the effects channel. It never creates or resumes the context,
+   * so nothing sounds before the reader's first gesture; muted, disabled or interrupted → no nodes.
+   */
+  playSfx(name: string, when?: number): boolean {
+    const context = this.context;
+    if (this.disposed || !context || !this.master || this.muted || !this.effectsEnabled) return false;
+    if (context.state !== 'running' && !this.resumePending) return false;
+    if (!this.effects) {
+      this.effects = context.createGain();
+      this.effects.gain.setValueAtTime(1, context.currentTime);
+      this.effects.connect(this.master);
+    }
+    try { return this.options.sfx(name, context, this.effects, Math.max(when ?? context.currentTime, context.currentTime)) > 0; }
+    catch { return false; }
+  }
+
+  /** v3 R7: the reader's effects setting (the toolbar '소리' mutes music and effects together). */
+  setSfxEnabled(enabled: boolean): void {
+    this.effectsEnabled = Boolean(enabled);
+  }
+
   setMuted(muted: boolean): void {
     this.muted = Boolean(muted);
     if (this.context && this.master) this.master.gain.setValueAtTime(this.muted ? 0 : this.masterVolume, this.context.currentTime);
@@ -512,8 +543,8 @@ export class AudioEngine {
     this.stop('dispose'); this.disposed = true;
     this.listeners.clear();
     this.context?.removeEventListener?.('statechange', this.stateChange);
-    try { this.learning?.disconnect(); this.master?.disconnect(); } catch { /* already disconnected */ }
+    try { this.learning?.disconnect(); this.effects?.disconnect(); this.master?.disconnect(); } catch { /* already disconnected */ }
     const closing = this.context?.close?.(); closing?.catch(() => undefined);
-    this.context = null; this.master = null; this.learning = null; this.state = 'unavailable';
+    this.context = null; this.master = null; this.learning = null; this.effects = null; this.state = 'unavailable';
   }
 }

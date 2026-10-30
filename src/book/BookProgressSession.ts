@@ -4,14 +4,19 @@ import type { Result, StorageLike } from '../persistence/progress.ts';
 import { captureBookProgress } from './learningProgress.ts';
 import type { CaptureBookProgressOptions } from './learningProgress.ts';
 
+/** Writes a captured record with CAS against `expectedRaw`; v3 R7 passes the v3 writer. */
+export type BookProgressWriter = (input: BookProgressEnvelope, storage: StorageLike, expectedRaw: string | null) => Result<BookSaveResult>;
+
 /** Live achievement history and the last confirmed disk baseline have distinct lifetimes. */
 export class BookProgressSession {
   private memoryPrevious: BookProgressEnvelope | null;
   private savedRaw: string | null;
+  private writer: BookProgressWriter;
 
-  constructor(progress: BookProgressEnvelope | null, raw: string | null) {
+  constructor(progress: BookProgressEnvelope | null, raw: string | null, writer: BookProgressWriter = saveBookProgress) {
     this.memoryPrevious = progress;
     this.savedRaw = raw;
+    this.writer = writer;
   }
 
   get previous(): BookProgressEnvelope | null { return this.memoryPrevious; }
@@ -26,7 +31,7 @@ export class BookProgressSession {
   }
 
   save(input: BookProgressEnvelope, storage: StorageLike): Result<BookSaveResult> {
-    const result = saveBookProgress(input, storage, this.savedRaw);
+    const result = this.writer(input, storage, this.savedRaw);
     if (result.ok) {
       this.savedRaw = result.value.raw;
       this.memoryPrevious = result.value.progress;

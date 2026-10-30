@@ -3,8 +3,12 @@ import { createLessonState } from '../lesson/controller.ts';
 import type { LessonState } from '../lesson/controller.ts';
 import { browserStorage } from '../persistence/progress.ts';
 import type { StorageLike } from '../persistence/progress.ts';
-import { commitBookImport, deleteBookProgress, exportBookProgress, loadBookProgress, parseBookImport, readBookBackups } from '../persistence/bookProgress.ts';
-import type { BookImportPreview, BookPreferences, BookProgressEnvelope, StoredSpreadId } from '../persistence/bookProgress.ts';
+import type { BookProgressEnvelope, StoredSpreadId } from '../persistence/bookProgress.ts';
+import {
+  commitBookImportV3, DEFAULT_BOOK_SETTINGS, deleteBookProgressV3, exportBookProgressV3, fromV2, loadBookProgressV3, parseBookImportV3,
+  readBookBackupsV3, saveBookProgressV3, toV2,
+} from '../persistence/bookProgressV3.ts';
+import type { BookImportPreviewV3, BookPreferencesV3 } from '../persistence/bookProgressV3.ts';
 import { restoreBookLearning } from './learningProgress.ts';
 import { BookProgressSession } from './BookProgressSession.ts';
 import { bookCanInteract } from './controller.ts';
@@ -12,7 +16,11 @@ import type { BookState } from './controller.ts';
 import { BOOK_MANIFEST } from './manifest.ts';
 import type { SpreadId } from './manifest.ts';
 
-export const defaultBookPreferences = (): BookPreferences => ({ mode: '3d', reducedMotion: false, muted: false, volume: 0.6 });
+/** v3 R7: the record is schema 3; `sfx` on (decision 2) and `autoShot` off (decision 5) by default. */
+export type BookPreferences = BookPreferencesV3;
+export const defaultBookPreferences = (): BookPreferences => ({ mode: '3d', reducedMotion: false, muted: false, volume: 0.6, ...DEFAULT_BOOK_SETTINGS });
+/** The learning code and the v2 validator see the v2 view of the record (settings set aside). */
+const learningPreferences = ({ mode, reducedMotion, muted, volume }: BookPreferences) => ({ mode, reducedMotion, muted, volume });
 export const supportsStoredSpread = (id: string): id is SpreadId => BOOK_MANIFEST.some(spread => spread.spreadId === id);
 const unsupportedMessage = (id: string) => `${id.replace('spread-', '')}번 펼침면은 아직 이 책에서 열 수 없어요. 저장 원문을 보호하며, 지금 둘러본 내용은 자동 저장하지 않습니다.`;
 
@@ -32,14 +40,15 @@ export function loadInitialBookProgress(): InitialBookProgress {
   const fresh = { progress: null, raw: null, preservedRaw: null, lesson: createLessonState(), preferences: defaultBookPreferences() };
   const storage = browserStorage();
   if (!storage.ok) return { ...fresh, storage: null, canSave: false, notice: storage.error.message };
-  const loaded = loadBookProgress(storage.value);
-  const base = { ...fresh, storage: storage.value, raw: loaded.raw, preservedRaw: loaded.raw ?? loaded.legacyRaw,
+  const loaded = loadBookProgressV3(storage.value);
+  const base = { ...fresh, storage: storage.value, raw: loaded.raw, preservedRaw: loaded.raw ?? loaded.sourceRaw,
     canSave: loaded.canSave, notice: loaded.error?.message ?? '' };
   if (!loaded.progress) return base;
-  const restored = restoreBookLearning(loaded.progress);
+  const progress = toV2(loaded.progress);
+  const restored = restoreBookLearning(progress);
   if (!restored.ok) return { ...base, canSave: false, notice: `${restored.error.message} 저장 원문은 그대로 두었습니다.` };
   const supported = supportsStoredSpread(loaded.progress.lastStableSpreadId);
-  return { ...base, progress: loaded.progress, lesson: restored.value, preferences: loaded.progress.preferences,
+  return { ...base, progress, lesson: restored.value, preferences: loaded.progress.preferences,
     canSave: base.canSave && supported,
     notice: !supported ? unsupportedMessage(loaded.progress.lastStableSpreadId)
       : base.notice || (loaded.status === 'migrated' ? '이전 기록의 원문을 보존하고 책 기록으로 옮겼어요.' : '') };
@@ -62,10 +71,16 @@ export function useBookProgress({ initial, book, lesson, onApply }: BookProgress
   const [canSave, setCanSave] = useState(initial.canSave);
   const [armed, setArmed] = useState(false);
   const [exportedText, setExportedText] = useState('');
-  const [preview, setPreview] = useState<BookImportPreview | null>(null);
-  const session = useRef(new BookProgressSession(initial.progress, initial.raw));
+  const [preview, setPreview] = useState<BookImportPreviewV3 | null>(null);
+  const settings = useRef({ sfx: initial.preferences.sfx, autoShot: initial.preferences.autoShot });
+  settings.current = { sfx: preferences.sfx, autoShot: preferences.autoShot };
+  // The session keeps the v2 view for the learning code; its writer stores the v3 record (CAS on the v3 key).
+  const session = useRef(new BookProgressSession(initial.progress, initial.raw, (input, storage, expectedRaw) => {
+    const saved = saveBookProgressV3(fromV2(input, settings.current), storage, expectedRaw);
+    return saved.ok ? { ok: true, value: { progress: toV2(saved.value.progress), raw: saved.value.raw } } : saved;
+  }));
   const [backups, setBackups] = useState<readonly { key: string; raw: string }[]>(() => {
-    const result = initial.storage && readBookBackups(initial.storage);
+    const result = initial.storage && readBookBackupsV3(initial.storage);
     return result && result.ok ? result.value : [];
   });
   const preservedRaw = useRef(initial.preservedRaw);
@@ -80,7 +95,7 @@ export function useBookProgress({ initial, book, lesson, onApply }: BookProgress
     // including in a user-requested export of the live supported-page edits.
     const lastStableSpreadId = previousSpread && !supportsStoredSpread(previousSpread) ? previousSpread : current.book.currentSpreadId;
     return session.current.capture({ lesson: current.lesson, lastStableSpreadId,
-      preferences: current.preferences, hints: current.hints });
+      preferences: learningPreferences(current.preferences), hints: current.hints });
   }, []);
 
   useEffect(() => {
@@ -117,15 +132,15 @@ export function useBookProgress({ initial, book, lesson, onApply }: BookProgress
   const exportCurrent = useCallback(() => {
     const candidate = capture();
     if (!candidate.ok) { setNotice(candidate.error.message); return; }
-    const result = exportBookProgress(candidate.value);
+    const result = exportBookProgressV3(fromV2(candidate.value, settings.current));
     if (!result.ok) { setNotice(result.error.message); return; }
     setExportedText(result.value);
   }, [capture]);
   const previewImport = useCallback((raw: string) => {
     setPreview(null);
-    const result = parseBookImport(raw);
+    const result = parseBookImportV3(raw);
     if (!result.ok) { setNotice(result.error.message); return; }
-    const restored = restoreBookLearning(result.value.progress);
+    const restored = restoreBookLearning(toV2(result.value.progress));
     if (!restored.ok) { setNotice(restored.error.message); return; }
     setPreview(result.value);
     setNotice(supportsStoredSpread(result.value.progress.lastStableSpreadId)
@@ -136,13 +151,13 @@ export function useBookProgress({ initial, book, lesson, onApply }: BookProgress
     if (!preview) return;
     if (!supportsStoredSpread(preview.progress.lastStableSpreadId)) { setNotice(unsupportedMessage(preview.progress.lastStableSpreadId)); return; }
     if (!initial.storage) { setNotice('저장소를 사용할 수 없어 가져오기를 적용하지 않았어요. 기존 학습은 유지됩니다.'); return; }
-    const restored = restoreBookLearning(preview.progress);
+    const restored = restoreBookLearning(toV2(preview.progress));
     if (!restored.ok) { setNotice(restored.error.message); return; }
-    const result = commitBookImport(preview, initial.storage, session.current.raw);
-    const backupResult = readBookBackups(initial.storage);
+    const result = commitBookImportV3(preview, initial.storage, session.current.raw);
+    const backupResult = readBookBackupsV3(initial.storage);
     if (backupResult.ok) setBackups(backupResult.value);
     if (!result.ok) { setNotice(result.error.message); return; }
-    session.current.adopt(result.value.progress, result.value.raw);
+    session.current.adopt(toV2(result.value.progress), result.value.raw);
     preservedRaw.current = result.value.raw;
     lastSavedIdentity.current = '';
     setPreferences(result.value.progress.preferences);
@@ -157,7 +172,7 @@ export function useBookProgress({ initial, book, lesson, onApply }: BookProgress
   }, [preview, initial.storage]);
   const deleteAll = useCallback(() => {
     if (!initial.storage) { setNotice('저장소에 접근할 수 없어 삭제하지 못했어요. 현재 학습은 유지됩니다.'); return; }
-    const result = deleteBookProgress(initial.storage);
+    const result = deleteBookProgressV3(initial.storage);
     if (!result.ok) { setCanSave(false); setNotice(result.error.message); return; }
     session.current.adopt(null, null);
     preservedRaw.current = null;

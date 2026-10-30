@@ -6,6 +6,10 @@ export type BookProgressPreferences = Readonly<{
   reducedMotion: boolean;
   muted: boolean;
   volume: number;
+  /** v3 R7: procedural sound effects (decision 2: on). */
+  sfx: boolean;
+  /** v3 R6/R7: start the lesson shot when playback starts (decision 5: off). */
+  autoShot: boolean;
 }>;
 
 export type BookProgressToolsProps = {
@@ -27,7 +31,9 @@ export type BookProgressToolsProps = {
 
 function backupLabel(key: string, index: number): string {
   if (key.endsWith(':v1-source-backup')) return '이전 형식 원문 백업';
-  if (key.endsWith(':book-v2:backup')) return '책 기록 백업';
+  if (key.endsWith(':v2-source-backup')) return '책 기록(2판) 원문 백업';
+  if (key.endsWith(':book-v2:backup')) return '책 기록(2판) 백업';
+  if (key.endsWith(':book-v3:backup')) return '책 기록 백업';
   if (key.endsWith(':backup')) return '이전 학습 기록 백업';
   return `앱 보관 기록 ${index + 1}`;
 }
@@ -119,6 +125,19 @@ export function BookProgressContent(props: BookProgressToolsProps) {
             if (!props.busy) props.onPreferences({ muted: event.currentTarget.checked });
           }} />
           <span>음소거</span>
+        </label>
+        <label className="book-progress-check">
+          <input type="checkbox" checked={props.preferences.sfx} onChange={event => {
+            if (!props.busy) props.onPreferences({ sfx: event.currentTarget.checked });
+          }} />
+          <span>효과음(책장·표지·펜 소리)</span>
+        </label>
+        <p>조작바의 ‘소리’는 음악과 효과음을 함께 끄고 켜요.</p>
+        <label className="book-progress-check">
+          <input type="checkbox" checked={props.preferences.autoShot} onChange={event => {
+            if (!props.busy) props.onPreferences({ autoShot: event.currentTarget.checked });
+          }} />
+          <span>들을 때 그림을 가까이 보기</span>
         </label>
         <label className="book-progress-setting" htmlFor={`${id}-volume`}>
           <span>음량 {Math.round(props.preferences.volume * 100)}%</span>

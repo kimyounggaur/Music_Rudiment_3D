@@ -92,6 +92,10 @@ try {
   await page.evaluate(() => { try { localStorage.clear(); } catch { /* ignore */ } });
   await page.reload({ waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => { const r = document.querySelector<HTMLElement>('main.book-app')?.dataset; return r?.phase === 'coverIdle' && r.threeReady === 'true'; }, undefined, { timeout: 240_000, polling: 200 });
+  // v3 R7: before the reader's first gesture no effect may sound (the gate refuses every request).
+  type SfxEntry = { name: string; allowed: boolean; played: boolean; at: number };
+  const sfxLog = () => page.evaluate(() => (window as unknown as { __bookInspector: { sfx(): unknown[] } }).__bookInspector.sfx()) as Promise<SfxEntry[]>;
+  const beforeGesture = await sfxLog();
   await page.evaluate(() => document.querySelector<HTMLButtonElement>('.book-open:not(:disabled)')!.click());
   await idle(page, 'spread-1');
   await wait(500);
@@ -101,6 +105,9 @@ try {
     focused: document.activeElement?.matches('.book-mirror h1') ?? false, heading: document.querySelector('.book-mirror h1')?.textContent,
     testIds: [...document.querySelectorAll<HTMLElement>('.book-mirror [data-testid]')].map(element => element.dataset.testid) }));
   record('no HTML page elements in 3D', dom.pages === 0, { pages: dom.pages });
+  const opened = await sfxLog();
+  record('R7: no effect before the first gesture; opening the cover sounds cover-open', beforeGesture.every(entry => !entry.allowed)
+    && opened.some(entry => entry.name === 'cover-open' && entry.allowed), { before: beforeGesture.length, effects: opened.map(entry => `${entry.name}:${entry.allowed ? 'ok' : 'gated'}`) });
 
   // --- R4: the first entry ends with the ink figure fully drawn and standing, within its budgets.
   // The stage applies the timeline when it renders; the draw-call measurement renders a frame first.
@@ -236,6 +243,10 @@ try {
   await page.evaluate(() => document.querySelector<HTMLElement>('.book-mirror h1')?.focus({ preventScroll: true }));
   await page.keyboard.press('ArrowLeft');
   const keyPrev = await idle(page, 'spread-1', 120_000).then(() => true, () => false);
+  const turnEffects = (await sfxLog()).filter(entry => entry.allowed).map(entry => entry.name);
+  const turnSounds = turnEffects.slice(turnEffects.lastIndexOf('cover-open') + 1);
+  record('R7: a keyboard turn sounds page-turn, then page-settle', turnSounds.filter(name => name === 'page-turn').length >= 2
+    && turnSounds.filter(name => name === 'page-settle').length >= 2 && turnSounds.indexOf('page-turn') < turnSounds.indexOf('page-settle'), { effects: turnSounds.slice(-8) });
   record('R5: ArrowRight / ArrowLeft turn the book with the toolbar in place', keyNext && keyPrev, { keyNext, keyPrev });
 
   // --- R6: 가까이 보기 — the camera goes into the figure; the same button brings back the reading pose itself.
@@ -269,7 +280,13 @@ try {
   const playing = /^play-/.test(shotPlay?.testId ?? '');
   const shotTransport = playing ? await page.waitForFunction(() => ['starting', 'playing'].includes(document.querySelector<HTMLElement>('main.book-app')?.dataset.transport ?? ''),
     undefined, { timeout: 15_000, polling: 50 }).then(() => true, () => false) : null;
-  if (playing) await mirrorClick(page, 'button[data-testid="stop-audio"]');
+  if (playing) {
+    // v3 R7: the press that started the music was a pen tap; while music plays, a press makes no pen click.
+    await mirrorClick(page, 'button[data-testid="stop-audio"]');
+    const pens = (await sfxLog()).filter(entry => entry.name === 'pen').slice(-2);
+    record('R7: pen on a printed control, but not while music plays', pens.length === 2 && pens[0]!.allowed && !pens[1]!.allowed,
+      { pens: pens.map(entry => ({ allowed: entry.allowed, played: entry.played })) });
+  }
   record('R6: a printed control works during the shot', !!shotPlay && shotPressed === shotPlay.id && shotTransport !== false,
     { control: shotPlay?.testId ?? shotPlay?.id ?? null, pressed: shotPressed, playing: shotTransport });
   assert.ok(await mirrorClick(page, 'button[data-testid="close-look"]'), 'close-look (return)');
