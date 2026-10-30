@@ -194,7 +194,8 @@ export default function BookApp() {
     const active = shotRef.current;
     if (!active) return;
     const elapsed = shotClock.current ?? performance.now() - active.start;
-    const t = shotProgress(active.phase === 'return' ? 'return' : 'enter', elapsed, active.spec, active.from, bookRef.current.reducedMotion);
+    // A held shot stays at the shot camera whatever the (pinned) clock says; only entering and returning move.
+    const t = active.phase === 'hold' ? 1 : shotProgress(active.phase, elapsed, active.spec, active.from, bookRef.current.reducedMotion);
     active.t = t;
     draw({ shot: t > 0 ? { spec: active.spec, side: active.side, t } : null });
     if (active.phase === 'enter' && t >= 1) active.phase = 'hold';

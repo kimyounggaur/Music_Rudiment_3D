@@ -242,9 +242,12 @@ try {
   type LiveCamera = { position: number[]; quaternion: number[]; shot?: { id: string; t: number } | null };
   const liveCamera = () => page.evaluate(() => ((window as unknown as { __bookInspector: { snapshot(): { layout: { camera: unknown } | null } } }).__bookInspector
     .snapshot().layout?.camera ?? null)) as Promise<LiveCamera | null>;
+  // Back from a shot means the stage has drawn the reading camera too (its layout reports no shot), not only SHOT_END.
   const shotPhase = (phase: string | null) => page.waitForFunction(value => {
-    const shot = (window as unknown as { __bookInspector: { shot(): { phase: string } | null } }).__bookInspector.shot();
-    return value === null ? shot === null && document.querySelector<HTMLElement>('main.book-app')?.dataset.camera === 'settled' : shot?.phase === value;
+    const inspector = (window as unknown as { __bookInspector: { shot(): { phase: string } | null; snapshot(): { layout: { camera: { shot?: unknown } } | null } } }).__bookInspector;
+    const shot = inspector.shot();
+    return value === null ? shot === null && document.querySelector<HTMLElement>('main.book-app')?.dataset.camera === 'settled' && !inspector.snapshot().layout?.camera.shot
+      : shot?.phase === value;
   }, phase, { timeout: 20_000, polling: 50 });
   const cameraDiff = (a: LiveCamera | null, b: LiveCamera | null) => a && b
     ? Math.max(...a.position.map((value, index) => Math.abs(value - b.position[index]!)), ...a.quaternion.map((value, index) => Math.abs(value - b.quaternion[index]!))) : Infinity;

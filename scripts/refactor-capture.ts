@@ -405,7 +405,7 @@ try {
         back.push({ phase: 'return', ms, t, file: await frame(`shot_return_${String(ms).padStart(3, '0')}ms`) });
       }
       await inspectorCall('inspector.holdShot(null)');
-      await waitFor(page, `window.__bookInspector?.shot() === null && document.querySelector('main.book-app')?.dataset.camera === 'settled'`, 10_000);
+      await waitFor(page, `window.__bookInspector?.shot() === null && document.querySelector('main.book-app')?.dataset.camera === 'settled' && !window.__bookInspector?.snapshot().layout?.camera.shot`, 10_000);
       await waitFor(page, settledPrints, 30_000);
       const returned = await cameraOf();
       await shoot('shotReturned', true, { back, readingCamera: reading, returnedCamera: returned, error: cameraError(reading, returned) });
@@ -431,7 +431,7 @@ try {
       await shoot('shotHotspot', true, { control: target.testId ?? target.id, pressed, transport: (await rootData(page)).transport ?? null, target: target.center });
       if (/^play-/.test(target.testId ?? '')) await mirrorPress('button[data-testid="stop-audio"]');
       await mirrorPress('button[data-testid="close-look"]');
-      await waitFor(page, `window.__bookInspector?.shot() === null && document.querySelector('main.book-app')?.dataset.camera === 'settled'`, 20_000);
+      await waitFor(page, `window.__bookInspector?.shot() === null && document.querySelector('main.book-app')?.dataset.camera === 'settled' && !window.__bookInspector?.snapshot().layout?.camera.shot`, 20_000);
       await waitFor(page, settledPrints, 30_000);
     }
     if (states.includes('turn50')) {
