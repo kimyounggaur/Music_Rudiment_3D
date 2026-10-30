@@ -855,7 +855,7 @@ export default function BookApp() {
     send(event);
     return true;
   };
-  return <main ref={rootRef} className={`book-app ${book.mode === '2d' ? 'book-app--2d' : ''}`} data-phase={book.phase} data-camera={book.camera} data-scene={book.scene} data-transport={book.transport} data-session-id={book.transportSessionId ?? ''} data-spread={book.currentSpreadId} data-book-epoch={book.bookEpoch} data-lesson-revision={lesson.revision} data-prints-ready={prints.ready} data-print-count={prints.surfaces.size} data-print-pages={printPageIds.join(',')}
+  return <main ref={rootRef} className={`book-app ${book.mode === '2d' ? 'book-app--2d' : ''}`} data-phase={book.phase} data-camera={book.camera} data-reduced-motion={book.reducedMotion} data-scene={book.scene} data-transport={book.transport} data-session-id={book.transportSessionId ?? ''} data-spread={book.currentSpreadId} data-book-epoch={book.bookEpoch} data-lesson-revision={lesson.revision} data-prints-ready={prints.ready} data-print-count={prints.surfaces.size} data-print-pages={printPageIds.join(',')}
     data-renderer="ink" data-print-generation={prints.generation} data-focus-hotspot={interaction.focusId ?? ''} data-pressed-hotspot={interaction.pressedId ?? ''}
     data-drag-hover={dragHover && (dragAvailability.next || dragAvailability.prev)} data-drag-active={!!book.gesture?.pointerActive} data-hotspot-hover={!!interaction.hoverId}
     onPointerDown={event => {

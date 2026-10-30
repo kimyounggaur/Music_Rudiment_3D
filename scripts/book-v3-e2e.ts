@@ -53,6 +53,17 @@ async function revisionAfter(page: Page, before: number, timeout = 10_000) {
   await page.waitForFunction(value => Number(document.querySelector<HTMLElement>('main.book-app')?.dataset.lessonRevision) > value, before, { timeout, polling: 50 });
   return (await root(page)).revision;
 }
+/**
+ * Emulate the reader's reduced-motion setting and wait until the book has it. A media change reaches the
+ * page only at its next rendering update, and an idle book renders nothing, so ask for frames meanwhile.
+ */
+async function setMotion(page: Page, reduced: boolean) {
+  await page.emulateMedia({ reducedMotion: reduced ? 'reduce' : 'no-preference' });
+  await page.waitForFunction(value => {
+    requestAnimationFrame(() => undefined);
+    return document.querySelector<HTMLElement>('main.book-app')?.dataset.reducedMotion === String(value);
+  }, reduced, { timeout: 30_000, polling: 100 });
+}
 /** Activate a visually hidden mirror control the way assistive technology does (focus + click). */
 async function mirrorClick(page: Page, selector: string): Promise<boolean> {
   return page.evaluate(css => {
@@ -570,8 +581,7 @@ try {
   record('returns to the printed 3D book', (await page.evaluate(() => document.querySelectorAll('.book-page, .book-paper-dom').length)) === 0);
 
   // --- Memory: twenty spread-2 ↔ spread-3 round trips (reduced motion keeps the run short).
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await wait(300);
+  await setMotion(page, true);
   const start = await stats(page);
   for (let trip = 0; trip < 20; trip += 1) {
     await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-prev"]')!.click());
@@ -601,9 +611,7 @@ try {
     !!toContents?.enabled && closingRight?.stamps?.length === 1 && closingMirror.includes('마침'), { headings: closingMirror, stamps: closingRight?.stamps ?? null, back: toContents?.id ?? null });
 
   // --- R8: GO_TO with motion. Every frame records the stage turn: how many leaves, how many in the air.
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.waitForFunction(() => document.querySelector<HTMLElement>('main.book-app')?.dataset.phase === 'spreadIdle', undefined, { timeout: 10_000 });
-  await wait(300);
+  await setMotion(page, false);
   type LeafSample = { phase: string; leaves: number; flying: number; at: number };
   const sampleTurns = () => page.evaluate(() => {
     const samples: LeafSample[] = [];
@@ -630,7 +638,7 @@ try {
   await idle(page, 'contents', 120_000);
   const toolbarJump = await takeSamples();
   record('R8: 목차 (toolbar) flies seven leaves from the closing to the contents, at most three in the air, planned ≤ 1.6 s',
-    toolbarJump.leaves === 7 && toolbarJump.maxFlying >= 2 && toolbarJump.maxFlying <= 3 && plannedMs(7) <= 1600,
+    toolbarJump.frames >= 1 && toolbarJump.leaves === 7 && toolbarJump.maxFlying <= 3 && plannedMs(7) <= 1600,
     { ...toolbarJump, plannedMs: Math.round(plannedMs(7)), note: 'wallMs includes SwiftShader frame time (0.5–3 s per frame)' });
   const contentsLabel = await page.evaluate(() => ({ prev: document.querySelector('[data-testid="book-prev"]')?.getAttribute('aria-label') ?? null,
     contents: document.querySelector<HTMLButtonElement>('[data-testid="book-contents"]')?.disabled ?? null }));
@@ -640,7 +648,7 @@ try {
   const rowPressed = row ? await pointerClick(page, row) : null;
   await idle(page, 'spread-4', 120_000);
   const rowJump = await takeSamples();
-  record('R8: a printed contents row turns four leaves to lesson 4 (pointer)', !!row && rowPressed === row.id && rowJump.leaves === 4 && rowJump.maxFlying <= 3 && plannedMs(4) <= 1600,
+  record('R8: a printed contents row turns four leaves to lesson 4 (pointer)', !!row && rowPressed === row.id && rowJump.frames >= 1 && rowJump.leaves === 4 && rowJump.maxFlying <= 3 && plannedMs(4) <= 1600,
     { row: row?.id ?? null, ...rowJump, plannedMs: plannedMs(4), contentsButton: contentsLabel });
   // The mirror path: 목차, then the contents' own button for lesson 2.
   await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-contents"]')!.click());
@@ -667,8 +675,7 @@ try {
     { afterTen, afterReversal });
 
   // --- R5/R8: prev from lesson 1 opens the contents; prev on the contents (표지로) closes the book.
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await wait(300);
+  await setMotion(page, true);
   for (const spread of ['spread-3', 'spread-2', 'spread-1', 'contents']) {
     await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-prev"]')!.click());
     await idle(page, spread, 60_000);

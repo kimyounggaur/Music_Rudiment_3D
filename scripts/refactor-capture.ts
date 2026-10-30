@@ -531,9 +531,13 @@ try {
       await wait(600);
     }
     const printStats = () => page.evaluate(() => (window as unknown as { __bookInspector: { printStats(): unknown } }).__bookInspector.printStats());
+    // A media change reaches the page at its next rendering update (an idle book renders nothing).
+    const setMotion = async (reduced: boolean) => {
+      await page.emulateMedia({ reducedMotion: reduced ? 'reduce' : 'no-preference' });
+      await waitFor(page, `(() => { requestAnimationFrame(() => undefined); return document.querySelector('main.book-app')?.dataset.reducedMotion === '${reduced}'; })()`, 30_000);
+    };
     if (BOOK_STATES.some(state => states.includes(state))) {
-      await page.emulateMedia({ reducedMotion: 'reduce' });
-      await wait(300);
+      await setMotion(true);
       for (const state of BOOK_STATES.filter(item => item !== 'goto' && states.includes(item))) {
         await reach(state.startsWith('spread') ? `spread-${state.slice(6)}` : state);
         await shoot(state, true, { printStats: await printStats() });
@@ -541,8 +545,7 @@ try {
     }
     if (states.includes('goto')) {
       await reach('contents');
-      await page.emulateMedia({ reducedMotion: 'no-preference' });
-      await wait(400);
+      await setMotion(false);
       await inspectorCall('inspector.holdTurn(0)');
       assert.ok(await mirrorPress('button[data-testid="contents-spread-4"]'), 'contents row spread-4');
       await waitFor(page, `document.querySelector('main.book-app')?.dataset.phase === 'turningForward'`, 60_000);
