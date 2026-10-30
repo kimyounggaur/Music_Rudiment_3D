@@ -1,18 +1,22 @@
 import {
-  ACESFilmicToneMapping, AmbientLight, Box3, BoxGeometry, Color,
-  DirectionalLight, Group, LineSegments, Material, Mesh, MeshBasicMaterial, MeshStandardMaterial,
-  PCFShadowMap, Plane, PlaneGeometry,
-  Raycaster, Scene, ShadowMaterial, SRGBColorSpace, Texture, TextureLoader,
-  Vector2, Vector3, WebGLRenderer,
+  Box3, BoxGeometry, Group, LineSegments, Material, Mesh, MeshStandardMaterial, NeutralToneMapping,
+  PCFShadowMap, Plane, Raycaster, Scene, SRGBColorSpace, Texture, TextureLoader, Vector2, Vector3, WebGLRenderer,
 } from 'three';
+import type { BufferGeometry } from 'three';
 import { balancedAnchor, createCameraRig, fitDistance, placeRig, READING_POSE } from './render/cameraRig.ts';
 import type { FitResult, RigPose } from './render/cameraRig.ts';
 import { CLOSED_ANCHOR, closedFramePoints, OPEN_ANCHOR, openFramePoints, SCENE_EXTENT } from './render/bookFraming.ts';
+import { createForeEdgeTexture, createPaperMaterial } from './render/paperMaterial.ts';
+import { createBookEnvironment } from './render/environment.ts';
+import type { BookEnvironment } from './render/environment.ts';
+import { createPostPipeline, tierPixelRatio } from './render/postPipeline.ts';
+import type { PostPipeline } from './render/postPipeline.ts';
+import type { QualityTier } from './profile.ts';
 import {
-  BOOK_DIMENSIONS, createFlatPageGeometry, createTurningLeafGeometry,
-  leafProgressFromX, LEAF_THICKNESS, stackHeights, unitProgress, updateTurningLeafGeometry,
+  BOOK_DIMENSIONS, createFlatPageGeometry, createSpreadPageGeometry, createStackGeometry, createTurningLeafGeometry, leafProgressFromX, LEAF_THICKNESS,
+  spreadAmplitude, spreadHeight, stackHeights, unitProgress, updateSpreadPageGeometry, updateStackGeometry, updateTurningLeafGeometry,
 } from './geometry.ts';
-import type { BookCorner, BookTurnDirection } from './geometry.ts';
+import type { BookCorner, BookTurnDirection, SpineSide } from './geometry.ts';
 
 export type StagePoint = { x: number; y: number };
 export type StageQuad = { tl: StagePoint; tr: StagePoint; br: StagePoint; bl: StagePoint };
@@ -57,6 +61,8 @@ export interface StageMetrics {
   programs: number;
   contextLost: boolean;
   coverReady: boolean;
+  drawCalls: number;
+  quality: QualityTier;
 }
 export interface StageSceneWindow {
   /** Page/world Z units. The book root is untransformed and the scene anchor has Z=0. */
@@ -81,29 +87,35 @@ interface StageOptions {
   onFailure?: (error: Error) => void;
   onMetrics?: (metrics: StageMetrics) => void;
   coverTexture?: Texture;
+  quality?: QualityTier;
 }
 
 const D = BOOK_DIMENSIONS;
-const PAGE_CORNERS = [[0, -1], [1, -1], [1, 1], [0, 1]] as const;
 /** Intro starts slightly farther away and to the side, then settles on the exact cover fit. */
 const INTRO_OFFSET = new Vector3(0.3, 0, 0.12);
 const INTRO_DISTANCE = 0.16;
+/** v3 R2 binding materials: cloth-bound boards, warm paper edges (CONTRACT_V3 C7). */
+export const BINDING_TOKENS = Object.freeze({ board: '#55707c', boardRoughness: 0.82, innerBoard: '#e6ddc5', paperEdge: '#e4dac4', coverRoughness: 0.62 });
 
 export function createBookStage(host: HTMLElement, options: StageOptions = {}): BookStage | null {
+  const quality: QualityTier = options.quality ?? 'high';
   let renderer: WebGLRenderer;
   try {
-    renderer = new WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    // With a post chain, SMAA replaces MSAA; the low tier renders directly with MSAA.
+    renderer = new WebGLRenderer({ antialias: quality === 'low', alpha: false, powerPreference: 'high-performance' });
   } catch (error) {
     options.onFailure?.(error instanceof Error ? error : new Error(String(error)));
     return null;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  const pixelRatio = tierPixelRatio(quality, window.devicePixelRatio || 1);
+  renderer.setPixelRatio(pixelRatio);
   renderer.outputColorSpace = SRGBColorSpace;
-  renderer.toneMapping = ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
+  renderer.toneMapping = NeutralToneMapping;
+  renderer.toneMappingExposure = 0.92;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = PCFShadowMap;
   renderer.localClippingEnabled = true;
+  renderer.info.autoReset = false;
   renderer.domElement.className = 'book-webgl-canvas';
   renderer.domElement.style.cssText = 'display:block;width:100%;height:100%;touch-action:inherit;';
   renderer.domElement.setAttribute('aria-hidden', 'true');
@@ -115,115 +127,90 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
   host.append(safeProbe);
 
   const scene = new Scene();
-  scene.background = new Color('#d9d1c4');
+  const environment: BookEnvironment = createBookEnvironment(renderer, scene, quality);
   const rig = createCameraRig();
   const camera = rig.camera;
   const pose: RigPose = READING_POSE;
   let cameraFit: FitResult | null = null;
+  const post: PostPipeline = createPostPipeline(renderer, scene, camera, quality);
   const bookRoot = new Group();
   bookRoot.name = 'BookRoot';
   scene.add(bookRoot);
-  const ownedGeometries = new Set<ReturnType<typeof createFlatPageGeometry>>();
+  const ownedGeometries = new Set<BufferGeometry>();
   const ownedMaterials = new Set<Material>();
-  const ownGeometry = <T extends ReturnType<typeof createFlatPageGeometry>>(geometry: T): T => {
-    ownedGeometries.add(geometry); return geometry;
-  };
+  const ownedTextures = new Set<Texture>();
+  const ownGeometry = <T extends BufferGeometry>(geometry: T): T => { ownedGeometries.add(geometry); return geometry; };
   const ownMaterial = <T extends Material>(material: T): T => { ownedMaterials.add(material); return material; };
-  const coverEdge = ownMaterial(new MeshStandardMaterial({ color: '#68665c', roughness: 0.88 }));
-  const innerCover = ownMaterial(new MeshStandardMaterial({ color: '#e6ddc5', roughness: 1 }));
-  const paperSide = ownMaterial(new MeshStandardMaterial({ color: '#d9d0b9', roughness: 1 }));
-  const ruleMaterial = ownMaterial(new MeshStandardMaterial({ color: '#c2b9a3', roughness: 1 }));
-  // Printed CSS/SVG pixels already contain their intended color. Lighting and
-  // ACES must not brighten the ink when live DOM becomes a moving texture.
-  const leftMaterial = ownMaterial(new MeshBasicMaterial({ color: '#f4eedc', toneMapped: false }));
-  const rightMaterial = ownMaterial(new MeshBasicMaterial({ color: '#f4eedc', toneMapped: false }));
-  const leafFrontMaterial = ownMaterial(new MeshBasicMaterial({ color: '#f4eedc', toneMapped: false }));
-  const leafBackMaterial = ownMaterial(new MeshBasicMaterial({ color: '#f4eedc', toneMapped: false }));
-  const leafEdgeMaterial = ownMaterial(paperSide.clone());
-  const artworkMaterial = ownMaterial(new MeshBasicMaterial({ color: '#ffffff', toneMapped: false }));
-  // Receive physical shadows separately on the identical surface. Polygon
-  // offset changes depth testing only; the paper's position/curvature stays exact.
-  const printShadowMaterial = ownMaterial(new ShadowMaterial({ color: '#26343b', opacity: 0.28,
-    toneMapped: false, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }));
-  const hiddenShadowEdge = ownMaterial(new ShadowMaterial({ visible: false }));
-  function printShadow(parent: Mesh, curved = false): Mesh {
-    const overlay = new Mesh(parent.geometry, curved
-      ? [printShadowMaterial, printShadowMaterial, hiddenShadowEdge] : printShadowMaterial);
-    overlay.name = `${parent.name}Shadow`;
-    overlay.receiveShadow = true;
-    // Child placement makes every pose, hinge and visibility follow the paper.
-    parent.add(overlay);
-    return overlay;
-  }
+  const board = ownMaterial(new MeshStandardMaterial({ color: BINDING_TOKENS.board, roughness: BINDING_TOKENS.boardRoughness, metalness: 0 }));
+  const innerCover = ownMaterial(new MeshStandardMaterial({ color: BINDING_TOKENS.innerBoard, roughness: 0.95, metalness: 0 }));
+  const foreEdgeTexture = createForeEdgeTexture();
+  ownedTextures.add(foreEdgeTexture);
+  const foreEdge = ownMaterial(new MeshStandardMaterial({ color: '#ffffff', map: foreEdgeTexture, roughness: 0.96, metalness: 0 }));
+  const stackTop = ownMaterial(createPaperMaterial({ name: 'stack-top' }));
+  const leftMaterial = ownMaterial(createPaperMaterial({ name: 'page-left' }));
+  const rightMaterial = ownMaterial(createPaperMaterial({ name: 'page-right' }));
+  const leafFrontMaterial = ownMaterial(createPaperMaterial({ name: 'leaf-front' }));
+  const leafBackMaterial = ownMaterial(createPaperMaterial({ name: 'leaf-back' }));
+  const leafEdgeMaterial = ownMaterial(new MeshStandardMaterial({ color: BINDING_TOKENS.paperEdge, roughness: 0.96, metalness: 0 }));
+  const artworkMaterial = ownMaterial(new MeshStandardMaterial({ color: '#ffffff', roughness: BINDING_TOKENS.coverRoughness, metalness: 0 }));
 
-  const backCover = new Mesh(ownGeometry(new BoxGeometry(D.coverWidth, D.coverThickness, D.coverHeight)), coverEdge);
+  const shadowed = <T extends Mesh>(mesh: T, cast = true): T => { mesh.castShadow = cast; mesh.receiveShadow = true; return mesh; };
+  // Box faces: +x, -x, +y (inside, endpaper), -y (desk), +z, -z.
+  const backCover = shadowed(new Mesh(ownGeometry(new BoxGeometry(D.coverWidth, D.coverThickness, D.coverHeight)),
+    [board, board, innerCover, board, board, board]));
   backCover.name = 'BackCover';
   backCover.position.set(D.coverWidth / 2, D.coverThickness / 2, 0);
-  backCover.castShadow = true;
-  backCover.receiveShadow = true;
   bookRoot.add(backCover);
-  const spine = new Mesh(ownGeometry(new BoxGeometry(0.12, D.totalStackHeight + D.coverThickness, D.coverHeight)), coverEdge);
+  // The spine follows the hinge: full book height when closed, down to the board when open,
+  // so it never shows as a strip in the gutter between the curved pages.
+  const spineHeight = 2 * D.coverThickness + D.totalStackHeight;
+  const spine = shadowed(new Mesh(ownGeometry(new BoxGeometry(0.12, 1, D.coverHeight)), board));
   spine.name = 'Spine';
-  spine.position.set(-0.025, (D.totalStackHeight + D.coverThickness) / 2, 0);
-  spine.castShadow = true;
+  spine.scale.y = spineHeight;
+  spine.position.set(-0.025, spineHeight / 2, 0);
   bookRoot.add(spine);
 
   const coverHinge = new Group();
   coverHinge.name = 'FrontCoverHinge';
   bookRoot.add(coverHinge);
-  const frontCover = new Mesh(
-    ownGeometry(new BoxGeometry(D.coverWidth, D.coverThickness, D.coverHeight)),
-    [coverEdge, coverEdge, coverEdge, innerCover, coverEdge, coverEdge],
-  );
+  const frontCover = shadowed(new Mesh(ownGeometry(new BoxGeometry(D.coverWidth, D.coverThickness, D.coverHeight)),
+    [board, board, board, innerCover, board, board]));
   frontCover.name = 'FrontCover';
   frontCover.position.x = D.coverWidth / 2;
-  frontCover.castShadow = true;
-  frontCover.receiveShadow = true;
   coverHinge.add(frontCover);
-  const artwork = new Mesh(ownGeometry(createFlatPageGeometry(D.coverWidth, D.coverHeight)), artworkMaterial);
+  const artwork = shadowed(new Mesh(ownGeometry(createFlatPageGeometry(D.coverWidth, D.coverHeight)), artworkMaterial), false);
   artwork.name = 'VerifiedFrontArtwork';
   artwork.position.y = D.coverThickness / 2 + 0.001;
   coverHinge.add(artwork);
 
-  const unitStackGeometry = ownGeometry(new BoxGeometry(D.pageWidth, 1, D.pageHeight));
-  const rightStack = new Mesh(unitStackGeometry, paperSide);
+  // Stacks and pages share the spread profile. The left side is built in its own page-local
+  // frame (spine at the far end) and turned by π inside the hinge, so local +Y is world +Y.
+  const initial = stackHeights(0, 6);
+  const geometryState = { right: { height: initial.right, amplitude: spreadAmplitude(initial.right) }, left: { height: initial.left, amplitude: spreadAmplitude(initial.left) } };
+  const stackGeometry = (spine: SpineSide, state: { height: number; amplitude: number }) => ownGeometry(createStackGeometry(D.pageWidth, D.pageHeight, spine, state.height, state.amplitude));
+  const rightStack = shadowed(new Mesh(stackGeometry('start', geometryState.right), [stackTop, foreEdge]));
   rightStack.name = 'RightPageStack';
-  rightStack.castShadow = true;
-  rightStack.receiveShadow = true;
+  rightStack.position.set(0, D.coverThickness, 0);
   bookRoot.add(rightStack);
-  const leftStack = new Mesh(unitStackGeometry, paperSide);
+  const leftStack = shadowed(new Mesh(stackGeometry('end', geometryState.left), [stackTop, foreEdge]));
   leftStack.name = 'LeftPageStack';
-  leftStack.castShadow = true;
-  leftStack.receiveShadow = true;
+  leftStack.rotation.z = Math.PI;
+  leftStack.position.set(D.pageWidth, -D.coverThickness / 2, 0);
   coverHinge.add(leftStack);
-  const rightPage = new Mesh(ownGeometry(createFlatPageGeometry(D.pageWidth, D.pageHeight)), rightMaterial);
+  const rightPage = shadowed(new Mesh(ownGeometry(createSpreadPageGeometry(D.pageWidth, D.pageHeight, 'start', geometryState.right.amplitude)), rightMaterial), false);
   rightPage.name = 'StaticRightPage';
-  const rightPageShadow = printShadow(rightPage);
   bookRoot.add(rightPage);
-  const leftPage = new Mesh(ownGeometry(createFlatPageGeometry(D.pageWidth, D.pageHeight)), leftMaterial);
+  const leftPage = shadowed(new Mesh(ownGeometry(createSpreadPageGeometry(D.pageWidth, D.pageHeight, 'end', geometryState.left.amplitude)), leftMaterial), false);
   leftPage.name = 'StaticLeftPage';
   leftPage.rotation.z = Math.PI;
-  const leftPageShadow = printShadow(leftPage);
   coverHinge.add(leftPage);
 
   const leafGeometry = ownGeometry(createTurningLeafGeometry());
-  const turningLeaf = new Mesh(leafGeometry, [leafFrontMaterial, leafBackMaterial, leafEdgeMaterial]);
+  const turningLeaf = shadowed(new Mesh(leafGeometry, [leafFrontMaterial, leafBackMaterial, leafEdgeMaterial]));
   turningLeaf.name = 'TurningLeaf';
   turningLeaf.visible = false;
-  turningLeaf.castShadow = true;
-  const turningLeafShadow = printShadow(turningLeaf, true);
   bookRoot.add(turningLeaf);
 
-  // A small reusable set of visible fore-edge lines represents a paper bundle.
-  const lineGeometry = ownGeometry(new BoxGeometry(D.pageWidth, 0.001, 0.002));
-  const leftRules: Mesh[] = [];
-  const rightRules: Mesh[] = [];
-  for (let index = 1; index <= 7; index += 1) {
-    const leftRule = new Mesh(lineGeometry, ruleMaterial);
-    const rightRule = new Mesh(lineGeometry, ruleMaterial);
-    coverHinge.add(leftRule); bookRoot.add(rightRule);
-    leftRules.push(leftRule); rightRules.push(rightRule);
-  }
   const sceneAnchor = new Group();
   sceneAnchor.name = 'ActiveSceneAnchor';
   bookRoot.add(sceneAnchor);
@@ -269,29 +256,6 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     });
   }
 
-  const ambient = new AmbientLight('#fff8e9', 2.1);
-  scene.add(ambient);
-  const key = new DirectionalLight('#fff7e8', 2.8);
-  key.position.set(-3, 8, 3);
-  key.castShadow = true;
-  key.shadow.mapSize.set(1024, 1024);
-  key.shadow.camera.left = -5;
-  key.shadow.camera.right = 5;
-  key.shadow.camera.top = 5;
-  key.shadow.camera.bottom = -5;
-  key.shadow.camera.near = 0.5;
-  key.shadow.camera.far = 18;
-  key.shadow.normalBias = 0.018;
-  key.shadow.bias = -0.0001;
-  key.shadow.radius = 3;
-  scene.add(key);
-  const desk = new Mesh(ownGeometry(new PlaneGeometry(30, 30)), ownMaterial(new ShadowMaterial({ color: '#4b4233', opacity: 0.19 })));
-  desk.name = 'ContactShadowDesk';
-  desk.rotation.x = -Math.PI / 2;
-  desk.position.y = -0.002;
-  desk.receiveShadow = true;
-  scene.add(desk);
-
   let state: StageUpdate = { coverProgress: 0, introProgress: 0, currentSpreadIndex: 0, spreadCount: 6, turn: null, sceneProgress: 0, suspendFit: false };
   const textures: StageTextures = { staticLeft: null, staticRight: null, turnFront: null, turnBack: null };
   let width = 0;
@@ -303,22 +267,21 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
   let coverReady = false;
   let ownedCoverTexture: Texture | null = null;
   let renderedFrames = 0;
+  let drawCalls = 0;
   let rightSurfaceY = 0;
   const raycaster = new Raycaster();
   const pointer = new Vector2();
   const rayHit = new Vector3();
   const dragPlane = new Plane(new Vector3(0, 1, 0), 0);
   let visiblePoints: Vector3[] = [];
-  const closedAnchor = CLOSED_ANCHOR;
-  const openAnchor = OPEN_ANCHOR;
-  // Fit the actual swept surface: open book bounds plus the outer samples of every turn pose.
   const openPoints = openFramePoints();
   const closedPoints = closedFramePoints();
   let fitCache: { key: string; closed: number; open: { anchor: Vector3; distance: number } } | null = null;
 
   function metrics(): void {
     if (disposed) return;
-    options.onMetrics?.({ renderedFrames, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs?.length ?? 0, contextLost, coverReady });
+    options.onMetrics?.({ renderedFrames, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures,
+      programs: renderer.info.programs?.length ?? 0, contextLost, coverReady, drawCalls, quality });
   }
   function safeRect(): StageRect {
     const probe = getComputedStyle(safeProbe);
@@ -345,9 +308,23 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     point.project(camera);
     return { x: (point.x + 1) * width / 2, y: (1 - point.y) * height / 2 };
   }
-  function pageQuad(mesh: Mesh, pageWidth: number, pageHeight: number): StageQuad {
-    const [tl, tr, br, bl] = PAGE_CORNERS.map(([u, v]) => project(new Vector3(u * pageWidth, 0, v * pageHeight / 2).applyMatrix4(mesh.matrixWorld)));
-    return { tl, tr, br, bl };
+  /** Actual curved page corners: top-left, top-right, bottom-right, bottom-left in page-local UV order. */
+  function pageQuad(mesh: Mesh, pageWidth: number, pageHeight: number, spine: SpineSide, amplitude: number): StageQuad {
+    const corner = (u: number, v: number) => {
+      const spineDistance = spine === 'start' ? u : 1 - u;
+      return project(new Vector3(u * pageWidth, amplitude * spreadHeight(spineDistance), (v - 0.5) * pageHeight).applyMatrix4(mesh.matrixWorld));
+    };
+    return { tl: corner(0, 0), tr: corner(1, 0), br: corner(1, 1), bl: corner(0, 1) };
+  }
+  function refreshStack(side: 'left' | 'right', height: number): void {
+    const target = geometryState[side];
+    const amplitude = spreadAmplitude(height);
+    if (Math.abs(target.height - height) < 1e-7 && Math.abs(target.amplitude - amplitude) < 1e-7) return;
+    target.height = height;
+    target.amplitude = amplitude;
+    const spine: SpineSide = side === 'right' ? 'start' : 'end';
+    updateStackGeometry((side === 'right' ? rightStack : leftStack).geometry, D.pageWidth, D.pageHeight, spine, height, amplitude);
+    updateSpreadPageGeometry((side === 'right' ? rightPage : leftPage).geometry, D.pageWidth, D.pageHeight, spine, amplitude);
   }
   function applyObjects(): void {
     const progress = unitProgress(state.coverProgress);
@@ -360,47 +337,44 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
         material.needsUpdate = true;
       }
     }
-    turningLeafShadow.visible = !state.inspectionWireframe;
     const heights = stackHeights(state.currentSpreadIndex + (turn ? turnSign * turnProgress : 0), state.spreadCount);
     // The binding flexes down the spine as the rigid board opens. The pivot
     // stays at x=0 on the spine, never at the center of the cover artwork.
     coverHinge.position.y = D.coverThickness / 2 + (D.coverThickness + D.totalStackHeight) * (1 - progress);
     coverHinge.rotation.z = Math.PI * progress;
-    rightStack.scale.y = heights.right;
-    rightStack.position.set(D.pageWidth / 2, D.coverThickness + heights.right / 2, 0);
-    leftStack.scale.y = heights.left;
-    leftStack.position.set(D.pageWidth / 2, -D.coverThickness / 2 - heights.left / 2, 0);
+    const spineTop = coverHinge.position.y + D.coverThickness / 2;
+    spine.scale.y = spineTop;
+    spine.position.y = spineTop / 2;
+    refreshStack('right', heights.right);
+    refreshStack('left', heights.left);
     rightSurfaceY = D.coverThickness + heights.right + D.pageLift;
     rightPage.position.y = rightSurfaceY;
     leftPage.position.set(D.pageWidth, -D.coverThickness / 2 - heights.left - D.pageLift, 0);
-    leftRules.forEach((line, index) => line.position.set(D.pageWidth / 2, -D.coverThickness / 2 - heights.left * (index + 1) / 8, D.pageHeight / 2 + 0.001));
-    rightRules.forEach((line, index) => line.position.set(D.pageWidth / 2, D.coverThickness + heights.right * (index + 1) / 8, D.pageHeight / 2 + 0.001));
     turningLeaf.visible = progress >= 1 && turn !== null;
     if (turn && turningLeaf.visible) {
       const source = stackHeights(state.currentSpreadIndex, state.spreadCount);
       const destination = stackHeights(state.currentSpreadIndex + turnSign, state.spreadCount);
       const sourceHeight = turn.direction === 'forward' ? source.right : source.left;
       const destinationHeight = turn.direction === 'forward' ? destination.left : destination.right;
-      // The subpixel lift prevents coplanar source print from z-fighting. It
-      // remains below the DOM/texture handoff tolerance at the tested sizes.
+      // The subpixel lift prevents coplanar source print from z-fighting.
       turningLeaf.position.y = D.coverThickness + sourceHeight + (destinationHeight - sourceHeight) * turnProgress + D.pageLift + LEAF_THICKNESS;
-      updateTurningLeafGeometry(leafGeometry, D.pageWidth, D.pageHeight, turnProgress, turn.corner, turn.direction);
+      updateTurningLeafGeometry(leafGeometry, D.pageWidth, D.pageHeight, turnProgress, turn.corner, turn.direction,
+        { source: spreadAmplitude(sourceHeight), destination: spreadAmplitude(destinationHeight) });
     }
     const growth = unitProgress(state.sceneProgress ?? 0);
     // The current owner may fold under an early direct curl and unfold on
     // cancellation. Depth testing keeps the leaf in front; the destination
     // owner is attached only after the controller commits the turn.
+    // The figure base clears the page bulge (R4 replaces this with paper-conforming ink figures).
+    const bulge = geometryState.right.amplitude * 0.05;
     sceneAnchor.visible = progress >= 1 && growth > 0 && (sceneWindow?.visible ?? true);
-    sceneAnchor.position.set(0, rightSurfaceY + 0.006 - (1 - growth) * 0.07, 0);
+    sceneAnchor.position.set(0, rightSurfaceY + bulge + 0.006 - (1 - growth) * 0.07, 0);
     sceneAnchor.scale.set(1, Math.max(0.0001, growth), 1);
     applySceneWindow();
     bookRoot.updateMatrixWorld(true);
     visiblePoints = [];
     bookRoot.traverseVisible(object => {
       if (!(object instanceof Mesh)) return;
-      // Shadow receivers reuse their parents' vertices and are not extra book
-      // bounds; using a curved receiver's AABB would overestimate its silhouette.
-      if (object === leftPageShadow || object === rightPageShadow || object === turningLeafShadow) return;
       if (object === turningLeaf) {
         const positions = leafGeometry.getAttribute('position');
         for (let index = 0; index < positions.count; index += 1) visiblePoints.push(new Vector3().fromBufferAttribute(positions, index).applyMatrix4(object.matrixWorld));
@@ -420,11 +394,11 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     const viewport = { width, height };
     const key = JSON.stringify([width, height, target, safe, pose]);
     if (!fitCache || fitCache.key !== key) {
-      const closed = fitDistance({ points: closedPoints, anchor: closedAnchor, target, safe, viewport, pose }).distance;
-      const open = balancedAnchor({ points: openPoints, anchor: openAnchor, target, safe, viewport, pose }, 1.6);
+      const closed = fitDistance({ points: closedPoints, anchor: CLOSED_ANCHOR, target, safe, viewport, pose }).distance;
+      const open = balancedAnchor({ points: openPoints, anchor: OPEN_ANCHOR, target, safe, viewport, pose }, 1.6);
       fitCache = { key, closed, open };
     }
-    const anchor = closedAnchor.clone().lerp(fitCache.open.anchor, progress).addScaledVector(INTRO_OFFSET, 1 - intro);
+    const anchor = CLOSED_ANCHOR.clone().lerp(fitCache.open.anchor, progress).addScaledVector(INTRO_OFFSET, 1 - intro);
     const scale = 1 + INTRO_DISTANCE * (1 - intro);
     let distance = (fitCache.closed + (fitCache.open.distance - fitCache.closed) * progress) * scale;
     // In motion (intro, cover hinge) the visible silhouette can exceed both endpoints.
@@ -443,11 +417,14 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     if (nextWidth !== width || nextHeight !== height) {
       width = nextWidth; height = nextHeight;
       renderer.setSize(width, height, false);
+      post.setSize(width, height, pixelRatio);
     }
     applyObjects();
     const safe = safeRect();
     fitCamera(rect, safe);
-    renderer.render(scene, camera);
+    renderer.info.reset();
+    post.render();
+    drawCalls = renderer.info.render.calls;
     renderedFrames += 1;
     const coverUvCenter = project(new Vector3(D.coverWidth / 2, 0, 0).applyMatrix4(artwork.matrixWorld));
     const target = viewportCenter(rect);
@@ -456,8 +433,9 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     layout = {
       width, height, pageWidth: D.pageWidth, pageHeight: D.pageHeight,
       pageWorld: { width: D.pageWidth, height: D.pageHeight },
-      left: pageQuad(leftPage, D.pageWidth, D.pageHeight), right: pageQuad(rightPage, D.pageWidth, D.pageHeight),
-      cover: pageQuad(artwork, D.coverWidth, D.coverHeight), safeRect: safe, coverUvCenter,
+      left: pageQuad(leftPage, D.pageWidth, D.pageHeight, 'end', geometryState.left.amplitude),
+      right: pageQuad(rightPage, D.pageWidth, D.pageHeight, 'start', geometryState.right.amplitude),
+      cover: pageQuad(artwork, D.coverWidth, D.coverHeight, 'start', 0), safeRect: safe, coverUvCenter,
       coverCenterErrorPx: Math.hypot(coverUvCenter.x - target.x, coverUvCenter.y - target.y),
       camera: { position: camera.position.toArray(), target: cameraFit?.cameraTarget.toArray() ?? [], quaternion: camera.quaternion.toArray(),
         span: cameraFit ? cameraFit.worldPerPixelAtAnchor * height : 0, fov: camera.fov, distance: cameraFit?.distance ?? 0,
@@ -527,18 +505,10 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
         if (textures[key] !== texture) { textures[key] = texture; changed = true; }
       }
       if (!changed || disposed) return;
-      leftMaterial.map = textures.staticLeft;
-      rightMaterial.map = textures.staticRight;
-      leafFrontMaterial.map = textures.turnFront;
-      leafBackMaterial.map = textures.turnBack;
-      leftMaterial.color.set(textures.staticLeft ? '#ffffff' : '#f4eedc');
-      rightMaterial.color.set(textures.staticRight ? '#ffffff' : '#f4eedc');
-      leafFrontMaterial.color.set(textures.turnFront ? '#ffffff' : '#f4eedc');
-      leafBackMaterial.color.set(textures.turnBack ? '#ffffff' : '#f4eedc');
-      leftMaterial.needsUpdate = true;
-      rightMaterial.needsUpdate = true;
-      leafFrontMaterial.needsUpdate = true;
-      leafBackMaterial.needsUpdate = true;
+      leftMaterial.setPrint(textures.staticLeft);
+      rightMaterial.setPrint(textures.staticRight);
+      leafFrontMaterial.setPrint(textures.turnFront);
+      leafBackMaterial.setPrint(textures.turnBack);
       invalidate();
     },
     setSceneGroup(group) {
@@ -605,7 +575,9 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       ownedCoverTexture?.dispose();
       ownedGeometries.forEach(geometry => geometry.dispose());
       ownedMaterials.forEach(material => material.dispose());
-      key.shadow.map?.dispose();
+      ownedTextures.forEach(texture => texture.dispose());
+      environment.dispose();
+      post.dispose();
       renderer.renderLists.dispose();
       renderer.dispose();
       renderer.domElement.remove();
@@ -614,3 +586,4 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     },
   };
 }
+

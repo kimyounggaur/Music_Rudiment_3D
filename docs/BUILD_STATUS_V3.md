@@ -10,7 +10,7 @@
 |---|---|---|---|
 | R0 | V3-00 | 계약 개정 | 통과 |
 | R1 | V19 | 원근 카메라 리그 | 통과 |
-| R2 | V20 | 종이·조명·환경·후처리 | 미착수 |
+| R2 | V20 | 종이·조명·환경·후처리 | 통과 |
 | R3 | V21 | 캔버스 페이지 인쇄 시스템 | 미착수 |
 | R4 | V22 | 잉크 그림 시스템 + 음가 그림 | 미착수 |
 | R5 | V23 | 조작부 재배치 | 미착수 |
@@ -86,3 +86,31 @@ G1-C 체크리스트(부록 B) 영향 항목과 현재 판정:
   4. `book-turn-hit`의 "비아핀 사각형은 무효" 케이스는 C5(원근 필수)와 모순되어 **접힌(자기 교차) 사각형** 케이스로 바꿨다. 원근 사다리꼴이 유효하다는 양성 테스트를 추가했다.
   5. B2: legacy는 같은 파일 안 분기 대신 `src/legacy/` 고정 사본. 사본의 전역 타입 충돌을 피하려고 `src/legacy/book/inspector.ts`의 `declare global` 블록만 지역 타입 단언으로 바꿨다(동작 동일).
 - **G1-C 체크리스트 영향 항목과 현재 판정:** 1번(원근 카메라와 입체감) — 원근 적용, far/near 0.85(목표 0.86–0.92 근접 미달), 원본 실동작 비교는 미관측.
+
+---
+
+## R2 (V20) 종이·조명·환경·후처리 — 통과
+
+- **단계 ID와 상태:** R2 통과(자동 검사 통과, 캡처 자체 판정).
+- **실제로 가능한 사용자 행동:** 기존 동작 그대로, 책이 리넨 책상과 매트 위에 놓이고 종이가 빛과 그림자를 받는다. 넘기는 잎이 아래 쪽과 책상에 그림자를 드리운다. 쪽은 거터 쪽으로 꺼지고 가운데가 부풀며 바깥 끝이 처진다.
+- **변경 경로와 이유:**
+  - 신규 `src/book/render/paperMaterial.ts`(인쇄를 잉크로 곱하는 MeshStandardMaterial 확장: 종이색·절차 섬유·RGBA 상태 레이어), `src/book/render/environment.ts`(절차 리넨 책상·매트·RoomEnvironment PMREM·스폿·반구광·안개), `src/book/render/postPipeline.ts`(Render→GTAO→SMAA→Vignette→Output, 품질 티어).
+  - 수정 `src/book/geometry.ts`(SPREAD_PROFILE·spreadHeight·spreadAmplitude, 곡면 쪽·곡면 묶음 기하, 넘김 잎 양 끝 곡면 블렌드 `curvedLeafPoint`), `src/book/stage.ts`(재작성: 조명 받는 재질, 곡면 쪽·묶음, 책등이 힌지를 따라 낮아짐, 안쪽 면지, Neutral 톤매핑, 후처리, draw call 측정), `src/book/BookApp.tsx`(품질 티어 전달, drawCalls·quality 데이터 속성, 인쇄 배경 흰색), `src/book/usePagePrints.ts`(인쇄 배경 옵션), `src/styles/book.css`(3D에서 쪽 HTML 배경 투명).
+  - 테스트: 신규 `tests/book-spread-surface.test.ts`(7개).
+- **실행 명령과 종료 결과:** typecheck 0, lint 0, `npm test` 304/304, build 0.
+- **기기와 브라우저 및 commit:** 위와 같음. 캡처는 `?quality=high`(GTAO 포함).
+- **실제 캡처 영상 로그 경로:** [qa/refactor/R2/index.md](qa/refactor/R2/index.md) (after 18장, before = R1 after), [known-offset.md](qa/refactor/R2/known-offset.md).
+- **측정값:** 종이 음영 폭 4.4–5.3%(1280×720·844×390 정지, 목표 3–8%), held drag 중 거터 쪽 그림자로 13.6%(1280×720). draw calls 87–114(후처리 포함, 예산 ≤ 150). 표지 색 ΔE76 3.8–4.1(목표 ≤ 6). 넘김 잎 handoff: p=0/p=1에서 곡면 쪽과 25×5 표본 오차 ≤ 1e-6(단위 테스트).
+- **미실행 항목과 정확한 이유:** WebGL 컨텍스트에서 composer 생성·dispose 뒤 `renderer.info.memory` 증가 0 확인은 R9 `scripts/perf-budget.ts`로 미룬다(노드 단위 테스트에는 WebGL이 없다). 실기기 GPU 성능 미측정. 실제 모바일에서 low 티어 자동 선택 미확인(UA 규칙만 단위 테스트).
+- **남은 결함과 재현 절차:** (과도기) 정지 쪽의 HTML 글자는 곡면을 따르지 않아 쪽 가운데에서 최대 약 5 px 떠 보인다(known-offset.md). 장면 블록은 곡면 위로 0.05×진폭 띄워 두었다(R4에서 종이를 따르는 잉크 그림으로 교체). SwiftShader에서 첫 인쇄 준비가 20–60초 걸린다(HTML→SVG→캔버스 경로, R3에서 교체).
+- **객관적 게이트와 선택적 사용자 피드백 상태:** handoff ≤ 1 px(단위 테스트로 수치 일치), depth test 기본 유지(그림자를 depthTest=false로 덮지 않음), CI01 표지 중앙 0 px 유지.
+- **다음 허용 단계와 막힌 단계:** R3·R4 허용.
+- **전후 캡처 경로와 metrics.json 요약:** 위 측정값, index.md 표.
+- **renderer 플래그 상태:** 기본 `ink`. legacy 사본은 영향 없음.
+- **설계서 대비 편차와 사유:**
+  1. PCFSoftShadowMap은 three r186에서 제거되어 **PCFShadowMap + shadow.radius 2.5**를 쓴다. 스폿 강도 3.0은 decay 0(거리 감쇠 없음) 기준이다. 설계서 3.4는 물리 단위가 아닌 원본 관측값이라 그대로 옮기지 않고 캡처로 맞췄다. 환경 0.38, 반구 0.22, 노출 0.92도 캡처 기준 조정값이다.
+  2. 곡면 프로필은 설계서 식의 꺾임(1.12u 클램프)을 없앤 매끈한 식으로 바꾸고, 진폭을 묶음 두께에 비례시켰다(거터 dip이 묶음의 60%를 넘지 않음). 설계서의 `rotation.z = π`로 왼쪽 쪽을 같은 함수로 만든다는 설명은 힌지의 π 회전과 겹쳐 거터 위치가 반대가 되므로, 쪽 기하에 거터 쪽(`start|end`)을 인자로 받게 했다.
+  3. 바닥 접촉 그림자 평면(ShadowMaterial)은 책상·매트가 직접 그림자를 받으므로 제거했다. 앞 가장자리 12–16겹 단차는 기하 대신 묶음 측면의 종이결 텍스처로 표현했다.
+  4. 표지 원화 재질은 조명을 받는 MeshStandardMaterial(roughness 0.62)이며 Neutral 톤매핑을 받는다(ΔE ≤ 6 확인).
+  5. 종이 음영 측정은 설계서의 "좌우 끝과 책등 사이 휘도 차"를 네 여백 표본의 폭으로 정의했다. 광원 방향 때문에 오른쪽 거터는 빛을 향해 더 밝다.
+- **G1-C 체크리스트 영향 항목과 현재 판정:** 2번(종이 조명·곡면·그림자) — 정지 음영 4–5%, 거터 dip·처짐·잎 그림자 확인. 원본 실동작 비교는 미관측.

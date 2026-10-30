@@ -13,6 +13,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { chromium } from 'playwright';
 import type { Page } from 'playwright';
+import { applyHomography, homographyFromUnitSquare } from '../src/book/render/homography.ts';
 
 type Point = { x: number; y: number };
 type Quad = { tl: Point; tr: Point; br: Point; bl: Point };
@@ -145,27 +146,47 @@ try {
     await page.goto(url.toString(), { waitUntil: 'domcontentloaded' });
     await page.evaluate(() => { try { localStorage.clear(); } catch { /* ignore */ } });
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await waitFor(page, `document.querySelector('main.book-app')?.dataset.phase === 'coverIdle' && document.querySelector('main.book-app')?.dataset.threeReady === 'true'`, 60_000);
+    await waitFor(page, `document.querySelector('main.book-app')?.dataset.phase === 'coverIdle' && document.querySelector('main.book-app')?.dataset.threeReady === 'true'`, 240_000);
     await nextFrames(page, 6);
     const name = `${viewport.width}x${viewport.height}`;
 
+    // Raw CDP capture of the current composited frame. Playwright's screenshot waits for an extra
+    // frame/font settle that can stall for tens of seconds under SwiftShader with a post chain.
+    const cdp = await context.newCDPSession(page);
+    async function capture(format: 'png' | 'jpeg'): Promise<Buffer> {
+      const result = await cdp.send('Page.captureScreenshot', format === 'jpeg' ? { format, quality: 82 } : { format });
+      return Buffer.from(result.data, 'base64');
+    }
     async function shoot(state: string, open: boolean, extra?: Record<string, unknown>) {
       await nextFrames(page, 3);
-      const png = await page.screenshot({ type: 'png' });
+      const png = await capture('png');
       const file = `${name}_${state}_${renderer}.jpg`;
-      await writeFile(resolve(folder, file), await page.screenshot({ type: 'jpeg', quality: 82 }));
+      await writeFile(resolve(folder, file), await capture('jpeg'));
       const layout = await readLayout(page);
       const points: Record<string, Point> = {};
       if (layout && open) {
-        points.leftPage = quadCenter(layout.left);
-        points.rightPage = quadCenter(layout.right);
-        points.spine = { x: (layout.left.tr.x + layout.left.br.x + layout.right.tl.x + layout.right.bl.x) / 4 + 6,
-          y: (layout.left.tr.y + layout.left.br.y + layout.right.tl.y + layout.right.bl.y) / 4 };
-        points.leftOuter = { x: layout.left.tl.x * 0.85 + layout.left.tr.x * 0.15, y: (layout.left.tl.y + layout.left.bl.y) / 2 };
-        points.rightOuter = { x: layout.right.tr.x * 0.85 + layout.right.tl.x * 0.15, y: (layout.right.tr.y + layout.right.br.y) / 2 };
+        // Page-local samples in the printed margins (no text): outer edges and both sides of the gutter.
+        const left = homographyFromUnitSquare(layout.left), right = homographyFromUnitSquare(layout.right);
+        if (left && right) {
+          points.leftOuter = applyHomography(left, 0.025, 0.5);
+          points.leftGutter = applyHomography(left, 0.975, 0.5);
+          points.rightGutter = applyHomography(right, 0.025, 0.5);
+          points.rightOuter = applyHomography(right, 0.975, 0.5);
+          points.leftPage = applyHomography(left, 0.5, 0.5);
+          points.rightPage = applyHomography(right, 0.5, 0.5);
+        }
       } else if (layout) points.cover = quadCenter(layout.cover);
+      const samples = await luminance(page, png, points);
+      if (samples.leftOuter !== undefined && samples.rightOuter !== undefined && samples.leftGutter !== undefined && samples.rightGutter !== undefined) {
+        // Relative luminance difference between the outer edges and the gutter (REFACTOR_DESIGN_V3 §3.1: 3–8%).
+        const outer = (samples.leftOuter + samples.rightOuter) / 2, gutter = (samples.leftGutter + samples.rightGutter) / 2;
+        samples.edgeToGutterPercent = Number(((outer - gutter) / outer * 100).toFixed(2));
+        const margins = [samples.leftOuter, samples.leftGutter, samples.rightGutter, samples.rightOuter];
+        // Spread of lit paper across the four printed margins: 0 means a flat, unlit sheet.
+        samples.paperShadingPercent = Number(((Math.max(...margins) - Math.min(...margins)) / Math.max(...margins) * 100).toFixed(2));
+      }
       captures.push({ file: `${phase}/${file}`, viewport: name, state, renderer, phase, time: new Date().toISOString(),
-        data: await rootData(page), layout: layoutMetrics(layout, open), luminance: await luminance(page, png, points), extra });
+        data: await rootData(page), layout: layoutMetrics(layout, open), luminance: samples, extra });
       process.stdout.write(`captured ${phase}/${file}\n`);
     }
 
@@ -186,9 +207,15 @@ try {
     }
     const opened = states.some(state => ['spread1', 'turn50', 'spread2', '2d'].includes(state));
     if (opened) {
-      const openButton = page.locator('.book-open, [data-testid="book-open"]').first();
-      await openButton.click({ force: true });
-      await waitFor(page, `(() => { const r = document.querySelector('main.book-app'); return r?.dataset.phase === 'spreadIdle' && r?.dataset.scene === 'ready' && r?.dataset.printsReady === 'true'; })()`, 60_000);
+      // Open through the real cover control (a first visit has no saved spread to resume).
+      const openedBy = await page.evaluate(() => {
+        const button = document.querySelector<HTMLButtonElement>('.book-open:not(:disabled), [data-testid="book-open"]:not(:disabled)')
+          ?? [...document.querySelectorAll<HTMLButtonElement>('.book-cover-primary:not(:disabled)')].find(item => /처음부터|펼치/.test(item.textContent ?? ''));
+        button?.click();
+        return button ? button.className || button.textContent : null;
+      });
+      assert.ok(openedBy, `No enabled cover control: ${JSON.stringify(await rootData(page))}`);
+      await waitFor(page, `(() => { const r = document.querySelector('main.book-app'); return r?.dataset.phase === 'spreadIdle' && r?.dataset.scene === 'ready' && r?.dataset.printsReady === 'true'; })()`, 240_000);
       await wait(900);
       if (states.includes('spread1')) await shoot('spread1', true);
     }
@@ -228,7 +255,7 @@ try {
         await wait(12);
       }
       await page.mouse.up();
-      await waitFor(page, `(() => { const r = document.querySelector('main.book-app'); return r?.dataset.phase === 'spreadIdle' && r?.dataset.scene === 'ready' && r?.dataset.spread === 'spread-1'; })()`, 30_000);
+      await waitFor(page, `(() => { const r = document.querySelector('main.book-app'); return r?.dataset.phase === 'spreadIdle' && r?.dataset.scene === 'ready' && r?.dataset.spread === 'spread-1'; })()`, 120_000);
       await wait(600);
     }
     if (states.includes('spread2')) {
@@ -238,7 +265,7 @@ try {
         heading?.focus({ preventScroll: true });
       });
       await page.keyboard.press('ArrowRight');
-      await waitFor(page, `(() => { const r = document.querySelector('main.book-app'); return r?.dataset.spread === 'spread-2' && r?.dataset.phase === 'spreadIdle' && r?.dataset.scene === 'ready' && r?.dataset.printsReady === 'true'; })()`, 60_000);
+      await waitFor(page, `(() => { const r = document.querySelector('main.book-app'); return r?.dataset.spread === 'spread-2' && r?.dataset.phase === 'spreadIdle' && r?.dataset.scene === 'ready' && r?.dataset.printsReady === 'true'; })()`, 240_000);
       await wait(900);
       await shoot('spread2', true);
     }
@@ -254,7 +281,7 @@ try {
         return !!visible;
       });
       assert.ok(clicked, 'A reading-mode control is required for the 2D capture.');
-      await waitFor(page, `document.querySelector('main.book-app')?.dataset.phase === 'fallback2D'`, 30_000);
+      await waitFor(page, `document.querySelector('main.book-app')?.dataset.phase === 'fallback2D'`, 120_000);
       await wait(600);
       await shoot('2d', false);
     }

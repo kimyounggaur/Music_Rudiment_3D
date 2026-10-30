@@ -23,6 +23,7 @@ import { usePagePrints } from './usePagePrints.ts';
 import type { PlaybackSnapshot } from '../audio/AudioEngine.ts';
 import { loadInitialBookProgress, supportsStoredSpread, useBookProgress } from './useBookProgress.ts';
 import { BookProgressTools } from './BookProgressTools.tsx';
+import { currentProfile } from './profile.ts';
 import type { BookPreferences } from '../persistence/bookProgress.ts';
 
 export default function BookApp() {
@@ -134,7 +135,7 @@ export default function BookApp() {
     uninterrupted: false, lastUninterruptedCompletedSessionId: null }), [audioMuted, audioError]);
   const printPageIds = useMemo(() => pagePrintIds(book.currentSpreadId), [book.currentSpreadId]);
   const prints = usePagePrints({ root: rootRef, revision: lesson.revision, width: pageWidth, height: pageHeight, pageIds: printPageIds,
-    enabled: stageReady && book.mode === '3d', preparationEpoch: book.bookEpoch, presentationKey: JSON.stringify([audioMuted, audioError,
+    enabled: stageReady && book.mode === '3d', preparationEpoch: book.bookEpoch, background: '#ffffff', presentationKey: JSON.stringify([audioMuted, audioError,
       progress.preferences, progress.hints, progress.canSave, progress.notice, progress.backups, progress.protectedRaw,
       progress.exportedText, progress.preview]), onError: printError });
   printsRef.current = prints.textures;
@@ -217,7 +218,7 @@ export default function BookApp() {
     setStageReady(false);
     void import('./stage.ts').then(({ createBookStage }) => {
       if (!alive) return;
-      owned = createBookStage(host, {
+      owned = createBookStage(host, { quality: currentProfile().quality,
         onLayout(next) {
           if (!alive) return;
           setLayout(next);
@@ -236,6 +237,8 @@ export default function BookApp() {
             root.dataset.frames = String(metrics.renderedFrames);
             root.dataset.geometries = String(metrics.geometries);
             root.dataset.textures = String(metrics.textures);
+            root.dataset.drawCalls = String(metrics.drawCalls);
+            root.dataset.quality = metrics.quality;
           }
           if (metrics.coverReady && !metrics.contextLost) setStageReady(true);
         },

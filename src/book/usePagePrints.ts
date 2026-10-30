@@ -19,6 +19,8 @@ export type PagePrintOptions = Readonly<{
   preparationEpoch?: number;
   /** Persistent UI state such as mute/error, excluding playback frame positions. */
   presentationKey?: string;
+  /** v3 R2: prints are ink on white; the lit paper shader supplies the paper colour. */
+  background?: string;
   onError?: (error: Error) => void;
 }>;
 
@@ -82,7 +84,7 @@ function abortableLayoutFrames(signal: AbortSignal): Promise<void> {
 /** Bounded adjacent-page preparation barrier. Observer filters intentionally exclude
  * score highlights, playback attributes and hover, so audio frames never bake prints.
  */
-export function usePagePrints({ root, revision, width, height, enabled, pageIds = PAGE_IDS, preparationEpoch = 0, presentationKey = '', onError }: PagePrintOptions): PagePrintState {
+export function usePagePrints({ root, revision, width, height, enabled, pageIds = PAGE_IDS, preparationEpoch = 0, presentationKey = '', background = '#f4eedc', onError }: PagePrintOptions): PagePrintState {
   const [publication, setPublication] = useState<Publication>(() => ({ textures: new Map(), generation: 0, identity: '' }));
   const [ready, setReady] = useState(false);
   const [refreshVersion, setRefreshVersion] = useState(0);
@@ -93,7 +95,7 @@ export function usePagePrints({ root, revision, width, height, enabled, pageIds 
   const retired = useRef<PrintBatch[]>([]);
   const onErrorRef = useRef(onError);
   onErrorRef.current = onError;
-  const identity = JSON.stringify([revision, width, height, pageIds, preparationEpoch, presentationKey, refreshVersion]);
+  const identity = JSON.stringify([revision, width, height, pageIds, preparationEpoch, presentationKey, background, refreshVersion]);
 
   // A DOM resize commits before passive-effect cleanup. Invalidate during that
   // commit so an older async capture cannot mistake the new size for a failure.
@@ -169,7 +171,7 @@ export function usePagePrints({ root, revision, width, height, enabled, pageIds 
             assertPageSnapshotLayout(source, id, width, height);
             const print = await createPageSnapshot(source, { pageId: id, contentRevision: revision,
               width, height, scale: 2, fontCss: fonts.fontCss, fontVersion: fonts.fontVersion,
-              presentationKey, canonicalStopped: true, signal: controller.signal, isCurrent: current });
+              presentationKey, canonicalStopped: true, signal: controller.signal, isCurrent: current, background });
             batch.set(id, print);
           }
           if (!pageSources(element, revision, preparationEpoch, pageIds)) return false;
@@ -241,7 +243,7 @@ export function usePagePrints({ root, revision, width, height, enabled, pageIds 
       element.removeEventListener('input', toggle, true);
       element.removeEventListener('change', toggle, true);
     };
-  }, [root, revision, width, height, enabled, pageIds, preparationEpoch, presentationKey, identity]);
+  }, [root, revision, width, height, enabled, pageIds, preparationEpoch, presentationKey, background, identity]);
 
   // This passive effect runs after the published map's React commit. Disposing
   // in the following frame lets BookApp's stage swap effect borrow the new map
