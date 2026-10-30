@@ -238,6 +238,74 @@ try {
   const keyPrev = await idle(page, 'spread-1', 120_000).then(() => true, () => false);
   record('R5: ArrowRight / ArrowLeft turn the book with the toolbar in place', keyNext && keyPrev, { keyNext, keyPrev });
 
+  // --- R6: 가까이 보기 — the camera goes into the figure; the same button brings back the reading pose itself.
+  type LiveCamera = { position: number[]; quaternion: number[]; shot?: { id: string; t: number } | null };
+  const liveCamera = () => page.evaluate(() => ((window as unknown as { __bookInspector: { snapshot(): { layout: { camera: unknown } | null } } }).__bookInspector
+    .snapshot().layout?.camera ?? null)) as Promise<LiveCamera | null>;
+  const shotPhase = (phase: string | null) => page.waitForFunction(value => {
+    const shot = (window as unknown as { __bookInspector: { shot(): { phase: string } | null } }).__bookInspector.shot();
+    return value === null ? shot === null && document.querySelector<HTMLElement>('main.book-app')?.dataset.camera === 'settled' : shot?.phase === value;
+  }, phase, { timeout: 20_000, polling: 50 });
+  const cameraDiff = (a: LiveCamera | null, b: LiveCamera | null) => a && b
+    ? Math.max(...a.position.map((value, index) => Math.abs(value - b.position[index]!)), ...a.quaternion.map((value, index) => Math.abs(value - b.quaternion[index]!))) : Infinity;
+  const readingCamera = await liveCamera();
+  assert.ok(await mirrorClick(page, 'button[data-testid="close-look"]'), 'close-look');
+  await shotPhase('hold');
+  await page.waitForFunction(() => ((window as unknown as { __bookInspector: { snapshot(): { layout: { camera: { shot?: { t: number } | null } } | null } } }).__bookInspector
+    .snapshot().layout?.camera.shot?.t ?? 0) === 1, undefined, { timeout: 20_000, polling: 50 });
+  const shotCamera = await liveCamera();
+  const shotRoot = await page.evaluate(() => ({ camera: document.querySelector<HTMLElement>('main.book-app')?.dataset.camera,
+    label: document.querySelector('.book-mirror button[data-testid="close-look"]')?.textContent?.trim() ?? null }));
+  record('R6: 가까이 보기 takes the camera into the figure (user-started shot)', shotRoot.camera === 'shot' && shotCamera?.shot?.id === 'lanes-close'
+    && cameraDiff(shotCamera, readingCamera) > 0.1 && shotRoot.label === '돌아오기', { ...shotRoot, moved: Number(cameraDiff(shotCamera, readingCamera).toFixed(3)) });
+  // A printed control keeps working through the shot camera (one the shot leaves on screen, a play button first).
+  const onScreen = (item: InspectorHotspot) => !!item.center && item.enabled && item.center.x > 4 && item.center.x < width - 4 && item.center.y > 4 && item.center.y < height - 64;
+  const shotPlay = await hotspot(page, item => onScreen(item) && /^play-/.test(item.testId ?? ''))
+    ?? await hotspot(page, item => onScreen(item) && item.role === 'button');
+  const shotPressed = shotPlay ? await pointerClick(page, shotPlay) : null;
+  const playing = /^play-/.test(shotPlay?.testId ?? '');
+  const shotTransport = playing ? await page.waitForFunction(() => ['starting', 'playing'].includes(document.querySelector<HTMLElement>('main.book-app')?.dataset.transport ?? ''),
+    undefined, { timeout: 15_000, polling: 50 }).then(() => true, () => false) : null;
+  if (playing) await mirrorClick(page, 'button[data-testid="stop-audio"]');
+  record('R6: a printed control works during the shot', !!shotPlay && shotPressed === shotPlay.id && shotTransport !== false,
+    { control: shotPlay?.testId ?? shotPlay?.id ?? null, pressed: shotPressed, playing: shotTransport });
+  assert.ok(await mirrorClick(page, 'button[data-testid="close-look"]'), 'close-look (return)');
+  await shotPhase(null);
+  const returnedCamera = await liveCamera();
+  record('R6: the same button returns exactly to the reading pose (≤ 1e-6)', cameraDiff(returnedCamera, readingCamera) <= 1e-6 && !returnedCamera?.shot,
+    { maxDifference: cameraDiff(returnedCamera, readingCamera) });
+  // ArrowRight during a shot: the camera comes back first, then the book turns (never a turn from the shot).
+  assert.ok(await mirrorClick(page, 'button[data-testid="close-look"]'), 'close-look (again)');
+  await shotPhase('hold');
+  await page.evaluate(() => {
+    const samples: { camera: string; phase: string }[] = [];
+    (window as unknown as { __r6: typeof samples }).__r6 = samples;
+    const tick = () => {
+      const data = document.querySelector<HTMLElement>('main.book-app')?.dataset;
+      samples.push({ camera: data?.camera ?? '', phase: data?.phase ?? '' });
+      if (samples.length < 4000 && !(data?.spread === 'spread-2' && data.phase === 'spreadIdle')) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    document.querySelector<HTMLElement>('.book-mirror h1')?.focus({ preventScroll: true });
+  });
+  await page.keyboard.press('ArrowRight');
+  const shotTurned = await idle(page, 'spread-2', 120_000).then(() => true, () => false);
+  const r6Samples = await page.evaluate(() => (window as unknown as { __r6: { camera: string; phase: string }[] }).__r6.splice(0));
+  const turnFromShot = r6Samples.filter(sample => sample.camera === 'shot' && sample.phase !== 'spreadIdle');
+  record('R6: ArrowRight during a shot returns to reading, then turns', shotTurned && turnFromShot.length === 0
+    && r6Samples.some(sample => sample.camera === 'shot') && r6Samples.some(sample => sample.phase === 'preparingTurn' || sample.phase.startsWith('turning')),
+    { turned: shotTurned, samples: r6Samples.length, turnFromShot: turnFromShot.length });
+  // Escape also ends a shot (spread 2's own shot), and the arrows bring the reader back to spread 1.
+  assert.ok(await mirrorClick(page, 'button[data-testid="close-look"]'), 'strip-close');
+  await shotPhase('hold');
+  const stripShot = (await liveCamera())?.shot?.id ?? null;
+  await page.keyboard.press('Escape');
+  const escaped = await shotPhase(null).then(() => true, () => false);
+  record('R6: Escape ends the spread-2 shot', stripShot === 'strip-close' && escaped, { shot: stripShot, escaped });
+  await page.evaluate(() => document.querySelector<HTMLElement>('.book-mirror h1')?.focus({ preventScroll: true }));
+  await page.keyboard.press('ArrowLeft');
+  await idle(page, 'spread-1', 120_000);
+
   // --- Keyboard: Tab from the heading draws the focus ring on the paper (state layer).
   await page.evaluate(() => document.querySelector<HTMLElement>('.book-mirror h1')?.focus());
   const stateBefore = (await pages(page)).find(item => item.pageId === 'page-1')!.stateVersion;

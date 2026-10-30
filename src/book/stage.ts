@@ -3,7 +3,9 @@ import {
   PCFShadowMap, Plane, Raycaster, Scene, SRGBColorSpace, Texture, TextureLoader, Vector2, Vector3, WebGLRenderer,
 } from 'three';
 import type { BufferGeometry } from 'three';
-import { balancedAnchor, createCameraRig, fitDistance, placeRig, READING_POSE } from './render/cameraRig.ts';
+import { balancedAnchor, blendTo, createCameraRig, fitDistance, placeRig, READING_POSE } from './render/cameraRig.ts';
+import { resolveShot } from './render/shots.ts';
+import type { ShotSpec } from './render/shots.ts';
 import type { FitResult, RigPose } from './render/cameraRig.ts';
 import { CLOSED_ANCHOR, closedFramePoints, OPEN_ANCHOR, openFramePoints, SCENE_EXTENT } from './render/bookFraming.ts';
 import { createForeEdgeTexture, createPaperMaterial } from './render/paperMaterial.ts';
@@ -38,7 +40,9 @@ export interface StageLayout {
   coverUvCenter: StagePoint;
   coverCenterErrorPx: number;
   /** span = visible world height at the anchor distance (kept for the orthographic-era fixtures). */
-  camera: { position: number[]; target: number[]; quaternion: number[]; span: number; fov?: number; distance?: number; worldPerPixelAtAnchor?: number };
+  camera: { position: number[]; target: number[]; quaternion: number[]; span: number; fov?: number; distance?: number; worldPerPixelAtAnchor?: number;
+    /** v3 R6: the lesson shot being shown, if any (the camera is then between reading and shot). */
+    shot?: { id: string; t: number } | null };
   bookBounds: StageRect;
   openWidthFraction: number;
 }
@@ -54,6 +58,11 @@ export interface StageUpdate {
   sceneReveal?: number;
   suspendFit?: boolean;
   inspectionWireframe?: boolean;
+  /**
+   * v3 R6: a lesson shot at linear progress t (0 = the reading pose itself, 1 = the shot camera).
+   * `side` places a page-rect region; figure regions use the standing scene figure's world bounds.
+   */
+  shot?: Readonly<{ spec: ShotSpec; side: 'left' | 'right' | null; t: number }> | null;
 }
 export interface StageTextures {
   staticLeft: Texture | null;
@@ -161,7 +170,9 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
   const rig = createCameraRig();
   const camera = rig.camera;
   const pose: RigPose = READING_POSE;
+  /** The reading fit (the pose a shot returns to) and the frame actually applied (reading or a shot blend). */
   let cameraFit: FitResult | null = null;
+  let appliedFit: FitResult | null = null;
   const post: PostPipeline = createPostPipeline(renderer, scene, camera, quality);
   const bookRoot = new Group();
   bookRoot.name = 'BookRoot';
@@ -427,7 +438,55 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       }
     });
   }
+  /** v3 R6: world points of a shot's region — the standing figure's bounds or a page rect on the curved paper. */
+  function shotPoints(shot: NonNullable<StageUpdate['shot']>): Vector3[] {
+    const region = shot.spec.region;
+    if (typeof region === 'string') {
+      if (!borrowedScene) return [];
+      // The visible figure's world bounds, part by part: a part whose bounds are not finite (an empty or
+      // still-unwritten geometry) is left out instead of turning the whole shot camera into NaN.
+      borrowedScene.updateMatrixWorld(true);
+      const box = new Box3(), part = new Box3();
+      borrowedScene.traverseVisible(object => {
+        const geometry = (object as Mesh).geometry as BufferGeometry | undefined;
+        if (!geometry) return;
+        if (!geometry.boundingBox) geometry.computeBoundingBox();
+        const local = geometry.boundingBox;
+        if (!local || local.isEmpty() || ![local.min.x, local.min.y, local.min.z, local.max.x, local.max.y, local.max.z].every(Number.isFinite)) return;
+        box.union(part.copy(local).applyMatrix4(object.matrixWorld));
+      });
+      return box.isEmpty() ? [] : corners(box);
+    }
+    if (!shot.side) return [];
+    const mesh = shot.side === 'left' ? leftPage : rightPage;
+    const amplitude = geometryState[shot.side].amplitude;
+    mesh.updateMatrixWorld(true);
+    const points: Vector3[] = [];
+    for (const u of [region.rect.u0, (region.rect.u0 + region.rect.u1) / 2, region.rect.u1]) for (const v of [region.rect.v0, region.rect.v1]) {
+      const y = amplitude * spreadHeight(shot.side === 'left' ? 1 - u : u);
+      points.push(new Vector3(u * D.pageWidth, y, (v - 0.5) * D.pageHeight).applyMatrix4(mesh.matrixWorld));
+    }
+    return points;
+  }
+  let shotFit: { key: string; fit: FitResult } | null = null;
   function fitCamera(rect: DOMRect, safe: StageRect): void {
+    // v3 R6: during a shot the reading fit stays as it was (suspendFit) and the camera blends from it
+    // to the shot's own fit; t = 0 applies the reading fit result itself (exact return).
+    const shot = state.shot && state.shot.t > 0 ? state.shot : null;
+    if (!shot) shotFit = null;
+    if (shot && layout && cameraFit) {
+      const viewport = { width, height };
+      const key = JSON.stringify([shot.spec.id, shot.side, width, height, safe]);
+      if (!shotFit || shotFit.key !== key) {
+        const points = shotPoints(shot);
+        const fit = points.length ? resolveShot(shot.spec, points, viewport, safe, SCENE_EXTENT) : null;
+        const finite = !!fit && [...fit.position.toArray(), ...fit.quaternion.toArray(), fit.fovDeg, fit.near, fit.far].every(Number.isFinite);
+        shotFit = finite ? { key, fit: fit! } : null;
+      }
+      appliedFit = shotFit ? blendTo(cameraFit, shotFit.fit, shot.t) : cameraFit;
+      rig.apply(appliedFit, viewport);
+      return;
+    }
     // Pinch zoom belongs to the reader. Refitting to its smaller visual viewport
     // would move the book under the fingers and undo the chosen magnification.
     if ((state.suspendFit || (window.visualViewport?.scale ?? 1) > 1.001) && layout && cameraFit) return;
@@ -449,6 +508,7 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       distance = Math.max(distance, fitDistance({ points: visiblePoints, anchor, target, safe, viewport, pose }).distance);
     }
     cameraFit = placeRig({ anchor, target, safe, viewport, pose, distance, sceneExtent: SCENE_EXTENT });
+    appliedFit = cameraFit;
     rig.apply(cameraFit, viewport);
   }
   function render(): void {
@@ -483,9 +543,9 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       right: pageQuad(rightPage, D.pageWidth, D.pageHeight, 'start', geometryState.right.amplitude),
       cover: pageQuad(artwork, D.coverWidth, D.coverHeight, 'start', 0), safeRect: safe, coverUvCenter,
       coverCenterErrorPx: Math.hypot(coverUvCenter.x - target.x, coverUvCenter.y - target.y),
-      camera: { position: camera.position.toArray(), target: cameraFit?.cameraTarget.toArray() ?? [], quaternion: camera.quaternion.toArray(),
-        span: cameraFit ? cameraFit.worldPerPixelAtAnchor * height : 0, fov: camera.fov, distance: cameraFit?.distance ?? 0,
-        worldPerPixelAtAnchor: cameraFit?.worldPerPixelAtAnchor ?? 0 },
+      camera: { position: camera.position.toArray(), target: appliedFit?.cameraTarget.toArray() ?? [], quaternion: camera.quaternion.toArray(),
+        span: appliedFit ? appliedFit.worldPerPixelAtAnchor * height : 0, fov: camera.fov, distance: appliedFit?.distance ?? 0,
+        worldPerPixelAtAnchor: appliedFit?.worldPerPixelAtAnchor ?? 0, shot: state.shot && state.shot.t > 0 ? { id: state.shot.spec.id, t: state.shot.t } : null },
       bookBounds: bounds, openWidthFraction: (bounds.right - bounds.left) / width,
     };
     options.onLayout?.(layout);
@@ -541,7 +601,8 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       if (merged.coverProgress === state.coverProgress && merged.introProgress === state.introProgress
         && merged.currentSpreadIndex === state.currentSpreadIndex && merged.spreadCount === state.spreadCount
         && merged.sceneProgress === state.sceneProgress && merged.sceneReveal === state.sceneReveal && merged.suspendFit === state.suspendFit
-        && merged.inspectionWireframe === state.inspectionWireframe && turnEqual) return;
+        && merged.inspectionWireframe === state.inspectionWireframe && turnEqual
+        && (merged.shot ?? null) === (state.shot ?? null)) return;
       state = merged;
       invalidate();
     },

@@ -9,6 +9,9 @@
  * layout metrics from the app's own data-layout and pixel luminance from the screenshot.
  * v3 R5 adds `stamp` (three right answers) and `flap` (the answer flap lifting, 0/120/240 ms)
  * states on the first spread, 2× crops of the left page, and toolbar metrics on every capture.
+ * v3 R6 adds `shot` (가까이 보기: entry 0/300/600/900 ms, hold, return 0/300/600 ms and the camera
+ * compared with the reading pose), `shotHotspot` (a printed control pressed during the shot) and
+ * `shotTurn` (ArrowRight during the spread-2 shot: return, then the turn). Shot clocks are pinned.
  */
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -60,7 +63,7 @@ async function rootData(page: Page): Promise<Record<string, string>> {
     const root = document.querySelector<HTMLElement>('main.book-app');
     if (!root) return {};
     const result: Record<string, string> = {};
-    for (const key of ['phase', 'camera', 'scene', 'spread', 'printsReady', 'printCount', 'threeReady', 'frames', 'textures', 'geometries', 'drawCalls', 'quality'] as const) {
+    for (const key of ['phase', 'camera', 'scene', 'spread', 'transport', 'printsReady', 'printCount', 'threeReady', 'frames', 'textures', 'geometries', 'drawCalls', 'quality'] as const) {
       const value = root.dataset[key];
       if (value !== undefined) result[key] = value;
     }
@@ -287,7 +290,7 @@ try {
         await nextFrames(page, 4);
       }
     }
-    const opened = states.some(state => ['spread1', 'turn50', 'spread2', '2d'].includes(state));
+    const opened = states.some(state => ['spread1', 'stamp', 'flap', 'shot', 'shotHotspot', 'turn50', 'spread2', 'shotTurn', '2d'].includes(state));
     if (opened) {
       // Open through the real cover control (a first visit has no saved spread to resume).
       const openedBy = await page.evaluate(() => {
@@ -356,6 +359,81 @@ try {
       await waitFor(page, `(window.__bookInspector?.flapAngles() ?? {})['page-1:answer'] === 0`, 10_000);
       await waitFor(page, settledPrints, 30_000);
     }
+    // v3 R6: lesson shots, driven through the printed button's mirror control with a pinned shot clock.
+    type ShotState = { id: string; phase: 'enter' | 'hold' | 'return'; t: number } | null;
+    const inspectorCall = (source: string) => page.evaluate(code => (new Function('inspector', `return ${code};`))(
+      (window as unknown as { __bookInspector: unknown }).__bookInspector), source);
+    const shotState = () => inspectorCall('inspector.shot()') as Promise<ShotState>;
+    async function frame(label: string): Promise<string> {
+      await nextFrames(page, 4);
+      const file = `${name}_${label}_${renderer}.jpg`;
+      await writeFile(resolve(folder, file), await capture('jpeg'));
+      process.stdout.write(`captured ${phase}/${file}\n`);
+      return `${phase}/${file}`;
+    }
+    const cameraOf = async () => (await readLayout(page))?.camera as { position: number[]; quaternion: number[]; target: number[]; shot?: unknown } | undefined;
+    const cameraError = (a: { position: number[]; quaternion: number[] } | undefined, b: { position: number[]; quaternion: number[] } | undefined) => a && b ? {
+      positionMax: Math.max(...a.position.map((value, index) => Math.abs(value - b.position[index]!))),
+      quaternionMax: Math.max(...a.quaternion.map((value, index) => Math.abs(value - b.quaternion[index]!))),
+    } : null;
+    async function enterShot(): Promise<void> {
+      assert.ok(await mirrorPress('button[data-testid="close-look"]'), 'close-look');
+      await waitFor(page, `window.__bookInspector?.shot()?.id !== undefined`, 10_000);
+    }
+    if (states.includes('shot')) {
+      const reading = await cameraOf();
+      await inspectorCall('inspector.holdShot(0)');
+      await enterShot();
+      const frames: Record<string, unknown>[] = [];
+      for (const ms of [0, 300, 600, 900]) {
+        await inspectorCall(`inspector.holdShot(${ms})`);
+        const t = (await shotState())?.t ?? null;
+        frames.push({ phase: 'enter', ms, t, file: await frame(`shot_enter_${String(ms).padStart(3, '0')}ms`) });
+      }
+      await waitFor(page, `window.__bookInspector?.shot()?.phase === 'hold'`, 10_000);
+      await waitFor(page, settledPrints, 30_000);
+      const held = await cameraOf();
+      await shoot('shot', true, { frames, camera: held });
+      // The same printed button brings the camera back.
+      await inspectorCall('inspector.holdShot(0)');
+      assert.ok(await mirrorPress('button[data-testid="close-look"]'), 'close-look (return)');
+      await waitFor(page, `window.__bookInspector?.shot()?.phase === 'return'`, 10_000);
+      const back: Record<string, unknown>[] = [];
+      for (const ms of [0, 300, 600]) {
+        await inspectorCall(`inspector.holdShot(${ms})`);
+        const t = (await shotState())?.t ?? 0;
+        back.push({ phase: 'return', ms, t, file: await frame(`shot_return_${String(ms).padStart(3, '0')}ms`) });
+      }
+      await inspectorCall('inspector.holdShot(null)');
+      await waitFor(page, `window.__bookInspector?.shot() === null && document.querySelector('main.book-app')?.dataset.camera === 'settled'`, 10_000);
+      await waitFor(page, settledPrints, 30_000);
+      const returned = await cameraOf();
+      await shoot('shotReturned', true, { back, readingCamera: reading, returnedCamera: returned, error: cameraError(reading, returned) });
+    }
+    if (states.includes('shotHotspot')) {
+      // A printed control keeps working inside the shot: press '▶ 위 줄 듣기' through the shot camera.
+      await inspectorCall('inspector.holdShot(null)');
+      await enterShot();
+      await waitFor(page, `window.__bookInspector?.shot()?.phase === 'hold'`, 10_000);
+      const target = await page.evaluate(({ w, h }) => {
+        const hotspots = ((window as unknown as { __bookInspector: { pages(): { side: string | null; hotspots: { id: string; role: string; enabled: boolean; testId: string | null; center: { x: number; y: number } | null }[] }[] } }).__bookInspector.pages())
+          .flatMap(item => item.side ? item.hotspots : []);
+        const visible = hotspots.filter(item => item.enabled && item.center && item.center.x > 4 && item.center.x < w - 4 && item.center.y > 4 && item.center.y < h - 64);
+        return visible.find(item => /^play-/.test(item.testId ?? '')) ?? visible.find(item => item.role === 'button') ?? null;
+      }, { w: viewport.width, h: viewport.height });
+      assert.ok(target?.center, 'a printed control on screen during the shot');
+      await page.mouse.move(target.center.x, target.center.y);
+      await page.mouse.down();
+      await wait(60);
+      const pressed = await page.evaluate(() => document.querySelector<HTMLElement>('main.book-app')?.dataset.pressedHotspot ?? '');
+      await page.mouse.up();
+      if (/^play-/.test(target.testId ?? '')) await waitFor(page, `['starting', 'playing'].includes(document.querySelector('main.book-app')?.dataset.transport ?? '')`, 15_000).catch(() => undefined);
+      await shoot('shotHotspot', true, { control: target.testId ?? target.id, pressed, transport: (await rootData(page)).transport ?? null, target: target.center });
+      if (/^play-/.test(target.testId ?? '')) await mirrorPress('button[data-testid="stop-audio"]');
+      await mirrorPress('button[data-testid="close-look"]');
+      await waitFor(page, `window.__bookInspector?.shot() === null && document.querySelector('main.book-app')?.dataset.camera === 'settled'`, 20_000);
+      await waitFor(page, settledPrints, 30_000);
+    }
     if (states.includes('turn50')) {
       const layout = await readLayout(page);
       assert.ok(layout, 'An open layout is required for the drag capture.');
@@ -406,6 +484,26 @@ try {
       await wait(900);
       await shoot('spread2', true);
     }
+    if (states.includes('shotTurn')) {
+      // ArrowRight during the spread-2 shot: the camera returns first, then the book turns to spread 3.
+      await waitFor(page, `document.querySelector('main.book-app')?.dataset.spread === 'spread-2' && document.querySelector('main.book-app')?.dataset.phase === 'spreadIdle'`, 60_000);
+      await inspectorCall('inspector.holdShot(null)');
+      await enterShot();
+      await waitFor(page, `window.__bookInspector?.shot()?.phase === 'hold'`, 10_000);
+      await inspectorCall('inspector.holdShot(300)');
+      await page.evaluate(() => document.querySelector<HTMLElement>('.book-mirror h1')?.focus({ preventScroll: true }));
+      await page.keyboard.press('ArrowRight');
+      await waitFor(page, `window.__bookInspector?.shot()?.phase === 'return'`, 10_000);
+      const during = { ...(await rootData(page)), shot: await shotState() };
+      const files = [await frame('shotTurn_1_returning')];
+      await inspectorCall('inspector.holdShot(null)');
+      await waitFor(page, `window.__bookInspector?.shot() === null`, 10_000);
+      const after = await rootData(page);
+      files.push(await frame('shotTurn_2_turning'));
+      await waitFor(page, `(() => { const r = document.querySelector('main.book-app'); return r?.dataset.spread === 'spread-3' && r?.dataset.phase === 'spreadIdle' && r?.dataset.scene === 'ready' && r?.dataset.printsReady === 'true'; })()`, 240_000);
+      await wait(600);
+      await shoot('shotTurn', true, { files, during, afterReturn: after });
+    }
     if (states.includes('2d')) {
       const clicked = await page.evaluate(() => {
         // Prepared (off-screen) pages also contain this control; use the one the reader can see.
@@ -433,6 +531,7 @@ try {
 let existing: Capture[] = [];
 try { existing = JSON.parse(await readFile(metricsFile, 'utf8')) as Capture[]; } catch { existing = []; }
 const keep = existing.filter(item => !(item.phase === phase && item.renderer === renderer && viewports.some(v => `${v.width}x${v.height}` === item.viewport)
-  && (item.state === 'errors' || states.includes(item.state))));
+  // Derived captures (shotReturned, shotHotspot …) belong to the state that made them.
+  && (item.state === 'errors' || states.some(state => item.state === state || item.state.startsWith(state)))));
 await writeFile(metricsFile, `${JSON.stringify([...keep, ...captures], null, 2)}\n`);
 process.stdout.write(`metrics: ${metricsFile}\n`);

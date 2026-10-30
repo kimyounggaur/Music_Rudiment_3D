@@ -34,6 +34,7 @@ export const PAGE_TEXT = Object.freeze({
   answerHint: '정답 보기 · 종이를 들어 올려 보세요',
   answerFold: '다시 덮기 · 종이를 눌러 내려요',
   closeLook: '가까이 보기',
+  backToReading: '돌아오기',
   alternative: '소리 없이 살펴보기',
   observed: '두 줄 설명을 확인했어요',
   soundless: '소리 없는 설명으로도 계속할 수 있어요.',

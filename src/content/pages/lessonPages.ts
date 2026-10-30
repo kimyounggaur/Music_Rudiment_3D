@@ -210,10 +210,14 @@ function compositionChecks(): PageBlock[] {
   ];
 }
 
-/** v3 R5: '가까이 보기' prints next to the transport on spread 1 (the R6 camera shot runs it). */
-const closeLookButton = (sceneId: SceneId): PrintedButton[] => sceneId === 'scene-1'
-  ? [{ id: 'look', label: PAGE_TEXT.closeLook, icon: 'look', testId: 'close-look', command: { type: 'shot', shotId: 'lanes-close' }, enabled: context => context.interactive }]
-  : [];
+/** v3 R6: the lesson shot each spread offers (src/book/render/shots.ts SPREAD_SHOTS; tests/shots.test.ts keeps them in step). */
+export const CLOSE_LOOK_SHOTS: Readonly<Partial<Record<SceneId, string>>> = Object.freeze({ 'scene-1': 'lanes-close', 'scene-2': 'strip-close' });
+/** '가까이 보기' prints next to the transport; while its shot is on, the same button reads '돌아오기'. */
+const closeLookButton = (sceneId: SceneId): PrintedButton[] => {
+  const shotId = CLOSE_LOOK_SHOTS[sceneId];
+  return shotId ? [{ id: 'look', label: context => context.ui.shotId === shotId ? PAGE_TEXT.backToReading : PAGE_TEXT.closeLook, icon: 'look', testId: 'close-look',
+    command: { type: 'shot', shotId }, pressed: context => context.ui.shotId === shotId, enabled: context => context.interactive }] : [];
+};
 
 function rightPage(sceneId: SceneId): PageSpec {
   const scene = getScene(sceneId);

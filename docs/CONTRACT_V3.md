@@ -82,6 +82,7 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | C9 넘기기 | 첫 펼침면 이전 = 표지로(CLOSE_BOOK), 마지막 다음 = 비활성, 조작바 위 누름은 모서리 드래그를 시작하지 않음, ArrowLeft/Right | `tests/book-turn-hit.test.ts`(조작바·기록 대화상자 소유권), `scripts/book-v3-e2e.ts`('R5: next is disabled…', 'R5: prev on the first spread…', 'R5: ArrowRight / ArrowLeft…') |
 | EN02 모달 | 기록 대화상자가 열린 동안 책은 방향키를 받지 않고, 닫으면 초점이 '기록'으로 돌아옴 | `scripts/book-v3-e2e.ts`('R5: records dialog is modal…') |
 | 플랩·도장 파생 | 정답 플랩 열림 = `hints[\`${sceneId}/answer\`]`, 도장 = 저장된 답이 모두 정답. 새 저장 필드 없음. 덮인 자리는 열림·닫힘과 무관하게 같은 자리 | `tests/print-layout.test.ts`, `tests/flap-layer.test.ts`, `scripts/book-v3-e2e.ts`('R5: three right answers…', 'R5: answer flap lifts…', 'R5: a press on the standing paper…') |
+| C4 샷 | 샷은 독자가 시작(인쇄 '가까이 보기')하고 같은 단추·Escape·넘기기·드래그·닫기·숨김으로 끝난다. 샷 중 넘기기·닫기는 한 칸 대기열에 들어가 복귀 뒤 실행, 드래그는 거부. 복귀 포즈 = 읽기 포즈 fit 결과 그대로(≤ 1e-6). 샷 중에도 인쇄 핫스폿·그림 피킹 가능 | `tests/book-controller.test.ts`(R6 3개), `tests/shots.test.ts`(5 viewport fit, 복귀 오차, 시간표), `scripts/book-v3-e2e.ts`('R6: …' 5개), 캡처 `metrics.json`(`shotReturned.extra.error`) |
 | 넘김 중 카메라 불변 | 드래그·넘김·닫기 중 카메라 이동 없음 | `tests/book-camera-rig.test.ts`(suspendFit), R6 `tests/shots.test.ts` |
 
 ## 5 고정 수치(설계서 부록 D, 제안값)

@@ -9,7 +9,8 @@ import type { PageId, SpreadId } from '../manifest.ts';
  */
 export type PagePlaybackState = 'locked' | 'ready' | 'starting' | 'playing' | 'paused' | 'stopped' | 'error' | 'unavailable';
 export type PagePlayback = Readonly<{ state: PagePlaybackState; laneId: string | null; activeEventId: string | null; error: string | null }>;
-export type PageUiState = Readonly<{ composeKind: 'note' | 'rest' }>;
+/** `shotId`: the lesson shot the camera is in (v3 R6), so its printed button reads as the way back. */
+export type PageUiState = Readonly<{ composeKind: 'note' | 'rest'; shotId?: string | null }>;
 export type PageContext = Readonly<{
   lesson: LessonState;
   sceneId: SceneId;

@@ -35,6 +35,10 @@ export interface BookInspector {
   holdFlaps(ms: number | null): void;
   /** v3 R5: the flap key of a standing paper sheet under a client point (the pointer's raycast). */
   flapAt(clientX: number, clientY: number): string | null;
+  /** v3 R6: the lesson shot in progress (entering, holding or returning) and its linear progress. */
+  shot(): Readonly<{ id: string; phase: 'enter' | 'hold' | 'return'; t: number }> | null;
+  /** v3 R6: pin the shot clock `ms` after its current phase began (null resumes real time). */
+  holdShot(ms: number | null): void;
 }
 
 declare global {
@@ -53,6 +57,8 @@ export type BookInspectorOptions = Readonly<{
   getPrintStats?: () => unknown;
   getPrintImage?: (pageId: string, layer: 'print' | 'state') => string | null;
   holdPrintUpgrades?: (hold: boolean) => void;
+  getShot?: () => Readonly<{ id: string; phase: 'enter' | 'hold' | 'return'; t: number }> | null;
+  holdShot?: (ms: number | null) => void;
 }>;
 
 const poseKeys = new Set(['coverProgress', 'introProgress', 'currentSpreadIndex', 'turn', 'inspectionWireframe', 'sceneProgress', 'sceneReveal']);
@@ -169,6 +175,11 @@ export function attachBookInspector(options: BookInspectorOptions): () => void {
       options.getStage()?.holdFlaps(ms);
     },
     flapAt: (clientX, clientY) => options.getStage()?.flapAt(clientX, clientY) ?? null,
+    shot: () => { const shot = options.getShot?.(); return shot ? { ...shot } : null; },
+    holdShot(ms) {
+      if (ms !== null && (typeof ms !== 'number' || !Number.isFinite(ms) || ms < 0)) throw new RangeError('holdShot takes a non-negative time in ms or null.');
+      options.holdShot?.(ms);
+    },
     figurePoints(laneId, points) {
       const scene = options.getScene?.(), stage = options.getStage();
       return points.map(point => {

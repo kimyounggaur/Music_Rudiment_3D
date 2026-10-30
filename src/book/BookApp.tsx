@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { bookCanInteract, bookReducer, bookToken, createBookState, tokenMatches } from './controller.ts';
-import type { BookEvent } from './controller.ts';
+import type { BookEvent, BookToken } from './controller.ts';
+import { findShot, shotProgress } from './render/shots.ts';
+import type { ShotSpec } from './render/shots.ts';
 import { BOOK_MOTION, tween } from './motion.ts';
 import type { BookStage, StageLayout, StageUpdate } from './stage.ts';
 import type { StageFlap } from './render/flaps.ts';
@@ -179,6 +181,62 @@ export default function BookApp() {
   }, [send, stop, storePreferences]);
   // Opening the records stops playback, as the page tools did; closing returns focus to the toolbar.
   const openRecords = useCallback(() => stop('record-tools'), [stop]);
+  // v3 R6: lesson shots. The reader starts one from a printed '가까이 보기'; the camera goes into the
+  // figure and comes back to the reading pose itself before any turn, close or drag (SHOT_END).
+  type ActiveShot = { spec: ShotSpec; side: 'left' | 'right' | null; phase: 'enter' | 'hold' | 'return'; start: number; from: number; t: number; token: BookToken };
+  const shotRef = useRef<ActiveShot | null>(null);
+  /** DEV: a pinned shot clock (ms since the current phase began) for captures under a slow renderer. */
+  const shotClock = useRef<number | null>(null);
+  const shotFrame = useRef<number | null>(null);
+  const stepShot = useRef<() => void>(() => undefined);
+  stepShot.current = () => {
+    if (shotFrame.current !== null) { cancelAnimationFrame(shotFrame.current); shotFrame.current = null; }
+    const active = shotRef.current;
+    if (!active) return;
+    const elapsed = shotClock.current ?? performance.now() - active.start;
+    const t = shotProgress(active.phase === 'return' ? 'return' : 'enter', elapsed, active.spec, active.from, bookRef.current.reducedMotion);
+    active.t = t;
+    draw({ shot: t > 0 ? { spec: active.spec, side: active.side, t } : null });
+    if (active.phase === 'enter' && t >= 1) active.phase = 'hold';
+    if (active.phase === 'return' && t <= 0) {
+      shotRef.current = null;
+      setPageUi(previous => ({ ...previous, shotId: null }));
+      send({ type: 'SHOT_END', token: active.token });
+      return;
+    }
+    if (active.phase !== 'hold' && shotClock.current === null) shotFrame.current = requestAnimationFrame(() => stepShot.current());
+  };
+  const startShot = (spec: ShotSpec) => {
+    const before = bookRef.current;
+    const event: BookEvent = { type: 'SHOT_START', token: bookToken(before) };
+    if (bookReducer(before, event) === before) return;
+    const spread = BOOK_MANIFEST[spreadIndex(before.currentSpreadId)];
+    const side = typeof spec.region === 'string' ? null : spec.region.pageId === spread.leftPageId ? 'left' : spec.region.pageId === spread.rightPageId ? 'right' : null;
+    send(event);
+    shotRef.current = { spec, side, phase: 'enter', start: performance.now(), from: 0, t: 0, token: bookToken(before) };
+    setPageUi(previous => ({ ...previous, shotId: spec.id }));
+    stepShot.current();
+  };
+  /** Back to the reading pose (SHOT_RETURN_MS), then SHOT_END runs any queued turn or close. */
+  const returnToReading = useCallback(() => {
+    const active = shotRef.current;
+    if (!active || active.phase === 'return') return;
+    active.phase = 'return';
+    active.from = active.t;
+    active.start = performance.now();
+    stepShot.current();
+  }, []);
+  // A turn, close or the closing book queued during a shot: return first (the reducer holds the intent).
+  useEffect(() => { if (book.camera === 'shot' && book.pendingIntent) returnToReading(); }, [book.camera, book.pendingIntent, returnToReading]);
+  // Hidden page, 2D, lost context: the reducer already released the shot; drop it without a tween.
+  useEffect(() => {
+    if (book.camera === 'shot' || !shotRef.current) return;
+    if (shotFrame.current !== null) { cancelAnimationFrame(shotFrame.current); shotFrame.current = null; }
+    shotRef.current = null;
+    setPageUi(previous => ({ ...previous, shotId: null }));
+    draw({ shot: null });
+  }, [book.camera, draw]);
+  useEffect(() => () => { if (shotFrame.current !== null) cancelAnimationFrame(shotFrame.current); }, []);
   const closeRecords = useCallback(() => {
     setRecordsOpen(false);
     toolbarRef.current?.querySelector<HTMLButtonElement>('[data-testid="records"]')?.focus({ preventScroll: true });
@@ -246,6 +304,8 @@ export default function BookApp() {
         getScene: () => musicSceneRef.current,
         getPrintStats: () => printStatsRef.current(),
         holdPrintUpgrades: setHoldPrintUpgrades,
+        getShot: () => { const active = shotRef.current; return active ? { id: active.spec.id, phase: active.phase, t: Number(active.t.toFixed(4)) } : null; },
+        holdShot: ms => { shotClock.current = ms; stepShot.current(); },
         getPrintImage: (pageId, layer) => {
           const surface = printsRef.current.get(pageId as PageId);
           const image = (layer === 'state' ? surface?.state?.image : surface?.print.image) as HTMLCanvasElement | undefined;
@@ -616,7 +676,15 @@ export default function BookApp() {
       case 'flap': progress.setHint(action.key, progress.hints[action.key] !== 1); break;
       case 'ui': setPageUi(previous => ({ ...previous, ...action.patch })); break;
       // Shots (R6) and contents jumps (R8) are printed later; keep a trace while they are inert.
-      case 'shot': case 'goto': if (import.meta.env.DEV && rootRef.current) rootRef.current.dataset.lastInertCommand = JSON.stringify(action); break;
+      case 'shot': {
+        // The same button (or another shot's) first brings the camera back to reading.
+        if (shotRef.current) { returnToReading(); break; }
+        const spec = findShot(bookRef.current.currentSpreadId, action.shotId);
+        if (spec) startShot(spec);
+        break;
+      }
+      // Contents jumps (R8) are printed later; keep a trace while they are inert.
+      case 'goto': if (import.meta.env.DEV && rootRef.current) rootRef.current.dataset.lastInertCommand = JSON.stringify(action); break;
     }
   };
   const runHotspotRef = useRef(runHotspot);
@@ -699,6 +767,8 @@ export default function BookApp() {
         return;
       }
       const hit = pointerCorner(event);
+      // v3 R6: no drag from a shot (the reducer refuses it); the press brings the reading pose back.
+      if (hit && bookRef.current.camera === 'shot') { returnToReading(); return; }
       if (hit) pointerDown(event, hit.direction, hit.corner);
     }}
     onPointerMove={event => {
@@ -719,6 +789,8 @@ export default function BookApp() {
     else if (event.key === 'Escape' && pointerOwner.current) { event.preventDefault(); cancelPointer(); }
     // v3 R5: the records dialog is modal; the book does not take its keys (EN02).
     else if (recordsOpen) return;
+    // v3 R6: Escape ends a lesson shot (back to the reading pose).
+    else if (event.key === 'Escape' && shotRef.current) { event.preventDefault(); returnToReading(); }
     else {
       const direction = arrowNavigationDirection({ ...event,
         // React's synthetic keyboard interface does not copy composition state

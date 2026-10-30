@@ -79,14 +79,14 @@ function identity(value: object): number {
 /**
  * Every input a page print depends on: its own scene state object (immutable, replaced on any
  * edit/selection/answer, so identity is exact), the live feedback line when it is the current
- * scene, the printed playback state, this scene's flaps and the composition kind.
- * Resolution is deliberately absent: draft and settled share one layout.
+ * scene, the printed playback state, this scene's flaps, the composition kind and (v3 R6) the
+ * lesson shot the camera is in. Resolution is deliberately absent: draft and settled share one layout.
  */
 export function printKey(spec: PageSpec, context: PageContext): string {
   const hints = Object.entries(context.hints).filter(([key]) => key.startsWith(`${context.sceneId}/`)).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
   return JSON.stringify([spec.pageId, identity(sceneState(context.lesson, context.sceneId)),
     context.lesson.currentSceneId === context.sceneId ? context.lesson.feedback : '',
-    context.playback.state, context.playback.laneId, context.playback.error, hints, context.ui.composeKind, context.interactive]);
+    context.playback.state, context.playback.laneId, context.playback.error, hints, context.ui.composeKind, context.ui.shotId ?? null, context.interactive]);
 }
 
 /** Canvas text metrics with a small cache; the layout calls it many times per page. */

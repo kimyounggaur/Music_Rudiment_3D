@@ -1,4 +1,5 @@
 import { MathUtils, Matrix4, PerspectiveCamera, Quaternion, Vector3 } from 'three';
+import { smoothStep } from '../motion.ts';
 
 /**
  * v3 perspective camera rig (REFACTOR_DESIGN_V3 §6 R1, CONTRACT_V3 C5).
@@ -154,6 +155,31 @@ export function balancedAnchor(input: FitInput, range: number, iterations = 32):
     else { high = x2; x2 = x1; f2 = f1; x1 = high - ratio * (high - low); f1 = evaluate(x1).distance; }
   }
   return evaluate((low + high) / 2);
+}
+
+/**
+ * v3 R6 shots (REFACTOR_DESIGN_V3 §6 R6): the camera between two rig frames at linear progress `t`,
+ * eased with smoothStep — position and look-at target lerp, orientation slerps, FOV lerps. `t ≤ 0`
+ * returns `from` itself and `t ≥ 1` returns `to` itself, so a finished return to reading is the
+ * reading fit result exactly (no accumulated blending error).
+ */
+export function blendTo(from: FitResult, to: FitResult, t: number): FitResult {
+  if (!(t > 0)) return from;
+  if (t >= 1) return to;
+  const s = smoothStep(t);
+  const mix = (a: number, b: number) => a + (b - a) * s;
+  return {
+    distance: mix(from.distance, to.distance),
+    position: from.position.clone().lerp(to.position, s),
+    cameraTarget: from.cameraTarget.clone().lerp(to.cameraTarget, s),
+    quaternion: from.quaternion.clone().slerp(to.quaternion, s),
+    fovDeg: mix(from.fovDeg, to.fovDeg),
+    near: Math.min(from.near, to.near),
+    far: Math.max(from.far, to.far),
+    worldPerPixelAtAnchor: mix(from.worldPerPixelAtAnchor, to.worldPerPixelAtAnchor),
+    anchorErrorPx: 0,
+    unfittable: 0,
+  };
 }
 
 export interface CameraRig {
