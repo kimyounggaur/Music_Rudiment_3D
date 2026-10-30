@@ -3,7 +3,7 @@ import { bookCanInteract, bookReducer, bookToken, createBookState, tokenMatches 
 import type { BookEvent } from './controller.ts';
 import { BOOK_MOTION, tween } from './motion.ts';
 import type { BookStage, StageLayout, StageUpdate } from './stage.ts';
-import { pageStyle } from './pageProjection.ts';
+import { pageStyle, quadSize } from './pageProjection.ts';
 import { BOOK_MANIFEST, pagePrintIds, spreadIndex, turningLeaf } from './manifest.ts';
 import type { PageId, SpreadId } from './manifest.ts';
 import type { Texture } from 'three';
@@ -114,10 +114,8 @@ export default function BookApp() {
   // notation/capture work every frame and repeatedly cancel its own barrier.
   const printSize = useRef({ width: 400, height: 588 });
   if (layout && ['bootLoading', 'coverIdle', 'spreadIdle', 'fallback2D'].includes(book.phase)) {
-    printSize.current = {
-      width: Math.hypot(layout.right.tr.x - layout.right.tl.x, layout.right.tr.y - layout.right.tl.y),
-      height: Math.hypot(layout.right.bl.x - layout.right.tl.x, layout.right.bl.y - layout.right.tl.y),
-    };
+    // A perspective page is a trapezoid; print at the larger edge lengths so the near edge stays sharp.
+    printSize.current = quadSize(layout.right);
   }
   const pageWidth = printSize.current.width;
   const pageHeight = printSize.current.height;
@@ -592,7 +590,7 @@ export default function BookApp() {
             onConfirmImport={progress.confirmImport} onCancelImport={progress.cancelImport} onDelete={progress.deleteAll} />
         </> };
       return <div key={spread.spreadId} className={`book-paper-dom${active ? '' : ' book-paper-dom--preparing'}`} data-book-surface="true" inert={!active || !bookCanInteract(book)} aria-hidden={!active}>
-        {(['left', 'right'] as const).map(side => <section key={side} className={`book-page book-page--${side}`} data-active-page={active} style={active && layout && book.mode === '3d' ? pageStyle(layout[side]) : active && book.mode === '2d' ? undefined : { width: pageWidth, height: pageHeight }}>
+        {(['left', 'right'] as const).map(side => <section key={side} className={`book-page book-page--${side}`} data-active-page={active} style={active && layout && book.mode === '3d' ? pageStyle(layout[side], { width: pageWidth, height: pageHeight }) : active && book.mode === '2d' ? undefined : { width: pageWidth, height: pageHeight }}>
           <div className="book-page-scroll" data-print-page={side === 'left' ? spread.leftPageId : spread.rightPageId}>
             {side === 'left' ? <LessonLeftPage {...props} /> : <LessonRightPage {...props} />}
             {active && side === 'right' && error && book.mode === '2d' && <p className="book-page-error" role="status" data-snapshot-exclude="true">

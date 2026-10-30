@@ -1,13 +1,16 @@
 import {
   ACESFilmicToneMapping, AmbientLight, Box3, BoxGeometry, Color,
   DirectionalLight, Group, LineSegments, Material, Mesh, MeshBasicMaterial, MeshStandardMaterial,
-  OrthographicCamera, PCFShadowMap, Plane, PlaneGeometry, Quaternion,
+  PCFShadowMap, Plane, PlaneGeometry,
   Raycaster, Scene, ShadowMaterial, SRGBColorSpace, Texture, TextureLoader,
   Vector2, Vector3, WebGLRenderer,
 } from 'three';
+import { balancedAnchor, createCameraRig, fitDistance, placeRig, READING_POSE } from './render/cameraRig.ts';
+import type { FitResult, RigPose } from './render/cameraRig.ts';
+import { CLOSED_ANCHOR, closedFramePoints, OPEN_ANCHOR, openFramePoints, SCENE_EXTENT } from './render/bookFraming.ts';
 import {
   BOOK_DIMENSIONS, createFlatPageGeometry, createTurningLeafGeometry,
-  leafPoint, leafProgressFromX, LEAF_THICKNESS, stackHeights, unitProgress, updateTurningLeafGeometry,
+  leafProgressFromX, LEAF_THICKNESS, stackHeights, unitProgress, updateTurningLeafGeometry,
 } from './geometry.ts';
 import type { BookCorner, BookTurnDirection } from './geometry.ts';
 
@@ -26,7 +29,8 @@ export interface StageLayout {
   safeRect: StageRect;
   coverUvCenter: StagePoint;
   coverCenterErrorPx: number;
-  camera: { position: number[]; target: number[]; quaternion: number[]; span: number };
+  /** span = visible world height at the anchor distance (kept for the orthographic-era fixtures). */
+  camera: { position: number[]; target: number[]; quaternion: number[]; span: number; fov?: number; distance?: number; worldPerPixelAtAnchor?: number };
   bookBounds: StageRect;
   openWidthFraction: number;
 }
@@ -80,10 +84,10 @@ interface StageOptions {
 }
 
 const D = BOOK_DIMENSIONS;
-const VIEW_DIRECTION = new Vector3(0, 10, 5).normalize();
-const VIEW_RIGHT = new Vector3(1, 0, 0);
-const VIEW_UP = new Vector3(0, VIEW_DIRECTION.z, -VIEW_DIRECTION.y);
 const PAGE_CORNERS = [[0, -1], [1, -1], [1, 1], [0, 1]] as const;
+/** Intro starts slightly farther away and to the side, then settles on the exact cover fit. */
+const INTRO_OFFSET = new Vector3(0.3, 0, 0.12);
+const INTRO_DISTANCE = 0.16;
 
 export function createBookStage(host: HTMLElement, options: StageOptions = {}): BookStage | null {
   let renderer: WebGLRenderer;
@@ -112,11 +116,10 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
 
   const scene = new Scene();
   scene.background = new Color('#d9d1c4');
-  const camera = new OrthographicCamera(-5, 5, 3, -3, 0.1, 40);
-  camera.position.copy(VIEW_DIRECTION.clone().multiplyScalar(12));
-  camera.lookAt(0, 0, 0);
-  const fixedQuaternion = new Quaternion().copy(camera.quaternion);
-  const cameraTarget = new Vector3();
+  const rig = createCameraRig();
+  const camera = rig.camera;
+  const pose: RigPose = READING_POSE;
+  let cameraFit: FitResult | null = null;
   const bookRoot = new Group();
   bookRoot.name = 'BookRoot';
   scene.add(bookRoot);
@@ -306,29 +309,12 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
   const rayHit = new Vector3();
   const dragPlane = new Plane(new Vector3(0, 1, 0), 0);
   let visiblePoints: Vector3[] = [];
-  const closedBounds = new Box3(new Vector3(-0.09, 0, -D.coverHeight / 2), new Vector3(D.coverWidth, D.totalStackHeight + 2 * D.coverThickness + 0.002, D.coverHeight / 2));
-  const closedAnchor = new Vector3(D.coverWidth / 2, D.totalStackHeight + 2 * D.coverThickness + 0.001, 0);
-  const openAnchor = new Vector3(0, D.coverThickness + D.totalStackHeight / 2, 0);
-  // Fit the actual swept surface in view coordinates, instead of a loose box
-  // combining unrelated X/Y/Z extrema. The same endpoint covers every turn.
-  const openProjected = { left: Infinity, right: -Infinity, bottom: Infinity, top: -Infinity };
-  const includeOpenPoint = (point: Vector3): void => {
-    const x = point.dot(VIEW_RIGHT), y = point.dot(VIEW_UP);
-    openProjected.left = Math.min(openProjected.left, x);
-    openProjected.right = Math.max(openProjected.right, x);
-    openProjected.bottom = Math.min(openProjected.bottom, y);
-    openProjected.top = Math.max(openProjected.top, y);
-  };
-  for (const point of corners(new Box3(new Vector3(-D.coverWidth - 0.10, 0, -D.coverHeight / 2 - 0.04), new Vector3(D.coverWidth + 0.10, D.totalStackHeight + 2 * D.coverThickness, D.coverHeight / 2 + 0.04)))) includeOpenPoint(point);
-  for (const direction of ['forward', 'backward'] as const) for (const corner of ['top', 'bottom'] as const) {
-    for (let step = 0; step <= 64; step += 1) for (let row = 0; row <= 4; row += 1) for (let column = 0; column <= 24; column += 1) {
-      const point = leafPoint(D.pageWidth, D.pageHeight, column / 24, row / 4, step / 64, corner, direction);
-      includeOpenPoint(new Vector3(point.x, point.y + D.coverThickness + D.totalStackHeight + 0.015, point.z));
-    }
-  }
-  openProjected.left -= 0.025; openProjected.right += 0.025;
-  openProjected.bottom -= 0.025; openProjected.top += 0.025;
-  openAnchor.addScaledVector(VIEW_UP, (openProjected.top + openProjected.bottom) / 2 - openAnchor.dot(VIEW_UP));
+  const closedAnchor = CLOSED_ANCHOR;
+  const openAnchor = OPEN_ANCHOR;
+  // Fit the actual swept surface: open book bounds plus the outer samples of every turn pose.
+  const openPoints = openFramePoints();
+  const closedPoints = closedFramePoints();
+  let fitCache: { key: string; closed: number; open: { anchor: Vector3; distance: number } } | null = null;
 
   function metrics(): void {
     if (disposed) return;
@@ -354,29 +340,6 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     const result: Vector3[] = [];
     for (const x of [bounds.min.x, bounds.max.x]) for (const y of [bounds.min.y, bounds.max.y]) for (const z of [bounds.min.z, bounds.max.z]) result.push(new Vector3(x, y, z));
     return result;
-  }
-  function fitScale(bounds: Box3, anchor: Vector3, target: StagePoint, safe: StageRect): number {
-    return fitPoints(corners(bounds), anchor, target, safe);
-  }
-  function fitPoints(points: readonly Vector3[], anchor: Vector3, target: StagePoint, safe: StageRect): number {
-    let scale = 0.001;
-    const available = { left: Math.max(8, target.x - safe.left), right: Math.max(8, safe.right - target.x), top: Math.max(8, target.y - safe.top), bottom: Math.max(8, safe.bottom - target.y) };
-    for (const point of points) {
-      const relative = point.clone().sub(anchor);
-      const x = relative.dot(VIEW_RIGHT);
-      const y = relative.dot(VIEW_UP);
-      scale = Math.max(scale, x / available.right, -x / available.left, y / available.top, -y / available.bottom);
-    }
-    return scale * 1.018;
-  }
-  function fitOpenScale(target: StagePoint, safe: StageRect): number {
-    const anchorX = openAnchor.dot(VIEW_RIGHT), anchorY = openAnchor.dot(VIEW_UP);
-    return Math.max(
-      (openProjected.right - anchorX) / Math.max(8, safe.right - target.x),
-      (anchorX - openProjected.left) / Math.max(8, target.x - safe.left),
-      (openProjected.top - anchorY) / Math.max(8, target.y - safe.top),
-      (anchorY - openProjected.bottom) / Math.max(8, safe.bottom - target.y),
-    ) * 1.018;
   }
   function project(point: Vector3): StagePoint {
     point.project(camera);
@@ -450,30 +413,26 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
   function fitCamera(rect: DOMRect, safe: StageRect): void {
     // Pinch zoom belongs to the reader. Refitting to its smaller visual viewport
     // would move the book under the fingers and undo the chosen magnification.
-    if ((state.suspendFit || (window.visualViewport?.scale ?? 1) > 1.001) && layout) return;
+    if ((state.suspendFit || (window.visualViewport?.scale ?? 1) > 1.001) && layout && cameraFit) return;
     const progress = unitProgress(state.coverProgress);
     const intro = unitProgress(state.introProgress);
     const target = viewportCenter(rect);
-    const anchor = closedAnchor.clone().lerp(openAnchor, progress);
-    anchor.x += (1 - intro) * 0.30;
-    anchor.z += (1 - intro) * 0.12;
-    const closedScale = fitScale(closedBounds, closedAnchor, target, safe);
-    const openScale = fitOpenScale(target, safe);
-    const baseScale = (closedScale + (openScale - closedScale) * progress) * (1 + 0.14 * (1 - intro));
-    const worldPerPixel = progress === 1 && intro === 1 ? openScale : Math.max(baseScale, fitPoints(visiblePoints, anchor, target, safe));
-    cameraTarget.copy(anchor)
-      .addScaledVector(VIEW_RIGHT, -(target.x - width / 2) * worldPerPixel)
-      .addScaledVector(VIEW_UP, (target.y - height / 2) * worldPerPixel);
-    camera.position.copy(cameraTarget).addScaledVector(VIEW_DIRECTION, 12 + 0.75 * (1 - intro) + 0.5 * progress);
-    camera.quaternion.copy(fixedQuaternion);
-    camera.left = -width * worldPerPixel / 2;
-    camera.right = width * worldPerPixel / 2;
-    camera.top = height * worldPerPixel / 2;
-    camera.bottom = -height * worldPerPixel / 2;
-    camera.near = 0.1;
-    camera.far = 40;
-    camera.updateProjectionMatrix();
-    camera.updateMatrixWorld(true);
+    const viewport = { width, height };
+    const key = JSON.stringify([width, height, target, safe, pose]);
+    if (!fitCache || fitCache.key !== key) {
+      const closed = fitDistance({ points: closedPoints, anchor: closedAnchor, target, safe, viewport, pose }).distance;
+      const open = balancedAnchor({ points: openPoints, anchor: openAnchor, target, safe, viewport, pose }, 1.6);
+      fitCache = { key, closed, open };
+    }
+    const anchor = closedAnchor.clone().lerp(fitCache.open.anchor, progress).addScaledVector(INTRO_OFFSET, 1 - intro);
+    const scale = 1 + INTRO_DISTANCE * (1 - intro);
+    let distance = (fitCache.closed + (fitCache.open.distance - fitCache.closed) * progress) * scale;
+    // In motion (intro, cover hinge) the visible silhouette can exceed both endpoints.
+    if (!(progress === 1 && intro === 1) && !(progress === 0 && intro === 1)) {
+      distance = Math.max(distance, fitDistance({ points: visiblePoints, anchor, target, safe, viewport, pose }).distance);
+    }
+    cameraFit = placeRig({ anchor, target, safe, viewport, pose, distance, sceneExtent: SCENE_EXTENT });
+    rig.apply(cameraFit, viewport);
   }
   function render(): void {
     pendingFrame = null;
@@ -500,7 +459,9 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       left: pageQuad(leftPage, D.pageWidth, D.pageHeight), right: pageQuad(rightPage, D.pageWidth, D.pageHeight),
       cover: pageQuad(artwork, D.coverWidth, D.coverHeight), safeRect: safe, coverUvCenter,
       coverCenterErrorPx: Math.hypot(coverUvCenter.x - target.x, coverUvCenter.y - target.y),
-      camera: { position: camera.position.toArray(), target: cameraTarget.toArray(), quaternion: camera.quaternion.toArray(), span: camera.top - camera.bottom },
+      camera: { position: camera.position.toArray(), target: cameraFit?.cameraTarget.toArray() ?? [], quaternion: camera.quaternion.toArray(),
+        span: cameraFit ? cameraFit.worldPerPixelAtAnchor * height : 0, fov: camera.fov, distance: cameraFit?.distance ?? 0,
+        worldPerPixelAtAnchor: cameraFit?.worldPerPixelAtAnchor ?? 0 },
       bookBounds: bounds, openWidthFraction: (bounds.right - bounds.left) / width,
     };
     options.onLayout?.(layout);

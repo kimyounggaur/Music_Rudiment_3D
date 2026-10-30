@@ -3,32 +3,34 @@ import type { BookState } from './controller.ts';
 import { adjacentSpread } from './manifest.ts';
 import type { NavigationDirection } from './manifest.ts';
 import type { StageLayout, StagePoint, StageQuad } from './stage.ts';
+import { applyHomography, homographyFromUnitSquare, quadUv } from './render/homography.ts';
 
 export const TURN_HIT_SIZE = 44;
 export type TurnCorner = 'top' | 'bottom';
 export type TurnCornerHit = Readonly<{ direction: NavigationDirection; corner: TurnCorner }>;
 export type TurnAvailability = Readonly<Record<NavigationDirection, boolean>>;
 
-function pageBasis(quad: StageQuad) {
-  const x = { x: quad.tr.x - quad.tl.x, y: quad.tr.y - quad.tl.y };
-  const y = { x: quad.bl.x - quad.tl.x, y: quad.bl.y - quad.tl.y };
-  const width = Math.hypot(x.x, x.y), height = Math.hypot(y.x, y.y);
-  const determinant = x.x * y.y - x.y * y.x;
-  const error = Math.hypot(quad.tl.x + x.x + y.x - quad.br.x, quad.tl.y + x.y + y.y - quad.br.y);
-  if (![...Object.values(quad).flatMap(p => [p.x, p.y]), width, height].every(Number.isFinite)
-    || width < 1e-6 || height < 1e-6 || Math.abs(determinant) < 1e-6 || error > 0.5) return null;
-  return { x, y, width, height, determinant };
+const edge = (a: StagePoint, b: StagePoint) => Math.hypot(b.x - a.x, b.y - a.y);
+
+/** A projected page is a general convex quad under the perspective camera (affine is the special case). */
+function pageMap(quad: StageQuad) {
+  return homographyFromUnitSquare(quad);
 }
 
-/** A page-local 44 CSS pixel corner, wholly inside the visible paper. */
+/**
+ * A 44 CSS pixel corner, wholly inside the visible paper. Under perspective the page edges have
+ * different screen lengths, so each corner uses the lengths of the two edges that meet there.
+ */
 export function turnCornerRegion(quad: StageQuad, direction: NavigationDirection, corner: TurnCorner): StageQuad | null {
-  const basis = pageBasis(quad);
-  if (!basis) return null;
-  const du = Math.min(1, TURN_HIT_SIZE / basis.width), dv = Math.min(1, TURN_HIT_SIZE / basis.height);
+  const map = pageMap(quad);
+  if (!map) return null;
+  const horizontal = corner === 'bottom' ? edge(quad.bl, quad.br) : edge(quad.tl, quad.tr);
+  const vertical = direction === 'next' ? edge(quad.tr, quad.br) : edge(quad.tl, quad.bl);
+  if (!(horizontal > 1e-6) || !(vertical > 1e-6)) return null;
+  const du = Math.min(1, TURN_HIT_SIZE / horizontal), dv = Math.min(1, TURN_HIT_SIZE / vertical);
   const u0 = direction === 'next' ? 1 - du : 0, u1 = direction === 'next' ? 1 : du;
   const v0 = corner === 'bottom' ? 1 - dv : 0, v1 = corner === 'bottom' ? 1 : dv;
-  const point = (u: number, v: number) => ({ x: quad.tl.x + u * basis.x.x + v * basis.y.x,
-    y: quad.tl.y + u * basis.x.y + v * basis.y.y });
+  const point = (u: number, v: number) => applyHomography(map, u, v);
   return { tl: point(u0, v0), tr: point(u1, v0), bl: point(u0, v1), br: point(u1, v1) };
 }
 
@@ -40,8 +42,8 @@ export function turnInputAvailability({ book, layout, stageReady, printsReady, t
     && (requiredTextureCount === 4 || requiredTextureCount === 6) && textureCount === requiredTextureCount
     && bookCanInteract(book) && preparedScene === `${book.bookEpoch}:${book.sceneInstanceId}:${book.currentSpreadId}`;
   return {
-    next: ready && !!adjacentSpread(book.currentSpreadId, 'next', book.spreadCount) && !!pageBasis(layout!.right),
-    prev: ready && !!adjacentSpread(book.currentSpreadId, 'prev', book.spreadCount) && !!pageBasis(layout!.left),
+    next: ready && !!adjacentSpread(book.currentSpreadId, 'next', book.spreadCount) && !!pageMap(layout!.right),
+    prev: ready && !!adjacentSpread(book.currentSpreadId, 'prev', book.spreadCount) && !!pageMap(layout!.left),
   };
 }
 
@@ -51,12 +53,10 @@ export function turnCornerAtPoint(layout: StageLayout | null, point: StagePoint,
     if (!available[direction]) continue;
     for (const corner of ['top', 'bottom'] as const) {
       const quad = turnCornerRegion(direction === 'next' ? layout.right : layout.left, direction, corner);
-      const basis = quad && pageBasis(quad);
-      if (!quad || !basis) continue;
-      const dx = point.x - quad.tl.x, dy = point.y - quad.tl.y;
-      const u = (dx * basis.y.y - dy * basis.y.x) / basis.determinant;
-      const v = (dy * basis.x.x - dx * basis.x.y) / basis.determinant;
-      if (u >= -1e-9 && u <= 1 + 1e-9 && v >= -1e-9 && v <= 1 + 1e-9) return { direction, corner };
+      const uv = quad && quadUv(quad, point);
+      if (!uv) continue;
+      const tolerance = 1e-6;
+      if (uv.x >= -tolerance && uv.x <= 1 + tolerance && uv.y >= -tolerance && uv.y <= 1 + tolerance) return { direction, corner };
     }
   }
   return null;

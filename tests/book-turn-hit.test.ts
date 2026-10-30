@@ -68,8 +68,9 @@ test('affine skew, reverse orientation and smaller viewports keep hits attached 
 });
 
 test('invalid and edge-on paper cannot offer a cursor or a drag hit', () => {
+  // v3 C5: a perspective trapezoid is valid paper. A folded (self-crossing) quad is not.
   for (const page of [{ ...layout.right, tr: layout.right.tl }, { ...layout.right, br: { x: NaN, y: 0 } },
-    { ...layout.right, br: { x: 920, y: 660 } }]) {
+    { ...layout.right, br: layout.right.bl, bl: layout.right.br }]) {
     assert.equal(turnCornerRegion(page, 'next', 'bottom'), null);
     assert.equal(availability({ layout: { ...layout, right: page } }).next, false);
     assert.equal(turnCornerAtPoint({ ...layout, right: page }, { x: 880, y: 640 }, { next: true, prev: false }), null);
@@ -168,4 +169,23 @@ test('a paper-interior hit enters the existing owner state and preserves hold, c
     sample: { x: 360, y: 640, time: 3000, velocity: 0 }, decision: turnReleaseDecision(drag, 3000) });
   assert.equal(released.phase, 'settling');
   assert.equal(released.gesture?.pointerActive, false);
+});
+
+test('v3 perspective trapezoids keep 44px corners on their own near and far edges', () => {
+  // Far (top) edge 360px, near (bottom) edge 420px: a perspective page seen from the reader's side.
+  const page: StageQuad = { tl: { x: 520, y: 120 }, tr: { x: 880, y: 120 }, br: { x: 920, y: 640 }, bl: { x: 500, y: 640 } };
+  const bottom = turnCornerRegion(page, 'next', 'bottom')!;
+  const top = turnCornerRegion(page, 'next', 'top')!;
+  assert.ok(Math.abs(bottom.br.x - page.br.x) < 1e-9 && Math.abs(bottom.br.y - page.br.y) < 1e-9);
+  assert.ok(Math.abs(top.tr.x - page.tr.x) < 1e-9 && Math.abs(top.tr.y - page.tr.y) < 1e-9);
+  // The corner hit spans close to 44 CSS px along each meeting edge.
+  assert.ok(Math.abs(Math.hypot(bottom.br.x - bottom.bl.x, bottom.br.y - bottom.bl.y) - 44) < 3);
+  assert.ok(Math.abs(Math.hypot(top.tr.x - top.tl.x, top.tr.y - top.tl.y) - 44) < 3);
+  const perspectiveLayout = { ...layout, right: page };
+  const available = availability({ layout: perspectiveLayout });
+  assert.equal(available.next, true);
+  assert.deepEqual(turnCornerAtPoint(perspectiveLayout, { x: 905, y: 630 }, available), { direction: 'next', corner: 'bottom' });
+  assert.deepEqual(turnCornerAtPoint(perspectiveLayout, { x: 870, y: 130 }, available), { direction: 'next', corner: 'top' });
+  assert.equal(turnCornerAtPoint(perspectiveLayout, { x: 930, y: 630 }, available), null);
+  assert.equal(turnCornerAtPoint(perspectiveLayout, { x: 700, y: 400 }, available), null);
 });
