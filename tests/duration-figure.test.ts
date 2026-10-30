@@ -286,3 +286,28 @@ test('decor: sound bands and a pop-up metronome, scissor cuts that follow the bo
     assert.equal(scissors.figure.hitTargets.length, 0, 'decor is never a pick target (not the learning record)');
   } finally { sound.dispose(); scissors.dispose(); }
 });
+
+test('v3 R8 decor: the seconds ruler follows the tempo (blocks keep their length); the free bar fills as far as the notes reach', () => {
+  const quarters = pattern([4, 4, 4, 4]);
+  const tempo = createSpreadDecor('tempo', [quarters], { bpm: 60 });
+  const bar = createSpreadDecor('bar', [pattern([4, 8])]);
+  try {
+    assert.deepEqual(tempo.figure.labelTexts(), ['0초', '1초', '2초', '3초', '4초'], 'tempo 60: a quarter is a second');
+    const ink = tempo.figure.lines.ink.count;
+    tempo.update([quarters], 120);
+    assert.deepEqual(tempo.figure.labelTexts(), ['0초', '0.5초', '1초', '1.5초', '2초'], 'tempo 120: the same ruler, half the seconds');
+    assert.equal(tempo.figure.lines.ink.count, ink, 'the ruler itself does not move');
+    tempo.update([pattern([2, 2])], 120);
+    assert.deepEqual(tempo.figure.labelTexts(), ['0초', '0.5초', '1초', '1.5초', '2초'], 'edits do not touch the ruler');
+    assert.ok(tempo.stats().segments <= DECOR_BUDGET && bar.stats().segments <= DECOR_BUDGET);
+    // 1/4 + 1/8 = 3/8 of the bar is filled; the remaining 5/8 is dashed, open for the reader.
+    assert.equal(bar.figure.lines.dashed.count, 3, 'the open rest of the bar is dashed (its left side is the filled strip\'s edge)');
+    assert.deepEqual(bar.figure.labelTexts(), ['3/8 = 1/4 + 1/8']);
+    bar.update([pattern([4, 4, 4, 4])]);
+    assert.equal(bar.figure.lines.dashed.count, 0, 'a full bar has nothing left open');
+    assert.deepEqual(bar.figure.labelTexts(), ['1 = 1/4 × 4']);
+    bar.update([[]]);
+    assert.deepEqual([bar.figure.lines.dashed.count, bar.figure.labelTexts().length], [4, 0], 'an empty draft: the whole bar open, nothing written');
+    for (const decor of [tempo, bar]) assert.equal(decor.figure.hitTargets.length, 0, 'decor is never a pick target');
+  } finally { tempo.dispose(); bar.dispose(); }
+});

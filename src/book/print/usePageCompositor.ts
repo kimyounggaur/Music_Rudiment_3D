@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { LessonState } from '../../lesson/controller.ts';
 import { ensureBookNotationReady } from '../BookNotation.tsx';
-import { BOOK_MANIFEST } from '../manifest.ts';
+import { BOOK_SPREADS } from '../manifest.ts';
 import type { PageId } from '../manifest.ts';
 import type { QualityTier } from '../profile.ts';
 import { pageSpecFor } from '../../content/pages/index.ts';
@@ -47,7 +47,8 @@ export type PageCompositorState = Readonly<{
 }>;
 
 const EMPTY = new Map<PageId, PageSurface>();
-const sceneOf = new Map(BOOK_MANIFEST.flatMap(spread => [[spread.leftPageId, spread.sceneId], [spread.rightPageId, spread.sceneId]] as const));
+// v3 R8: every page of the book; the contents and closing pages carry no scene (null).
+const sceneOf = new Map(BOOK_SPREADS.flatMap(spread => [[spread.leftPageId, spread.sceneId], [spread.rightPageId, spread.sceneId]] as const));
 
 type Idle = { cancel(): void };
 function whenIdle(callback: () => void): Idle {
@@ -123,7 +124,7 @@ export function usePageCompositor(input: PageCompositorInput): PageCompositorSta
       for (const pageId of pageIds) {
         const spec = pageSpecFor(pageId);
         const sceneId = sceneOf.get(pageId);
-        if (!sceneId) throw new RangeError(`Unknown print page ${pageId}`);
+        if (sceneId === undefined) throw new RangeError(`Unknown print page ${pageId}`);
         const current = currentPageIds.includes(pageId);
         result.set(pageId, runtime.compositor.request(spec, { lesson, sceneId, playback: current ? playback : idlePlayback, hints, ui, interactive: true },
           current ? 'settled' : 'draft', current ? interaction : null));

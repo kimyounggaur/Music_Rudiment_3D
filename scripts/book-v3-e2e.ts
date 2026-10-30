@@ -15,6 +15,8 @@ import { dirname, resolve } from 'node:path';
 import { chromium } from 'playwright';
 import type { Page } from 'playwright';
 import { PAGE_LOGICAL } from '../src/book/print/pageLayout.ts';
+import { goToSchedule } from '../src/book/manifest.ts';
+import { BOOK_MOTION } from '../src/book/motion.ts';
 
 type Result = { name: string; pass: boolean; detail: unknown };
 type InspectorHotspot = { id: string; role: string; label: string; enabled: boolean; testId: string | null; center: { x: number; y: number } | null };
@@ -584,14 +586,90 @@ try {
   record('print memory stays in budget after 20 round trips', end.bytes <= end.budgetBytes && end.bytes === start.bytes,
     { startMiB: mib(start.bytes), endMiB: mib(end.bytes), budgetMiB: mib(end.budgetBytes), settled: end.settled, drafts: end.drafts, states: end.states });
 
-  // --- R5: next is disabled on the last spread; prev on the first spread is 표지로 and closes the book.
-  for (const spread of ['spread-4', 'spread-5', 'spread-6']) {
+  // --- R8: the whole book. Next runs on through lessons 4–6 to the closing, where next is disabled.
+  for (const spread of ['spread-4', 'spread-5', 'spread-6', 'closing']) {
     await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-next"]')!.click());
     await idle(page, spread, 60_000);
   }
   const lastNext = await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-next"]')?.disabled ?? null);
-  record('R5: next is disabled on the last spread', lastNext === true, { disabled: lastNext });
-  for (const spread of ['spread-5', 'spread-4', 'spread-3', 'spread-2', 'spread-1']) {
+  record('R5/R8: next is disabled on the last spread (the closing)', lastNext === true, { disabled: lastNext });
+  const closingPages = await pages(page);
+  const closingRight = closingPages.find(item => item.pageId === 'page-16');
+  const toContents = closingRight?.hotspots.find(item => item.testId === 'closing-contents') ?? null;
+  const closingMirror = await page.evaluate(() => [...document.querySelectorAll('.book-mirror h1, .book-mirror h2')].map(element => element.textContent?.trim()));
+  record('R8: the closing prints the six experiments and its stamp slot, and leads back to the contents',
+    !!toContents?.enabled && closingRight?.stamps?.length === 1 && closingMirror.includes('마침'), { headings: closingMirror, stamps: closingRight?.stamps ?? null, back: toContents?.id ?? null });
+
+  // --- R8: GO_TO with motion. Every frame records the stage turn: how many leaves, how many in the air.
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.waitForFunction(() => document.querySelector<HTMLElement>('main.book-app')?.dataset.phase === 'spreadIdle', undefined, { timeout: 10_000 });
+  await wait(300);
+  type LeafSample = { phase: string; leaves: number; flying: number; at: number };
+  const sampleTurns = () => page.evaluate(() => {
+    const samples: LeafSample[] = [];
+    (window as unknown as { __r8: typeof samples }).__r8 = samples;
+    const tick = (now: number) => {
+      const turn = (window as unknown as { __bookInspector: { snapshot(): { visual: { turn: { leaves?: number[] } | null } } } }).__bookInspector.snapshot().visual.turn;
+      const leaves = turn?.leaves ?? [];
+      samples.push({ phase: document.querySelector<HTMLElement>('main.book-app')?.dataset.phase ?? '', leaves: leaves.length,
+        flying: leaves.filter(value => value > 0 && value < 1).length, at: now });
+      if (samples.length < 6000) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  });
+  const takeSamples = async () => {
+    const samples = await page.evaluate(() => (window as unknown as { __r8: LeafSample[] }).__r8.splice(0));
+    await page.evaluate(() => { (window as unknown as { __r8: unknown[] }).__r8.length = 6000; });
+    const turning = samples.filter(sample => sample.phase === 'turningForward' || sample.phase === 'turningBack');
+    return { frames: turning.length, leaves: Math.max(0, ...turning.map(sample => sample.leaves)), maxFlying: Math.max(0, ...turning.map(sample => sample.flying)),
+      wallMs: turning.length ? Math.round(turning.at(-1)!.at - turning[0]!.at) : 0 };
+  };
+  const plannedMs = (leaves: number) => goToSchedule(leaves, BOOK_MOTION.turn).totalMs;
+  await sampleTurns();
+  await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-contents"]')!.click());
+  await idle(page, 'contents', 120_000);
+  const toolbarJump = await takeSamples();
+  record('R8: 목차 (toolbar) flies seven leaves from the closing to the contents, at most three in the air, planned ≤ 1.6 s',
+    toolbarJump.leaves === 7 && toolbarJump.maxFlying >= 2 && toolbarJump.maxFlying <= 3 && plannedMs(7) <= 1600,
+    { ...toolbarJump, plannedMs: Math.round(plannedMs(7)), note: 'wallMs includes SwiftShader frame time (0.5–3 s per frame)' });
+  const contentsLabel = await page.evaluate(() => ({ prev: document.querySelector('[data-testid="book-prev"]')?.getAttribute('aria-label') ?? null,
+    contents: document.querySelector<HTMLButtonElement>('[data-testid="book-contents"]')?.disabled ?? null }));
+  // A printed row: the pointer on the contents page turns four leaves to lesson 4.
+  await sampleTurns();
+  const row = await hotspot(page, item => item.testId === 'contents-spread-4');
+  const rowPressed = row ? await pointerClick(page, row) : null;
+  await idle(page, 'spread-4', 120_000);
+  const rowJump = await takeSamples();
+  record('R8: a printed contents row turns four leaves to lesson 4 (pointer)', !!row && rowPressed === row.id && rowJump.leaves === 4 && rowJump.maxFlying <= 3 && plannedMs(4) <= 1600,
+    { row: row?.id ?? null, ...rowJump, plannedMs: plannedMs(4), contentsButton: contentsLabel });
+  // The mirror path: 목차, then the contents' own button for lesson 2.
+  await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-contents"]')!.click());
+  await idle(page, 'contents', 120_000);
+  const mirrorJump = await mirrorClick(page, 'button[data-testid="contents-spread-2"]');
+  const mirrorLanded = await idle(page, 'spread-2', 120_000).then(() => true, () => false);
+  record('R8: the contents in the mirror jump too (keyboard / assistive path); on the contents prev reads 표지로 and 목차 is off',
+    mirrorJump && mirrorLanded && contentsLabel.prev === '표지로' && contentsLabel.contents === true, { mirrorJump, mirrorLanded, ...contentsLabel });
+
+  // --- BK08 over the bigger book: ten quick nexts move one turn plus the one queued; a reversal comes back.
+  await page.evaluate(() => { for (let index = 0; index < 10; index += 1) document.querySelector<HTMLButtonElement>('[data-testid="book-next"]')!.click(); });
+  await idle(page, 'spread-4', 120_000);
+  await wait(1500);
+  const afterTen = (await root(page)).spread;
+  await page.evaluate(() => {
+    document.querySelector<HTMLButtonElement>('[data-testid="book-next"]')!.click();
+    setTimeout(() => document.querySelector<HTMLButtonElement>('[data-testid="book-prev"]')!.click(), 120);
+  });
+  await wait(400);
+  await idle(page, 'spread-4', 120_000);
+  await wait(1500);
+  const afterReversal = (await root(page)).spread;
+  record('R8 BK08: ten quick nexts turn once plus one queued (2 → 4); next then prev comes back (4 → 5 → 4)', afterTen === 'spread-4' && afterReversal === 'spread-4',
+    { afterTen, afterReversal });
+
+  // --- R5/R8: prev from lesson 1 opens the contents; prev on the contents (표지로) closes the book.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await wait(300);
+  for (const spread of ['spread-3', 'spread-2', 'spread-1', 'contents']) {
     await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-prev"]')!.click());
     await idle(page, spread, 60_000);
   }
@@ -600,7 +678,7 @@ try {
   await page.waitForFunction(() => document.querySelector<HTMLElement>('main.book-app')?.dataset.phase === 'coverIdle', undefined, { timeout: 60_000, polling: 100 });
   const closed = await page.evaluate(() => ({ toolbar: document.querySelector<HTMLElement>('nav.book-toolbar')?.dataset.visible ?? null,
     hidden: getComputedStyle(document.querySelector('nav.book-toolbar')!).visibility }));
-  record('R5: prev on the first spread (표지로) closes the book; the toolbar hides but keeps its space',
+  record('R5/R8: prev from lesson 1 opens the contents; prev on the contents (표지로) closes the book; the toolbar hides but keeps its space',
     firstPrev === '표지로' && closed.toolbar === 'false' && closed.hidden === 'hidden', { label: firstPrev, ...closed });
   record('no page errors', errors.length === 0, errors.slice(0, 8));
   await context.close();

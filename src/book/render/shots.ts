@@ -36,6 +36,8 @@ export const SPREAD_SHOTS: Readonly<Record<SpreadId, readonly ShotSpec[]>> = Obj
   'spread-4': Object.freeze([]),
   'spread-5': Object.freeze([]),
   'spread-6': Object.freeze([]),
+  contents: Object.freeze([]),
+  closing: Object.freeze([]),
 });
 
 export function findShot(spreadId: SpreadId, shotId: string): ShotSpec | null {

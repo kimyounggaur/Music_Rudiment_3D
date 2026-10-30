@@ -1,6 +1,6 @@
 import { bookCanInteract } from './controller.ts';
 import type { BookState } from './controller.ts';
-import { adjacentSpread } from './manifest.ts';
+import { bookNeighbour } from './manifest.ts';
 import type { NavigationDirection } from './manifest.ts';
 import type { StageLayout, StagePoint, StageQuad } from './stage.ts';
 import { applyHomography, homographyFromUnitSquare, quadUv } from './render/homography.ts';
@@ -42,8 +42,9 @@ export function turnInputAvailability({ book, layout, stageReady, printsReady, t
     && (requiredTextureCount === 4 || requiredTextureCount === 6) && textureCount === requiredTextureCount
     && bookCanInteract(book) && preparedScene === `${book.bookEpoch}:${book.sceneInstanceId}:${book.currentSpreadId}`;
   return {
-    next: ready && !!adjacentSpread(book.currentSpreadId, 'next', book.spreadCount) && !!pageMap(layout!.right),
-    prev: ready && !!adjacentSpread(book.currentSpreadId, 'prev', book.spreadCount) && !!pageMap(layout!.left),
+    // v3 R8: neighbours in book order (contents ↔ lesson 1, lesson 6 ↔ closing are leaves too).
+    next: ready && !!bookNeighbour(book.currentSpreadId, 'next', book.spreadCount) && !!pageMap(layout!.right),
+    prev: ready && !!bookNeighbour(book.currentSpreadId, 'prev', book.spreadCount) && !!pageMap(layout!.left),
   };
 }
 

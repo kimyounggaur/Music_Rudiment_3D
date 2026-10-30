@@ -290,7 +290,8 @@ try {
         await nextFrames(page, 4);
       }
     }
-    const opened = states.some(state => ['spread1', 'stamp', 'flap', 'shot', 'shotHotspot', 'turn50', 'spread2', 'shotTurn', '2d'].includes(state));
+    const BOOK_STATES = ['contents', 'spread3', 'spread4', 'spread5', 'spread6', 'closing', 'goto'];
+    const opened = states.some(state => ['spread1', 'stamp', 'flap', 'shot', 'shotHotspot', 'turn50', 'spread2', 'shotTurn', '2d', ...BOOK_STATES].includes(state));
     if (opened) {
       // Open through the real cover control (a first visit has no saved spread to resume).
       const openedBy = await page.evaluate(() => {
@@ -507,6 +508,57 @@ try {
       await waitFor(page, `(() => { const r = document.querySelector('main.book-app'); return r?.dataset.spread === 'spread-3' && r?.dataset.phase === 'spreadIdle' && r?.dataset.scene === 'ready' && r?.dataset.printsReady === 'true'; })()`, 240_000);
       await wait(600);
       await shoot('shotTurn', true, { files, during, afterReturn: after });
+    }
+    // v3 R8: the whole book — the contents, lessons 3–6 and the closing (reached with reduced motion),
+    // and a GO_TO from the contents to lesson 4 pinned at eight turn progresses (inspector.holdTurn).
+    const spreadIdle = (id: string) => `(() => { const r = document.querySelector('main.book-app'); return r?.dataset.spread === '${id}' && r?.dataset.phase === 'spreadIdle' && r?.dataset.scene === 'ready' && r?.dataset.printsReady === 'true'; })()`;
+    const currentSpread = async () => (await rootData(page)).spread ?? '';
+    const ORDER = ['contents', 'spread-1', 'spread-2', 'spread-3', 'spread-4', 'spread-5', 'spread-6', 'closing'];
+    async function reach(id: string): Promise<void> {
+      if (await currentSpread() === id) return;
+      if (id === 'contents') await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-contents"]')!.click());
+      else if (await currentSpread() === 'contents') assert.ok(await mirrorPress(`button[data-testid="contents-${id}"]`), `contents row ${id}`);
+      else {
+        const forward = ORDER.indexOf(id) > ORDER.indexOf(await currentSpread());
+        while (await currentSpread() !== id) {
+          const from = await currentSpread();
+          await page.evaluate(next => document.querySelector<HTMLButtonElement>(`[data-testid="${next ? 'book-next' : 'book-prev'}"]`)!.click(), forward);
+          await waitFor(page, spreadIdle(ORDER[ORDER.indexOf(from) + (forward ? 1 : -1)]!), 120_000);
+        }
+      }
+      await waitFor(page, spreadIdle(id), 120_000);
+      await waitFor(page, settledPrints, 30_000);
+      await wait(600);
+    }
+    const printStats = () => page.evaluate(() => (window as unknown as { __bookInspector: { printStats(): unknown } }).__bookInspector.printStats());
+    if (BOOK_STATES.some(state => states.includes(state))) {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await wait(300);
+      for (const state of BOOK_STATES.filter(item => item !== 'goto' && states.includes(item))) {
+        await reach(state.startsWith('spread') ? `spread-${state.slice(6)}` : state);
+        await shoot(state, true, { printStats: await printStats() });
+      }
+    }
+    if (states.includes('goto')) {
+      await reach('contents');
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      await wait(400);
+      await inspectorCall('inspector.holdTurn(0)');
+      assert.ok(await mirrorPress('button[data-testid="contents-spread-4"]'), 'contents row spread-4');
+      await waitFor(page, `document.querySelector('main.book-app')?.dataset.phase === 'turningForward'`, 60_000);
+      const frames: Record<string, unknown>[] = [];
+      for (let step = 0; step <= 7; step += 1) {
+        await inspectorCall(`inspector.holdTurn(${step / 7})`);
+        const turn = await page.evaluate(() => (window as unknown as { __bookInspector: { snapshot(): { visual: { turn: { leaves?: number[] } | null } } } }).__bookInspector.snapshot().visual.turn);
+        frames.push({ step, progress: Number((step / 7).toFixed(4)), leaves: turn?.leaves?.map(value => Number(value.toFixed(3))) ?? null,
+          textures: (await rootData(page)).textures ?? null, file: await frame(`goto_${step}`) });
+      }
+      const during = await printStats();
+      await inspectorCall('inspector.holdTurn(null)');
+      await waitFor(page, spreadIdle('spread-4'), 120_000);
+      await waitFor(page, settledPrints, 30_000);
+      await wait(600);
+      await shoot('goto', true, { frames, printStatsDuring: during, printStats: await printStats() });
     }
     if (states.includes('2d')) {
       const clicked = await page.evaluate(() => {

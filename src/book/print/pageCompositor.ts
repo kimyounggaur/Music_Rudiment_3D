@@ -1,7 +1,8 @@
 import { CanvasTexture, LinearFilter, LinearMipmapLinearFilter, SRGBColorSpace } from 'three';
 import type { PageId } from '../manifest.ts';
 import type { QualityTier } from '../profile.ts';
-import { sceneState } from '../../lesson/controller.ts';
+import { isSceneComplete, sceneState } from '../../lesson/controller.ts';
+import { lessonContent } from '../../content/lesson.ts';
 import { PAGE_LOGICAL } from './pageLayout.ts';
 import type { FontSpec, PageLayout } from './pageLayout.ts';
 import { interactionKey } from './hotspots.ts';
@@ -83,8 +84,10 @@ function identity(value: object): number {
  * lesson shot the camera is in. Resolution is deliberately absent: draft and settled share one layout.
  */
 export function printKey(spec: PageSpec, context: PageContext): string {
-  const hints = Object.entries(context.hints).filter(([key]) => key.startsWith(`${context.sceneId}/`)).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
-  return JSON.stringify([spec.pageId, identity(sceneState(context.lesson, context.sceneId)),
+  const hints = Object.entries(context.hints).filter(([key]) => key.startsWith(`${context.sceneId ?? 'book'}/`)).sort(([a], [b]) => a < b ? -1 : a > b ? 1 : 0);
+  // v3 R8: the contents and closing print which lessons are complete (all derived from the lesson state).
+  const music = context.sceneId ? identity(sceneState(context.lesson, context.sceneId)) : lessonContent.scenes.map(scene => isSceneComplete(context.lesson, scene.sceneId));
+  return JSON.stringify([spec.pageId, music,
     context.lesson.currentSceneId === context.sceneId ? context.lesson.feedback : '',
     context.playback.state, context.playback.laneId, context.playback.error, hints, context.ui.composeKind, context.ui.shotId ?? null, context.interactive]);
 }

@@ -133,6 +133,30 @@ function paintItem(context: Canvas2D, item: LaidOutItem, k: number, notation: No
     case 'notation':
       notation.draw(context, item.key, item.rect, k);
       break;
+    case 'entry': {
+      // v3 R8: a contents row — a check when the lesson is done, the number, title, leader and folio.
+      const color = item.enabled ? PRINT_COLORS.ink : PRINT_COLORS.faint;
+      if (item.done) drawIcon(context, 'check', item.rect.x - 30, item.number.baseline - 24, 24, k, PRINT_COLORS.accent);
+      drawLines(context, [item.number], k, item.enabled ? undefined : color);
+      drawLines(context, item.title, k, color);
+      drawLines(context, item.detail, k);
+      if (item.leader) {
+        context.fillStyle = PRINT_COLORS.rule;
+        for (let x = item.leader.x0; x <= item.leader.x1; x += 9) {
+          context.beginPath();
+          context.arc(x * k, item.leader.y * k, 1.5 * k, 0, Math.PI * 2);
+          context.fill();
+        }
+      }
+      drawLines(context, [item.folio], k, color);
+      context.strokeStyle = PRINT_COLORS.rule;
+      context.lineWidth = 1 * k;
+      context.beginPath();
+      context.moveTo(item.rect.x * k, (item.rect.y + item.rect.h) * k);
+      context.lineTo((item.rect.x + item.rect.w) * k, (item.rect.y + item.rect.h) * k);
+      context.stroke();
+      break;
+    }
     case 'figure':
       break;
     case 'flapTab': {

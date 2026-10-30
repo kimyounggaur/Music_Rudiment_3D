@@ -1,7 +1,7 @@
 import { createLessonState, reduceLesson, sceneEvents } from '../../src/lesson/controller.ts';
 import type { LessonState } from '../../src/lesson/controller.ts';
 import type { MusicEvent, SceneId } from '../../src/content/types.ts';
-import { BOOK_MANIFEST } from '../../src/book/manifest.ts';
+import { BOOK_SPREADS } from '../../src/book/manifest.ts';
 import type { PageId } from '../../src/book/manifest.ts';
 import type { FontSpec, LayoutServices } from '../../src/book/print/pageLayout.ts';
 import type { Canvas2D } from '../../src/book/print/pagePainter.ts';
@@ -18,7 +18,8 @@ const notation = (events: readonly MusicEvent[], width: number, scale: number) =
 });
 export const stubServices: LayoutServices = { measure: stubMeasure, notation };
 export const READY: PagePlayback = { state: 'ready', laneId: null, activeEventId: null, error: null };
-export const sceneFor = (pageId: PageId): SceneId => BOOK_MANIFEST.find(spread => spread.leftPageId === pageId || spread.rightPageId === pageId)!.sceneId;
+/** The lesson scene of a page; null on the contents and closing (v3 R8). */
+export const sceneFor = (pageId: PageId): SceneId | null => BOOK_SPREADS.find(spread => spread.leftPageId === pageId || spread.rightPageId === pageId)!.sceneId;
 export function contextFor(pageId: PageId, lesson: LessonState = createLessonState(), extra: Partial<PageContext> = {}): PageContext {
   return { lesson, sceneId: sceneFor(pageId), playback: READY, hints: {}, ui: { composeKind: 'note' }, interactive: true, ...extra };
 }

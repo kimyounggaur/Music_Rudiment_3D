@@ -13,7 +13,8 @@ export type PagePlayback = Readonly<{ state: PagePlaybackState; laneId: string |
 export type PageUiState = Readonly<{ composeKind: 'note' | 'rest'; shotId?: string | null }>;
 export type PageContext = Readonly<{
   lesson: LessonState;
-  sceneId: SceneId;
+  /** v3 R8: null on the contents and closing pages (front and back matter carry no lesson scene). */
+  sceneId: SceneId | null;
   playback: PagePlayback;
   hints: Readonly<Record<string, number>>;
   ui: PageUiState;
@@ -69,13 +70,30 @@ export type PageBlock =
   | Readonly<{ kind: 'flap'; id: string; hintKey: Dynamic<string>; label: string; blocks: readonly PageBlock[]; cover?: boolean; coverHint?: string; foldHint?: string }>
   | Readonly<{ kind: 'secondsAxis'; ticks: Dynamic<readonly string[]>; label: Dynamic<string> }>
   | Readonly<{ kind: 'when'; test: (context: PageContext) => boolean; blocks: readonly PageBlock[] }>
-  | Readonly<{ kind: 'stampSlot'; id: string; label: string; stamped: Dynamic<boolean> }>;
+  | Readonly<{ kind: 'stampSlot'; id: string; label: string; stamped: Dynamic<boolean> }>
+  /**
+   * v3 R8: a table of contents — one printed row per entry (number, title, a detail line, the folio
+   * after a dotted leader). The whole row is the hotspot; `done` prints a check before the number.
+   */
+  | Readonly<{ kind: 'contents'; id: string; label: string; entries: readonly ContentsEntry[] }>;
+
+export type ContentsEntry = Readonly<{
+  id: string;
+  number: string;
+  title: string;
+  detail?: string;
+  folio: string;
+  command: HotspotCommand;
+  done?: Dynamic<boolean>;
+  testId?: string;
+}>;
 
 export type PageSpec = Readonly<{
   pageId: PageId;
   side: 'left' | 'right';
   runningHead: string;
-  folio: number;
+  /** Printed page number; null on unnumbered front and back matter (v3 R8). */
+  folio: number | null;
   blocks: readonly PageBlock[];
 }>;
 
@@ -83,6 +101,12 @@ export type PageSpec = Readonly<{
 export type NotationBox = Readonly<{ eventId: string; x: number; y: number; w: number; h: number }>;
 export type NotationMeasure = Readonly<{ height: number; boxes: readonly NotationBox[]; key: string }>;
 export type NotationMeasurer = (events: readonly MusicEvent[], width: number) => NotationMeasure;
+
+/** The lesson scene of a lesson page; lesson blocks (notation, questions, event lists) never sit on the matter pages. */
+export function lessonSceneOf(context: PageContext): SceneId {
+  if (!context.sceneId) throw new RangeError('This block belongs on a lesson page (no scene on the contents or closing).');
+  return context.sceneId;
+}
 
 export function resolve<T>(value: Dynamic<T>, context: PageContext): T {
   return typeof value === 'function' ? (value as (context: PageContext) => T)(context) : value;

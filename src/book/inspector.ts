@@ -41,6 +41,8 @@ export interface BookInspector {
   holdShot(ms: number | null): void;
   /** v3 R7: the last sound-effect requests (name, allowed by the gate, played by the engine). */
   sfx(): readonly unknown[];
+  /** v3 R8: pin a button turn or GO_TO at an overall progress 0..1 (null resumes it from there). */
+  holdTurn(progress: number | null): void;
 }
 
 declare global {
@@ -62,6 +64,7 @@ export type BookInspectorOptions = Readonly<{
   getShot?: () => Readonly<{ id: string; phase: 'enter' | 'hold' | 'return'; t: number }> | null;
   holdShot?: (ms: number | null) => void;
   getSfxLog?: () => readonly unknown[];
+  holdTurn?: (progress: number | null) => void;
 }>;
 
 const poseKeys = new Set(['coverProgress', 'introProgress', 'currentSpreadIndex', 'turn', 'inspectionWireframe', 'sceneProgress', 'sceneReveal']);
@@ -183,6 +186,10 @@ export function attachBookInspector(options: BookInspectorOptions): () => void {
     holdShot(ms) {
       if (ms !== null && (typeof ms !== 'number' || !Number.isFinite(ms) || ms < 0)) throw new RangeError('holdShot takes a non-negative time in ms or null.');
       options.holdShot?.(ms);
+    },
+    holdTurn(progress) {
+      if (progress !== null && !unitValue(progress)) throw new RangeError('holdTurn takes a progress between 0 and 1, or null.');
+      options.holdTurn?.(progress);
     },
     figurePoints(laneId, points) {
       const scene = options.getScene?.(), stage = options.getStage();

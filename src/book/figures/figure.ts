@@ -95,6 +95,8 @@ export interface InkFigure extends FigureControls {
   readonly lift: number;
   readonly reveal: number;
   readonly glowKey: string | null;
+  /** The written labels, in drawing order (inspection and tests; v3 R8 seconds ruler). */
+  labelTexts(): readonly string[];
   dispose(): void;
 }
 
@@ -420,6 +422,7 @@ export function createInkFigure(figureId: string, options: FigureOptions = {}): 
     },
     stats: () => ({ segments: ink.count + dashed.count + accent.count + accentDashed.count, ink: ink.count, dashed: dashed.count,
       accent: accent.count + accentDashed.count, fills: fillKeys.size, hits: hitTargets.length, labels: labelSpecs.length }),
+    labelTexts: () => labelSpecs.map(label => label.text),
     dispose() {
       if (disposed) return;
       disposed = true;

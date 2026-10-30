@@ -2,7 +2,7 @@ import { durationLabel, getScene } from '../../content/lesson.ts';
 import type { MusicEvent } from '../../content/types.ts';
 import { sceneEvents, sceneState } from '../../lesson/controller.ts';
 import { BOOK_DIMENSIONS } from '../geometry.ts';
-import { resolve } from './pageSpec.ts';
+import { lessonSceneOf, resolve } from './pageSpec.ts';
 import type {
   HotspotCommand, InkTone, NotationBox, NotationMeasure, PageBlock, PageContext, PageSpec, ParagraphStyle, PrintIcon,
 } from './pageSpec.ts';
@@ -51,6 +51,9 @@ export type LaidOutItem =
   | Readonly<{ kind: 'flapCover'; rect: Rect; hint: readonly TextLine[] }>
   | Readonly<{ kind: 'axis'; x: number; y: number; w: number; ticks: readonly TextLine[] }>
   | Readonly<{ kind: 'stampSlot'; rect: Rect; stamped: boolean; label: readonly TextLine[] }>
+  /** v3 R8: one table-of-contents row; the dotted leader runs from the title to the folio. */
+  | Readonly<{ kind: 'entry'; rect: Rect; number: TextLine; title: readonly TextLine[]; detail: readonly TextLine[]; folio: TextLine;
+    leader: Readonly<{ x0: number; x1: number; y: number }> | null; done: boolean; enabled: boolean; hotspotId: string }>
   | Readonly<{ kind: 'overflow'; rect: Rect; label: readonly TextLine[] }>;
 
 export type HotspotRole = 'button' | 'toggle' | 'radio' | 'note' | 'checkbox' | 'flap';
@@ -162,7 +165,7 @@ class Builder {
 function hotspotId(pageId: string, ...parts: string[]) { return [pageId, ...parts].join(':'); }
 /** Same rule as the 2D useSelection: switching lanes resets the selection, so only switch when needed. */
 function selectCommand(context: PageContext, laneId: string, eventId: string): HotspotCommand {
-  const lane = sceneState(context.lesson, context.sceneId).activeLaneId === laneId;
+  const lane = sceneState(context.lesson, lessonSceneOf(context)).activeLaneId === laneId;
   return { type: 'lesson', commands: lane ? [{ type: 'select', id: eventId }] : [{ type: 'selectLane', laneId }, { type: 'select', id: eventId }] };
 }
 
@@ -203,7 +206,7 @@ function layoutBlocks(builder: Builder, blocks: readonly PageBlock[], cursor: Cu
       case 'notation': {
         builder.items.push({ kind: 'text', lines: builder.textBlock(cursor, block.label, PRINT_TYPE.h3) });
         cursor.y += builder.gap(0.1);
-        const events = sceneEvents(context.lesson, context.sceneId, block.laneId);
+        const events = sceneEvents(context.lesson, lessonSceneOf(context), block.laneId);
         const measured = services.notation(events, builder.width, builder.s);
         const rect = { x: builder.left, y: cursor.y, w: builder.width, h: measured.height };
         builder.items.push({ kind: 'notation', rect, laneId: block.laneId, key: measured.key, events });
@@ -242,9 +245,9 @@ function layoutBlocks(builder: Builder, blocks: readonly PageBlock[], cursor: Cu
         break;
       }
       case 'question': {
-        const question = getScene(context.sceneId).questions.find(item => item.id === block.questionId);
+        const question = getScene(lessonSceneOf(context)).questions.find(item => item.id === block.questionId);
         if (!question) break;
-        const answer = sceneState(context.lesson, context.sceneId).answers[question.id];
+        const answer = sceneState(context.lesson, lessonSceneOf(context)).answers[question.id];
         builder.items.push({ kind: 'text', lines: builder.textBlock(cursor, question.prompt, PRINT_TYPE.body) });
         cursor.y += builder.gap(0.15);
         const group: MirrorNode[] = [];
@@ -273,7 +276,7 @@ function layoutBlocks(builder: Builder, blocks: readonly PageBlock[], cursor: Cu
         break;
       }
       case 'eventList': {
-        const events = sceneEvents(context.lesson, context.sceneId, block.laneId);
+        const events = sceneEvents(context.lesson, lessonSceneOf(context), block.laneId);
         if (!events.length) break;
         const columns = 4;
         const gap = 8 * builder.s;
@@ -294,7 +297,7 @@ function layoutBlocks(builder: Builder, blocks: readonly PageBlock[], cursor: Cu
           builder.noteBoxes.push({ eventId: event.id, x: rect.x, y: rect.y, w: rect.w, h: rect.h, laneId: block.laneId, source: 'cell' });
           builder.hotspots.push({ id, rect, role: 'note', label: `${index + 1}번째 ${name}, 온음표의 ${event.duration.n}/${event.duration.d}, 시작 ${event.onset.n}/${event.onset.d}`,
             enabled: context.interactive && !playing, eventId: event.id, laneId: block.laneId,
-            pressed: sceneState(context.lesson, context.sceneId).activeLaneId === block.laneId && sceneState(context.lesson, context.sceneId).selectedEventId === event.id,
+            pressed: sceneState(context.lesson, lessonSceneOf(context)).activeLaneId === block.laneId && sceneState(context.lesson, lessonSceneOf(context)).selectedEventId === event.id,
             command: selectCommand(context, block.laneId, event.id) });
           group.push({ kind: 'control', hotspotId: id });
         });
@@ -402,6 +405,13 @@ function layoutBlocks(builder: Builder, blocks: readonly PageBlock[], cursor: Cu
         mirror.push({ kind: 'text', text: resolve(block.label, context) });
         break;
       }
+      case 'contents': {
+        const group: MirrorNode[] = [];
+        layoutContents(builder, block, cursor, group);
+        mirror.push({ kind: 'group', label: block.label, role: 'list', children: group });
+        cursor.y += builder.gap(0.4);
+        break;
+      }
       case 'stampSlot': {
         const stamped = resolve(block.stamped, context);
         const size = 96 * builder.s;
@@ -460,6 +470,44 @@ function layoutButtons(builder: Builder, block: Extract<PageBlock, { kind: 'butt
   cursor.y = rowTop + rowHeight;
 }
 
+/** v3 R8: contents rows — number, title and a detail line, the folio at the right after a dotted leader. */
+function layoutContents(builder: Builder, block: Extract<PageBlock, { kind: 'contents' }>, cursor: Cursor, mirror: MirrorNode[]): void {
+  const { context, services, spec } = builder;
+  // Large enough to pick a lesson on the 3D page at the reading pose (titles in the h2 serif).
+  const titleFont = builder.font(PRINT_TYPE.h2);
+  const numberFont = builder.font(PRINT_TYPE.h1);
+  const folioFont = builder.font(PRINT_TYPE.button);
+  const pad = 16 * builder.s;
+  const numberWidth = 74 * builder.s;
+  const minHeight = 104 * builder.s;
+  for (const entry of block.entries) {
+    const id = hotspotId(spec.pageId, block.id, entry.id);
+    const done = entry.done === undefined ? false : resolve(entry.done, context);
+    const enabled = context.interactive;
+    const top = cursor.y;
+    const folioWidth = services.measure(entry.folio, folioFont);
+    const textX = builder.left + numberWidth;
+    const titleWidth = builder.right - pad - folioWidth - 24 * builder.s - textX;
+    const local = { y: top + pad };
+    const title = builder.textBlock(local, entry.title, PRINT_TYPE.h2, { x: textX, width: titleWidth });
+    local.y += 4 * builder.s;
+    const detail = entry.detail ? builder.textBlock(local, entry.detail, PRINT_TYPE.caption, { x: textX, width: builder.right - pad - textX }) : [];
+    const height = Math.max(minHeight, local.y - top + pad);
+    const rect = { x: builder.left, y: top, w: builder.width, h: height };
+    const first = title[0]!;
+    const number = { text: entry.number, x: builder.left + 6 * builder.s, baseline: first.baseline + 2 * builder.s, font: numberFont, color: PRINT_COLORS.blue };
+    const folio = { text: entry.folio, x: builder.right - pad - folioWidth, baseline: first.baseline, font: folioFont, color: PRINT_COLORS.ink };
+    const titleEnd = textX + services.measure(first.text, titleFont) + 12 * builder.s;
+    const leaderEnd = folio.x - 12 * builder.s;
+    builder.items.push({ kind: 'entry', rect, number, title, detail, folio, done, enabled, hotspotId: id,
+      leader: entry.folio && leaderEnd - titleEnd > 24 * builder.s ? { x0: titleEnd, x1: leaderEnd, y: first.baseline - 4 * builder.s } : null });
+    const label = [entry.number, entry.title].filter(Boolean).join(' ') + (entry.folio ? `, ${entry.folio}` : '') + (done ? ', 완료' : '');
+    builder.hotspots.push({ id, rect, role: 'button', label, enabled, command: entry.command, testId: entry.testId });
+    mirror.push({ kind: 'control', hotspotId: id });
+    cursor.y = top + height + 6 * builder.s;
+  }
+}
+
 function layoutAt(spec: PageSpec, context: PageContext, services: LayoutServices, s: number): Builder & { bottom: number } {
   const builder = new Builder(spec, context, services, s);
   const cursor = { y: PRINT_MARGINS.top };
@@ -469,10 +517,13 @@ function layoutAt(spec: PageSpec, context: PageContext, services: LayoutServices
   builder.items.push({ kind: 'text', lines: [{ text: spec.runningHead, x: headX, baseline: PRINT_MARGINS.top - 30, font: headFont, color: PRINT_COLORS.muted }] });
   layoutBlocks(builder, spec.blocks, cursor, builder.mirror);
   const folioFont = { family: PRINT_TYPE.folio.family, weight: PRINT_TYPE.folio.weight, size: PRINT_TYPE.folio.size } as FontSpec;
-  const folio = String(spec.folio);
-  const folioX = spec.side === 'right' ? builder.right - services.measure(folio, folioFont) : builder.left;
   const folioBaseline = PAGE_LOGICAL.height - PRINT_MARGINS.bottom / 2 + 8;
-  builder.items.push({ kind: 'text', lines: [{ text: folio, x: folioX, baseline: folioBaseline, font: folioFont, color: PRINT_COLORS.muted }] });
+  // v3 R8: the contents and closing are unnumbered matter.
+  if (spec.folio !== null) {
+    const folio = String(spec.folio);
+    const folioX = spec.side === 'right' ? builder.right - services.measure(folio, folioFont) : builder.left;
+    builder.items.push({ kind: 'text', lines: [{ text: folio, x: folioX, baseline: folioBaseline, font: folioFont, color: PRINT_COLORS.muted }] });
+  }
   if (spec.side === 'left') {
     const hintFont = { family: PRINT_TYPE.meta.family, weight: PRINT_TYPE.meta.weight, size: PRINT_TYPE.meta.size, letterSpacing: PRINT_TYPE.meta.letterSpacing } as FontSpec;
     builder.items.push({ kind: 'text', lines: [{ text: READING_HINT, x: builder.right - services.measure(READING_HINT, hintFont), baseline: folioBaseline, font: hintFont, color: PRINT_COLORS.blue }] });

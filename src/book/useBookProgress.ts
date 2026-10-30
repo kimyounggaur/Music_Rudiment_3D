@@ -13,15 +13,16 @@ import { restoreBookLearning } from './learningProgress.ts';
 import { BookProgressSession } from './BookProgressSession.ts';
 import { bookCanInteract } from './controller.ts';
 import type { BookState } from './controller.ts';
-import { BOOK_MANIFEST } from './manifest.ts';
-import type { SpreadId } from './manifest.ts';
+import { BOOK_MANIFEST, isLessonSpread } from './manifest.ts';
+import type { LessonSpreadId } from './manifest.ts';
 
 /** v3 R7: the record is schema 3; `sfx` on (decision 2) and `autoShot` off (decision 5) by default. */
 export type BookPreferences = BookPreferencesV3;
 export const defaultBookPreferences = (): BookPreferences => ({ mode: '3d', reducedMotion: false, muted: false, volume: 0.6, ...DEFAULT_BOOK_SETTINGS });
 /** The learning code and the v2 validator see the v2 view of the record (settings set aside). */
 const learningPreferences = ({ mode, reducedMotion, muted, volume }: BookPreferences) => ({ mode, reducedMotion, muted, volume });
-export const supportsStoredSpread = (id: string): id is SpreadId => BOOK_MANIFEST.some(spread => spread.spreadId === id);
+/** A saved place is always a lesson spread (the record schema's StoredSpreadId). */
+export const supportsStoredSpread = (id: string): id is LessonSpreadId => BOOK_MANIFEST.some(spread => spread.spreadId === id);
 const unsupportedMessage = (id: string) => `${id.replace('spread-', '')}번 펼침면은 아직 이 책에서 열 수 없어요. 저장 원문을 보호하며, 지금 둘러본 내용은 자동 저장하지 않습니다.`;
 
 export type InitialBookProgress = {
@@ -93,7 +94,10 @@ export function useBookProgress({ initial, book, lesson, onApply }: BookProgress
     const previousSpread = session.current.previous?.lastStableSpreadId;
     // Browsing an older two-spread runtime must not clamp a future saved target,
     // including in a user-requested export of the live supported-page edits.
-    const lastStableSpreadId = previousSpread && !supportsStoredSpread(previousSpread) ? previousSpread : current.book.currentSpreadId;
+    // v3 R8: the contents and closing spreads are not lesson places; the record keeps the last lesson spread.
+    const here = current.book.currentSpreadId;
+    const lastStableSpreadId = previousSpread && !supportsStoredSpread(previousSpread) ? previousSpread
+      : isLessonSpread(here) ? here : here === 'closing' ? 'spread-6' : previousSpread ?? 'spread-1';
     return session.current.capture({ lesson: current.lesson, lastStableSpreadId,
       preferences: learningPreferences(current.preferences), hints: current.hints });
   }, []);

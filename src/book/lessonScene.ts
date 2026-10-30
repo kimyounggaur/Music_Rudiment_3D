@@ -112,6 +112,7 @@ export function createLessonScene(sceneId: BookLessonSceneId, initialLesson: Les
   // Lane units: x 0..10 maps to INSET_X + SCALE·x on the page; heights scale the same way.
   const laneSurface: FigureSurface | undefined = paper ? x => paper(INSET_X + SCALE * x) / SCALE : undefined;
   const extent = lessonFigureExtent(sceneId);
+  const tempoOf = (state: LessonState): 60 | 120 => sceneState(state, sceneId).tempo === 120 ? 120 : 60;
 
   /** Reveal order: lanes top to bottom, then the decor, then guides. */
   const revealItems = (): { setReveal(t: number): void }[] => [...lanes.map(lane => lane.figure), ...(decor ? [decor] : []), ...(guide ? [guide] : [])];
@@ -188,7 +189,7 @@ export function createLessonScene(sceneId: BookLessonSceneId, initialLesson: Les
     }
     const kind = DECOR_KIND[sceneId];
     if (kind && extent.decorZ !== null) {
-      decor = createSpreadDecor(kind, lanes.map(lane => lane.events), { surface: laneSurface, hatch: options.hatch });
+      decor = createSpreadDecor(kind, lanes.map(lane => lane.events), { surface: laneSurface, hatch: options.hatch, bpm: tempoOf(initialLesson) });
       decor.group.name = `${sceneId}-decor-${kind}`;
       decor.group.scale.setScalar(SCALE);
       decor.group.position.set(INSET_X, PAPER_LIFT, extent.decorZ);
@@ -226,9 +227,12 @@ export function createLessonScene(sceneId: BookLessonSceneId, initialLesson: Les
           changedEvents = true;
         }
       }
+      const tempoChanged = tempoOf(next) !== tempoOf(lesson);
       lesson = next;
+      // v3 R8: the seconds ruler follows the tempo; the blocks keep their length.
+      if (tempoChanged && !changedEvents) decor?.update(lanes.map(lane => lane.events), tempoOf(next));
       if (changedEvents) {
-        decor?.update(lanes.map(lane => lane.events));
+        decor?.update(lanes.map(lane => lane.events), tempoOf(next));
         // Edits invalidate a playback display just as the coordinator stops its audio.
         playback = null;
         refreshPicks();

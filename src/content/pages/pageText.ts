@@ -38,7 +38,21 @@ export const PAGE_TEXT = Object.freeze({
   alternative: '소리 없이 살펴보기',
   observed: '두 줄 설명을 확인했어요',
   soundless: '소리 없는 설명으로도 계속할 수 있어요.',
+  /** v3 R8: the contents and closing spreads (front and back matter) and their toolbar names. */
+  contentsTitle: '차례',
+  contentsHint: '제목을 누르면 그 펼침면으로 넘어가요.',
+  contentsFolio: '차례',
+  closingTitle: '마침',
+  closingEntry: '마침 · 돌아보기',
+  closingFolio: '마침',
+  closingDone: '해 본 실험',
+  closingReview: '돌아보기',
+  bookStamp: '여섯 실험 확인',
+  backToContents: '차례로',
 });
+
+/** v3 R8: a lesson's first page as the contents prints it. */
+export const folioLabel = (page: number) => `${page}쪽`;
 
 /** v3 R5: the stamp under a page's questions (all answered correctly → '확인'). */
 export const questionStampLabel = (count: number) => count === 3 ? '세 문항 확인' : `문항 ${count}개 확인`;

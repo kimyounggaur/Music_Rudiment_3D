@@ -25,7 +25,9 @@ export const LESSON_FIGURE_RAISE_PER_HEIGHT = 0.5317;
  */
 export const LESSON_FIGURE_LAYOUT = Object.freeze({
   scale: 0.224, blockHeight: 0.38, laneBack: -0.45, laneFront: 0.86, laneFrontLabelled: 1.19,
-  decor: Object.freeze({ 'scene-1': Object.freeze({ back: -0.84, front: 0.51 }), 'scene-2': Object.freeze({ back: 0.02, front: 0.97 }) }) as Readonly<Partial<Record<SceneId, Readonly<{ back: number; front: number }>>>>,
+  decor: Object.freeze({ 'scene-1': Object.freeze({ back: -0.84, front: 0.51 }), 'scene-2': Object.freeze({ back: 0.02, front: 0.97 }),
+    // v3 R8: the seconds ruler (spread 5) and the free bar (spread 6).
+    'scene-5': Object.freeze({ back: 0.04, front: 0.64 }), 'scene-6': Object.freeze({ back: 0.1, front: 0.89 }) }) as Readonly<Partial<Record<SceneId, Readonly<{ back: number; front: number }>>>>,
   /** World gap between the last lane's ticks and its decor. */
   decorGap: 0.04,
 });

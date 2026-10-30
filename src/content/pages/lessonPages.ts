@@ -4,6 +4,7 @@ import { eq, frac, sum } from '../../domain/index.ts';
 import { currentAssessment, isSceneComplete, sceneEvents, sceneState } from '../../lesson/controller.ts';
 import type { LessonCommand } from '../../lesson/controller.ts';
 import { lessonPageNumber, lessonTempoTiming } from '../../book/lessonPresentation.ts';
+import { lessonSceneOf } from '../../book/print/pageSpec.ts';
 import type { HotspotCommand, PageBlock, PageContext, PageSpec, PrintedButton } from '../../book/print/pageSpec.ts';
 import type { PageId } from '../../book/manifest.ts';
 import { answerLine, EXPERIMENT_TITLES, laneCaption, listenLabel, PAGE_TEXT, questionStampLabel, RUNNING_HEADS } from './pageText.ts';
@@ -16,8 +17,8 @@ const playing = (context: PageContext) => ['starting', 'playing', 'paused'].incl
 /** Same rule as lessonEditsAllowed: edits wait until playback is stopped. */
 const editable = (context: PageContext) => context.interactive && !playing(context);
 const lesson = (...commands: LessonCommand[]): HotspotCommand => ({ type: 'lesson', commands });
-const events = (context: PageContext, laneId?: string) => sceneEvents(context.lesson, context.sceneId, laneId);
-const current = (context: PageContext) => sceneState(context.lesson, context.sceneId);
+const events = (context: PageContext, laneId?: string) => sceneEvents(context.lesson, lessonSceneOf(context), laneId);
+const current = (context: PageContext) => sceneState(context.lesson, lessonSceneOf(context));
 
 /**
  * Fraction of the page height reserved for the 3D figure, by lane count: the lanes' span plus the
@@ -27,7 +28,8 @@ const current = (context: PageContext) => sceneState(context.lesson, context.sce
  * Page share reserved for the 3D figure. v3 R4: spreads 1 and 2 also carry an ink decor drawing under
  * their lanes (tests/book-lesson-scene checks every figure fits its window at the reading pose).
  */
-const FIGURE_HEIGHT: Readonly<Partial<Record<SceneId, number>>> = Object.freeze({ 'scene-1': 0.39, 'scene-2': 0.18 });
+// v3 R8: spreads 5 and 6 add a decor strip under their lane (seconds ruler, free bar).
+const FIGURE_HEIGHT: Readonly<Partial<Record<SceneId, number>>> = Object.freeze({ 'scene-1': 0.39, 'scene-2': 0.18, 'scene-5': 0.17, 'scene-6': 0.18 });
 const figureHeight = (sceneId: SceneId) => FIGURE_HEIGHT[sceneId] ?? (getScene(sceneId).lanes.length >= 3 ? 0.31 : getScene(sceneId).lanes.length === 2 ? 0.29 : 0.13);
 
 function listenButtons(sceneId: SceneId): PrintedButton[] {
@@ -144,7 +146,7 @@ function restControls(): PageBlock[] {
       { id: 'redo', label: '다시 하기', icon: 'redo', command: lesson({ type: 'redo' }), enabled: context => editable(context) && !!pattern(context)?.future.length },
     ] },
     { kind: 'paragraph', style: 'caption', text: context => {
-      const assessment = currentAssessment(context.lesson, context.sceneId);
+      const assessment = currentAssessment(context.lesson, lessonSceneOf(context));
       return `전체 ${assessment.total.n}/${assessment.total.d} · 쉼표 ${events(context).filter(event => event.kind === 'rest').length}개. ${assessment.message}`;
     } },
     { kind: 'paragraph', style: 'note', text: '쉼표는 점선 빈칸으로 나타나요. 소리 없는 구간에도 시간과 다음 음표의 시작 위치는 유지돼요.' },

@@ -51,7 +51,12 @@ export interface StageUpdate {
   introProgress: number;
   currentSpreadIndex: number;
   spreadCount: number;
-  turn: { direction: BookTurnDirection; progress: number; corner: BookCorner } | null;
+  /**
+   * The turn in progress. v3 R8 GO_TO: `leaves` holds each leaf's own progress, oldest first. Leaf k
+   * leaves the stack at spread position currentSpreadIndex ± k and flies in pool slot k mod 3 while
+   * 0 < progress < 1; the stacks follow the leaves that have moved.
+   */
+  turn: { direction: BookTurnDirection; progress: number; corner: BookCorner; leaves?: readonly number[] } | null;
   /** v3 R4: the scene figure's lift (0 = drawn flat on the paper, 1 = standing). */
   sceneProgress?: number;
   /** v3 R4: the pen's progress over the scene figure (0 = nothing drawn, 1 = fully drawn). */
@@ -74,6 +79,11 @@ export interface StageTextures {
   staticRightState: Texture | null;
   turnFrontState: Texture | null;
   turnBackState: Texture | null;
+  /** v3 R8: the second and third leaves of the pool (GO_TO). They share the compositor's page textures. */
+  turnFront1: Texture | null;
+  turnBack1: Texture | null;
+  turnFront2: Texture | null;
+  turnBack2: Texture | null;
 }
 /** A point on the printed page: u from the left edge, v from the top edge (print canvas orientation). */
 export type PagePointerHit = Readonly<{ side: 'left' | 'right'; u: number; v: number }>;
@@ -192,6 +202,9 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
   const rightMaterial = ownMaterial(createPaperMaterial({ name: 'page-right' }));
   const leafFrontMaterial = ownMaterial(createPaperMaterial({ name: 'leaf-front' }));
   const leafBackMaterial = ownMaterial(createPaperMaterial({ name: 'leaf-back' }));
+  // v3 R8: two more leaves for GO_TO (a pool of three; slot 0 is the ordinary turning leaf).
+  const poolFrontMaterials = [leafFrontMaterial, ownMaterial(createPaperMaterial({ name: 'leaf-front-1' })), ownMaterial(createPaperMaterial({ name: 'leaf-front-2' }))] as const;
+  const poolBackMaterials = [leafBackMaterial, ownMaterial(createPaperMaterial({ name: 'leaf-back-1' })), ownMaterial(createPaperMaterial({ name: 'leaf-back-2' }))] as const;
   const leafEdgeMaterial = ownMaterial(new MeshStandardMaterial({ color: BINDING_TOKENS.paperEdge, roughness: 0.96, metalness: 0 }));
   const artworkMaterial = ownMaterial(new MeshStandardMaterial({ color: '#ffffff', roughness: BINDING_TOKENS.coverRoughness, metalness: 0 }));
 
@@ -246,11 +259,13 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
   leftPage.rotation.z = Math.PI;
   coverHinge.add(leftPage);
 
-  const leafGeometry = ownGeometry(createTurningLeafGeometry());
-  const turningLeaf = shadowed(new Mesh(leafGeometry, [leafFrontMaterial, leafBackMaterial, leafEdgeMaterial]));
-  turningLeaf.name = 'TurningLeaf';
-  turningLeaf.visible = false;
-  bookRoot.add(turningLeaf);
+  const leafPool = poolFrontMaterials.map((front, slot) => {
+    const leaf = shadowed(new Mesh(ownGeometry(createTurningLeafGeometry()), [front, poolBackMaterials[slot]!, leafEdgeMaterial]));
+    leaf.name = slot === 0 ? 'TurningLeaf' : `TurningLeaf${slot}`;
+    leaf.visible = false;
+    bookRoot.add(leaf);
+    return leaf;
+  });
 
   // v3 R5: paper flaps ride the static page meshes (their own page-local frame).
   const flaps = createFlapLayer();
@@ -306,7 +321,8 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
 
   let state: StageUpdate = { coverProgress: 0, introProgress: 0, currentSpreadIndex: 0, spreadCount: 6, turn: null, sceneProgress: 0, sceneReveal: 1, suspendFit: false };
   const textures: StageTextures = { staticLeft: null, staticRight: null, turnFront: null, turnBack: null,
-    staticLeftState: null, staticRightState: null, turnFrontState: null, turnBackState: null };
+    staticLeftState: null, staticRightState: null, turnFrontState: null, turnBackState: null,
+    turnFront1: null, turnBack1: null, turnFront2: null, turnBack2: null };
   let width = 0;
   let height = 0;
   let layout: StageLayout | null = null;
@@ -378,15 +394,17 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
   function applyObjects(): void {
     const progress = unitProgress(state.coverProgress);
     const turn = state.turn;
-    const turnProgress = turn ? unitProgress(turn.progress) : 0;
     const turnSign = turn?.direction === 'backward' ? -1 : 1;
-    for (const material of [leafFrontMaterial, leafBackMaterial, leafEdgeMaterial]) {
+    // One leaf (a turn or a drag) or a GO_TO's leaves, each with its own progress.
+    const leafProgress = turn ? (turn.leaves?.length ? turn.leaves : [turn.progress]).map(unitProgress) : [];
+    const moved = leafProgress.reduce((sum, value) => sum + value, 0);
+    for (const material of [...poolFrontMaterials, ...poolBackMaterials, leafEdgeMaterial]) {
       if (material.wireframe !== Boolean(state.inspectionWireframe)) {
         material.wireframe = Boolean(state.inspectionWireframe);
         material.needsUpdate = true;
       }
     }
-    const heights = stackHeights(state.currentSpreadIndex + (turn ? turnSign * turnProgress : 0), state.spreadCount);
+    const heights = stackHeights(state.currentSpreadIndex + turnSign * moved, state.spreadCount);
     // The binding flexes down the spine as the rigid board opens. The pivot
     // stays at x=0 on the spine, never at the center of the cover artwork.
     coverHinge.position.y = D.coverThickness / 2 + (D.coverThickness + D.totalStackHeight) * (1 - progress);
@@ -399,17 +417,28 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     rightSurfaceY = D.coverThickness + heights.right + D.pageLift;
     rightPage.position.y = rightSurfaceY;
     leftPage.position.set(D.pageWidth, -D.coverThickness / 2 - heights.left - D.pageLift, 0);
-    turningLeaf.visible = progress >= 1 && turn !== null;
-    if (turn && turningLeaf.visible) {
-      const source = stackHeights(state.currentSpreadIndex, state.spreadCount);
-      const destination = stackHeights(state.currentSpreadIndex + turnSign, state.spreadCount);
+    // A single leaf shows for the whole turn (flat on its stack at 0 and 1); a GO_TO leaf only while
+    // it is in the air. Leaf k flies in slot k mod 3 (the schedule frees a slot before reusing it).
+    const single = leafProgress.length === 1;
+    const flying: (number | null)[] = leafPool.map(() => null);
+    leafProgress.forEach((value, index) => {
+      if (single || (value > 0 && value < 1)) flying[index % leafPool.length] = index;
+    });
+    leafPool.forEach((leaf, slot) => {
+      const index = flying[slot];
+      leaf.visible = progress >= 1 && turn !== null && index !== null;
+      if (!turn || !leaf.visible || index === null) return;
+      const leafTurn = leafProgress[index]!;
+      const source = stackHeights(state.currentSpreadIndex + turnSign * index, state.spreadCount);
+      const destination = stackHeights(state.currentSpreadIndex + turnSign * (index + 1), state.spreadCount);
       const sourceHeight = turn.direction === 'forward' ? source.right : source.left;
       const destinationHeight = turn.direction === 'forward' ? destination.left : destination.right;
-      // The subpixel lift prevents coplanar source print from z-fighting.
-      turningLeaf.position.y = D.coverThickness + sourceHeight + (destinationHeight - sourceHeight) * turnProgress + D.pageLift + LEAF_THICKNESS;
-      updateTurningLeafGeometry(leafGeometry, D.pageWidth, D.pageHeight, turnProgress, turn.corner, turn.direction,
+      // The subpixel lift prevents coplanar source print from z-fighting. A GO_TO's leaves keep their
+      // physical order through their own stack heights (leaf k leaves from k leaves down).
+      leaf.position.y = D.coverThickness + sourceHeight + (destinationHeight - sourceHeight) * leafTurn + D.pageLift + LEAF_THICKNESS;
+      updateTurningLeafGeometry(leaf.geometry, D.pageWidth, D.pageHeight, leafTurn, turn.corner, turn.direction,
         { source: spreadAmplitude(sourceHeight), destination: spreadAmplitude(destinationHeight) });
-    }
+    });
     // v3 R4: the scene is an ink figure lying on the right page (it follows the page's curve
     // itself). The timeline lifts it (0 flat → 1 standing) and the pen reveals it; the anchor no
     // longer grows. The current owner may lie down under an early direct curl and stand again on
@@ -429,8 +458,8 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     visiblePoints = [];
     bookRoot.traverseVisible(object => {
       if (!(object instanceof Mesh)) return;
-      if (object === turningLeaf) {
-        const positions = leafGeometry.getAttribute('position');
+      if (leafPool.includes(object)) {
+        const positions = object.geometry.getAttribute('position');
         for (let index = 0; index < positions.count; index += 1) visiblePoints.push(new Vector3().fromBufferAttribute(positions, index).applyMatrix4(object.matrixWorld));
       } else {
         if (!object.geometry.boundingBox) object.geometry.computeBoundingBox();
@@ -617,6 +646,10 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       rightMaterial.setPrint(textures.staticRight);
       leafFrontMaterial.setPrint(textures.turnFront);
       leafBackMaterial.setPrint(textures.turnBack);
+      poolFrontMaterials[1].setPrint(textures.turnFront1);
+      poolBackMaterials[1].setPrint(textures.turnBack1);
+      poolFrontMaterials[2].setPrint(textures.turnFront2);
+      poolBackMaterials[2].setPrint(textures.turnBack2);
       leftMaterial.setState(textures.staticLeftState);
       rightMaterial.setState(textures.staticRightState);
       leafFrontMaterial.setState(textures.turnFrontState);

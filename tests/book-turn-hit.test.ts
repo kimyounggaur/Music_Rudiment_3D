@@ -189,3 +189,14 @@ test('v3 perspective trapezoids keep 44px corners on their own near and far edge
   assert.equal(turnCornerAtPoint(perspectiveLayout, { x: 930, y: 630 }, available), null);
   assert.equal(turnCornerAtPoint(perspectiveLayout, { x: 700, y: 400 }, available), null);
 });
+
+test('v3 R8: in the whole book the corners turn to the contents and the closing; nothing past either end', () => {
+  const whole = (spread: BookState['currentSpreadId'], textureCount: number) => turnInputAvailability({
+    book: { ...createBookState(), isOpen: true, phase: 'spreadIdle', camera: 'settled', scene: 'ready', currentSpreadId: spread },
+    layout, stageReady: true, printsReady: true, textureCount, requiredTextureCount: textureCount, preparedScene: `0:0:${spread}`,
+  });
+  assert.deepEqual(whole('contents', 4), { next: true, prev: false }, 'the contents open the book; nothing before them to turn');
+  assert.deepEqual(whole('spread-1', 6), { next: true, prev: true }, 'lesson 1 turns back to the contents');
+  assert.deepEqual(whole('spread-6', 6), { next: true, prev: true }, 'lesson 6 turns on to the closing');
+  assert.deepEqual(whole('closing', 4), { next: false, prev: true });
+});

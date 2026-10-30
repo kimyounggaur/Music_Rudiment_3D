@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createLessonState, reduceLesson, sceneEvents } from '../src/lesson/controller.ts';
 import { getScene } from '../src/content/lesson.ts';
-import { BOOK_MANIFEST } from '../src/book/manifest.ts';
+import { BOOK_MANIFEST, BOOK_SPREADS } from '../src/book/manifest.ts';
 import { pageSpecFor } from '../src/content/pages/index.ts';
 import { hitTest, layoutPage, PAGE_LOGICAL, PRINT_MARGINS, READING_HINT, wrapText } from '../src/book/print/pageLayout.ts';
 import type { FontSpec, PageLayout } from '../src/book/print/pageLayout.ts';
@@ -10,7 +10,8 @@ import { paintPage } from '../src/book/print/pagePainter.ts';
 import type { PageSpec } from '../src/book/print/pageSpec.ts';
 import { contextFor, recordingContext, sceneFor, sixteenSixteenths, stubMeasure, stubServices } from './support/print.ts';
 
-const allPages = BOOK_MANIFEST.flatMap(spread => [spread.leftPageId, spread.rightPageId]);
+// v3 R8: the whole book — contents, six lessons and closing.
+const allPages = BOOK_SPREADS.flatMap(spread => [spread.leftPageId, spread.rightPageId]);
 const within = (value: number, min: number, max: number) => value >= min - 1e-6 && value <= max + 1e-6;
 
 test('Korean keep-all wrapping breaks between words and splits only an over-long word', () => {
@@ -181,6 +182,7 @@ test('every printed character is covered by the bundled page-font subsets', asyn
   const check = (layout: PageLayout) => {
     for (const item of layout.items) {
       const lines = item.kind === 'text' ? item.lines : item.kind === 'cell' ? [item.number, item.label]
+        : item.kind === 'entry' ? [item.number, ...item.title, ...item.detail, item.folio]
         : item.kind === 'button' || item.kind === 'radio' || item.kind === 'checkbox' || item.kind === 'flapTab' || item.kind === 'stampSlot' || item.kind === 'overflow' ? item.label
           : item.kind === 'axis' ? item.ticks : [];
       for (const line of lines) for (const character of line.text) if (!covered.has(character)) missing.add(character);
@@ -195,7 +197,7 @@ test('every printed character is covered by the bundled page-font subsets', asyn
     const scene = sceneFor(pageId);
     for (const composeKind of ['note', 'rest'] as const) {
       check(layoutPage(pageSpecFor(pageId), contextFor(pageId, lesson, { hints: { [`${scene}/questions`]: 1, [`${scene}/alternative`]: 1 }, ui: { composeKind },
-        playback: { state: 'paused', laneId: getScene(scene).lanes[0]!.laneId, activeEventId: null, error: '소리를 시작하지 못했습니다.' } }), stubServices));
+        playback: { state: 'paused', laneId: scene ? getScene(scene).lanes[0]!.laneId : null, activeEventId: null, error: '소리를 시작하지 못했습니다.' } }), stubServices));
     }
   }
   assert.deepEqual([...missing], [], `rerun scripts/extract-page-fonts.mjs for: ${[...missing].join('')}`);
@@ -219,4 +221,41 @@ test('print, assessment and sound read the same lesson revision after an edit', 
   const caption = layoutPage(pageSpecFor('page-4'), contextFor('page-4', after), stubServices).items
     .flatMap(item => item.kind === 'text' ? item.lines.map(line => line.text) : []).join(' ');
   assert.match(caption, new RegExp(`음표 ${events.length}개`));
+});
+
+test('v3 R8: the contents print a row per lesson (plus the closing) that jumps there; rows are 44 units or taller and wrap inside the page', async () => {
+  const { isSceneComplete } = await import('../src/lesson/controller.ts');
+  const rows = (['page-13', 'page-14'] as const).flatMap(pageId => {
+    const layout = layoutPage(pageSpecFor(pageId), contextFor(pageId), stubServices);
+    assert.equal(layout.overflow, 0, `${pageId} fits its page`);
+    return layout.hotspots.map(hotspot => ({ pageId, hotspot, item: layout.items.find(item => item.kind === 'entry' && item.hotspotId === hotspot.id) }));
+  });
+  assert.deepEqual(rows.map(row => row.hotspot.command), [1, 2, 3, 4, 5, 6].map(n => ({ type: 'goto', spreadId: `spread-${n}` })).concat([{ type: 'goto', spreadId: 'closing' }]));
+  assert.deepEqual(rows.map(row => row.hotspot.testId), ['spread-1', 'spread-2', 'spread-3', 'spread-4', 'spread-5', 'spread-6', 'closing'].map(id => `contents-${id}`));
+  for (const row of rows) {
+    assert.ok(row.item && row.item.kind === 'entry', `${row.hotspot.id} is printed as a contents row`);
+    assert.ok(row.hotspot.rect.h >= 44, `${row.hotspot.id} is at least 44 units tall`);
+    assert.equal(row.hotspot.role, 'button');
+  }
+  // Lesson titles and first pages (folios 1, 3, … 11) come from the lesson content.
+  assert.deepEqual(rows.slice(0, 6).map(row => row.item?.kind === 'entry' ? [row.item.title.map(line => line.text).join(' '), row.item.folio.text] : null),
+    [1, 2, 3, 4, 5, 6].map(n => [getScene(`scene-${n}` as 'scene-1').title, `${2 * n - 1}쪽`]));
+  // Completion marks follow the lesson state; nothing is stored.
+  assert.ok(rows.every(row => row.item?.kind === 'entry' && !row.item.done));
+  assert.equal(isSceneComplete(createLessonState(), 'scene-1'), false);
+});
+
+test('v3 R8: the closing lists the six experiments, stamps only when all are complete, and leads back to the contents', () => {
+  const left = layoutPage(pageSpecFor('page-15'), contextFor('page-15'), stubServices);
+  const right = layoutPage(pageSpecFor('page-16'), contextFor('page-16'), stubServices);
+  for (const layout of [left, right]) assert.equal(layout.overflow, 0, `${layout.pageId} fits its page`);
+  const checks = left.items.filter(item => item.kind === 'checkbox');
+  assert.equal(checks.length, 6);
+  assert.ok(checks.every(item => item.kind === 'checkbox' && !item.checked && !item.hotspotId), 'printed checks, not controls');
+  assert.deepEqual(right.stamps.map(stamp => [stamp.id, stamp.stamped]), [['book', false]]);
+  assert.deepEqual(right.hotspots.map(hotspot => [hotspot.testId, hotspot.command]), [['closing-contents', { type: 'goto', spreadId: 'contents' }]]);
+  // Unnumbered matter: no folio in the bottom margin.
+  const folioBand = (layout: PageLayout) => layout.items.flatMap(item => item.kind === 'text' ? item.lines : []).filter(line => line.baseline > PAGE_LOGICAL.height - PRINT_MARGINS.bottom && line.text !== READING_HINT);
+  assert.deepEqual(folioBand(left), []);
+  assert.deepEqual(folioBand(right), []);
 });
