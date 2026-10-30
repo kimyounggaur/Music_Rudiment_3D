@@ -120,6 +120,36 @@ test('neighbours keep only a draft and no state layer; pruning releases pages', 
   assert.equal(compositor.surface('page-2'), null);
 });
 
+test('v3 R9: a page leaving the open spread releases its GPU copy once, whether or not its settled print landed', () => {
+  const { compositor, paints } = harness();
+  const lesson = createLessonState();
+  const count = (texture: { addEventListener(type: 'dispose', listener: () => void): void }) => {
+    const seen = { disposed: 0 };
+    texture.addEventListener('dispose', () => { seen.disposed += 1; });
+    return seen;
+  };
+  // A quick turn on: the open page still shows its draft when it becomes a neighbour.
+  const quick = compositor.request(pageSpecFor('page-3'), contextFor('page-3', lesson), 'settled', NO_INTERACTION);
+  assert.equal(quick.resolution, 'draft');
+  const quickSeen = count(quick.print);
+  const painted = paints.length;
+  const neighbour = compositor.request(pageSpecFor('page-3'), contextFor('page-3', lesson), 'draft', null);
+  assert.equal(neighbour.print, quick.print, 'same texture object; only its GPU storage is released');
+  assert.equal(quickSeen.disposed, 1);
+  assert.equal(paints.length, painted, 'the draft canvas is kept, not printed again');
+  compositor.request(pageSpecFor('page-3'), contextFor('page-3', lesson), 'draft', null);
+  assert.equal(quickSeen.disposed, 1, 'staying a neighbour releases nothing more');
+  // A settled page that leaves frees its storage once — by the size change — not twice.
+  const slow = compositor.request(pageSpecFor('page-4'), contextFor('page-4', lesson), 'settled', NO_INTERACTION);
+  compositor.upgrade('page-4');
+  const slowSeen = count(slow.print);
+  compositor.request(pageSpecFor('page-4'), contextFor('page-4', lesson), 'draft', null);
+  assert.equal(slowSeen.disposed, 1);
+  // Opening it again uploads the kept draft first; nothing is released on the way in.
+  compositor.request(pageSpecFor('page-4'), contextFor('page-4', lesson), 'settled', NO_INTERACTION);
+  assert.equal(slowSeen.disposed, 1);
+});
+
 test('the state layer repaints for interaction changes without reprinting', () => {
   const { compositor, paints, states } = harness();
   const lesson = reduceLesson(createLessonState(), { type: 'navigate', sceneId: 'scene-2' });

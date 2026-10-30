@@ -17,7 +17,7 @@
 | R6 | V24 | 레슨 카메라 연출(샷) | 통과 |
 | R7 | V25 | 효과음·마감 | 통과 (청취 외부 검수 대기) |
 | R8 | V26 | 콘텐츠 확장(목차·마침·GO_TO) | 통과 (renderer 텍스처 수 ≤ 14 미달 기록, 실기기 연속감 미관측) |
-| R9 | V27 | 검증 관문 개편·정리 | 미착수 |
+| R9 | V27 | 검증 관문 개편·정리 | 진행 중 (R9-a 통과: 정체성 불일치 0 · 미관측 5, 기준선 39/39, 성능 예산 7/7) |
 
 v2.1 단계 지도와의 대응: R1→V19, R2→V20, R3→V21, R4→V22, R5→V23, R6→V24, R7→V25, R8→V26, R9→V27. v2 기록은 [BUILD_STATUS_V2.md](BUILD_STATUS_V2.md)에 그대로 있다.
 
@@ -364,3 +364,33 @@ G1-C 체크리스트(부록 B) 영향 항목과 현재 판정:
 - 목차에서 레슨을 고르면 여러 장이 차례로 넘어가 도착하는가(1.6 s 안). 사이 쪽이 빈 종이로 지나가는 것이 어색하지 않은가.
 - 여섯 펼침면과 목차·마침이 같은 종이·잉크 톤인가. 글자가 넘치거나 겹치지 않는가.
 - 2D 모드('크게 읽기')에서도 여섯 펼침면과 목차·마침이 모두 조작되는가.
+
+## R9 (V27) 검증 관문 개편·정리 — 진행 중(R9-a 통과)
+
+**정체성 5항목: 불일치 0 · 의도적 차이 0 · 미관측 5(원본 녹화 없음).** 관문은 R9-b(레거시 정리)를 막지 않는다. 미관측은 통과가 아니므로 원본 체감(C)과 배포 판단(E)은 완료로 쓰지 않는다.
+
+### R9-a 관문·스크립트·판정
+
+- **단계 ID와 상태:** R9-a **통과**(관문 문서·비교표·검수 패킷 작성, 기준선 매트릭스 39/39장, 성능 예산 7/7 — 첫 실행 6/7을 원인 수정 뒤 다시 돌림). 정체성 5항목은 원본 녹화가 없어 모두 **미관측**이다.
+- **실제로 가능한 사용자 행동:** 바뀌지 않았다(R8과 같은 책). 개발자는 `node scripts/visual-baseline.ts`로 3 viewport × 7 상태 × 렌더러의 기준선과 `baseline/matrix.json`을, `node scripts/perf-budget.ts`로 성능 예산 판정(실패 시 exit 1)을 얻는다.
+- **변경 경로와 이유:**
+  - 신규 `scripts/visual-baseline.ts`(R1의 `refactor-capture.ts`를 42칸 매트릭스로 감싸 실행하고, 지금까지 잰 수치 — 먼/가까운 변 비율, 책 폭, 종이 음영, x-height 입력, 3D 쪽 HTML 요소, draw calls, 텍스처 수, 인쇄 메모리 — 를 칸마다 모은다. 단계별 증거를 다시 만들 수 있도록 `refactor-capture.ts`는 이름을 바꾸지 않았다), `scripts/perf-budget.ts`(첫 펼침면 draw calls ≤ 150, 장면 ≤ 40, 인쇄 텍스처 ≤ 48 MiB, 넘김 p95 frame 참고치, 50회 왕복 자원 증가 0), `docs/qa/BOOK_EXPERIENCE_GATE_V3.md`(부록 B 13항목 판정과 증거, 완료 수준 A–E), `docs/qa/MOTION_COMPARISON.md`(V16 양식: 공개 코드 확인값 · 실제 영상 측정값 · v3 채택값을 다른 열에, 차이 이유), `docs/qa/HUMAN_REVIEW_V3.md`(X07: 원본 비교·실기기·청취·접근성·음악 교육자, 모두 '대기').
+  - 수정 `src/book/BookApp.tsx`(루트 `data-programs` = `renderer.info.programs` 수, 왕복 누수 검사용).
+  - 성능 예산 실패 수정(R9 공통 실패 시 수정 규칙): `src/book/print/pageCompositor.ts` — 쪽이 열린 펼침면을 떠날 때 크기 변화로 풀리지 않은 GPU 사본도 푼다(빠른 넘김에서 draft GPU 사본 2개가 남아 50회 왕복 뒤 textures 29 → 31). `tests/print-compositor.test.ts`(1). 자세한 조사는 [qa/refactor/R9/index.md](qa/refactor/R9/index.md) '성능 예산의 첫 실패와 수정'.
+- **실행 명령과 종료 결과:** `npm run typecheck` 0, `npm run lint` 0, `npm test` 385/385, `npm run build` 0(500 kB 경고 1건은 R1과 같은 three 공유 청크, R9-b에서 정리). `node scripts/visual-baseline.ts` 0(39/39장). `node scripts/perf-budget.ts` 첫 실행 **1**(6/7: textures 29 → 31, [perf-budget-first-run.json](qa/refactor/R9/perf-budget-first-run.json)) → 수정 뒤 0(7/7).
+- **기기와 브라우저 및 commit:** Linux 컨테이너, Node 22.23.4, Playwright 1.60 + headless Chromium 1243(SwiftShader WebGL), DPR 1. R8 증거 `f1c061d` 다음, 이 기록과 같은 커밋.
+- **실제 캡처 영상 로그 경로:** [qa/refactor/R9/index.md](qa/refactor/R9/index.md) — `after/*_{legacy,ink}.jpg`, `baseline/matrix.json`, `metrics.json`, `perf-budget.json`.
+- **측정값:** 기준선(ink, 펼침면 1 / 2, high 티어): 먼/가까운 변 비율 0.857 / 0.869 / 0.938(1280×720 / 844×390 / 390×844), 책 폭 0.577 / 0.427 / 0.884, 종이 음영 4.3–5.4%(1280×720 · 844×390), 390×844 11.2%(low 티어 4.4%, medium 8.9% — 비네트와 쪽 끝 GTAO), 본문 x-height 3.0–3.7 / 1.5–1.8 / 1.4–1.8 px, 가장 작은 인쇄 핫스폿 7.7 / 3.7 / 3.7 px, 3D 쪽 HTML 요소 0, draw calls 101 / 96, renderer 텍스처 27–32, 인쇄 46.1 MiB. legacy(착수 커밋 사본): 먼/가까운 변 비율 1(직교), 책 폭 0.640 / 0.510 / 0.885, 텍스처 6–8. 성능 예산(1280×720): 첫 펼침면 draw calls 101(≤ 150), 레슨 장면 14(≤ 40), 인쇄 46.1 MiB(≤ 48), 50회 왕복 geometries 17 → 17 · textures 29 → 29 · programs 20 → 20, 넘김 p95 참고치 5.5 s(SwiftShader 2프레임).
+- **미실행 항목과 정확한 이유:** 원본 비교(결정 6의 화면 녹화가 없음 → 13항목 모두 미관측), 실기기·청취·스크린리더·음악 교육자(외부 검수 대기, 사람 검수 패킷). 넘김 p95 frame은 SwiftShader에서 재서 참고치로만 둔다.
+- **남은 결함과 재현 절차:**
+  1. 390×844(세로) high 티어에서 종이 음영 11.2%(기준 3–8% 밖). 재현: `node scripts/visual-baseline.ts` → `metrics.json`의 390×844 spread1 `luminance.paperShadingPercent`. 같은 화면을 `--quality low`로 찍으면 4.4%(후처리 없음), medium 8.9%. 휴대전화의 자동 티어는 low다.
+  2. 먼/가까운 변 비율·책 폭·x-height·인쇄 핫스폿 크기·renderer 텍스처 수는 기준에 못 미친 채 기록(R1·R3·R5·R8, 계약 B5·B6). 수치는 위 '측정값', 목록은 R9-b에서 [KNOWN_LIMITATIONS](KNOWN_LIMITATIONS.md)에 다시 적는다.
+- **객관적 게이트와 선택적 사용자 피드백 상태:** 정체성 불일치 0(관문 문서), 성능 예산(위), 기준선 매트릭스(위). 사람 피드백 없음.
+- **다음 허용 단계와 막힌 단계:** R9-b 허용(정체성 불일치 0).
+- **전후 캡처 경로와 metrics.json 요약:** before = 기준선의 legacy 열(착수 커밋 사본), after = ink 열 — 같은 앱 안의 전후 비교다. `metrics.json`: 39칸 + 샷 진입·복귀 프레임, 6회 실행 모두 페이지 오류 0.
+- **renderer 플래그 상태:** R9-a 시점 기본 `ink`, `?renderer=legacy`는 착수 커밋 고정 사본 — 기준선의 legacy 칸이 이 사본의 마지막 캡처다.
+- **설계서 대비 편차와 사유:**
+  1. **스크립트 이름**: 프롬프트는 `refactor-capture.ts`를 확장·개명하라고 했다. R1–R8 증거의 재현 명령이 그 이름을 쓰므로 이름은 두고, `visual-baseline.ts`가 그것을 매트릭스로 돌린다.
+  2. **legacy 샷 칸**: legacy(착수 커밋 사본)에는 레슨 샷이 없어 3칸은 '해당 없음'이다.
+  3. **텍스처 '≤ 48 MB'**: 성능 예산은 인쇄 창 텍스처(페이지 compositor)를 잰다. renderer 전체 텍스처 수는 기록만 한다(R8 편차 7).
+- **G1-C 체크리스트 영향 항목과 현재 판정:** 13항목 모두 미관측(정체성 5 포함), 불일치 0.

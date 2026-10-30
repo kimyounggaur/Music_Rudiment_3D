@@ -173,18 +173,20 @@ export function createPageCompositor(deps: CompositorDeps, policy: CompositorPol
     printPaints += 1;
     record(entry.pageId, resolution, ms);
   }
-  /** Upload a layer into the page's single texture. A size change frees the GPU storage first. */
-  function show(entry: Entry, resolution: SurfaceResolution): void {
+  /** Upload a layer into the page's single texture. A size change frees the GPU storage first (returns true). */
+  function show(entry: Entry, resolution: SurfaceResolution): boolean {
     const layer = resolution === 'settled' ? entry.settled! : entry.draft!;
     const image = entry.print.image as CanvasLike;
+    let freed = false;
     if (image !== layer.canvas) {
       // WebGL2 texStorage is immutable: a different size must reallocate.
-      if (image.width !== layer.canvas.width || image.height !== layer.canvas.height) entry.print.dispose();
+      if (image.width !== layer.canvas.width || image.height !== layer.canvas.height) { entry.print.dispose(); freed = true; }
       entry.print.image = layer.canvas as unknown as HTMLCanvasElement;
     }
     entry.print.needsUpdate = true;
     entry.shown = resolution;
     entry.printVersion += 1;
+    return freed;
   }
   function releaseState(entry: Entry): void {
     if (!entry.state) return;
@@ -215,15 +217,22 @@ export function createPageCompositor(deps: CompositorDeps, policy: CompositorPol
         entry.layout = deps.layout(spec, context);
         entry.layoutKey = key;
       }
+      const leaving = entry.want === 'settled' && want === 'draft';
       entry.want = want;
+      let freed = false;
       if (want === 'settled' && entry.settled?.key === key) {
         if (entry.shown !== 'settled') show(entry, 'settled');
       } else {
-        if (entry.draft?.key !== key) { paint(entry, 'draft'); show(entry, 'draft'); }
-        else if (entry.shown !== 'draft') show(entry, 'draft');
+        if (entry.draft?.key !== key) { paint(entry, 'draft'); freed = show(entry, 'draft'); }
+        else if (entry.shown !== 'draft') freed = show(entry, 'draft');
         // A neighbour keeps only its draft: settled storage is for the open spread.
         if (want === 'draft') entry.settled = null;
       }
+      // v3 R9 (perf budget): a page leaving the open spread also releases the GPU copy it was shown with when its
+      // settled print never landed (the reader turned on quickly) — a settled → draft swap already freed it by size.
+      // GPU residency then does not depend on how fast the reader turns; the canvas stays and the texture is
+      // uploaded again when the page is shown.
+      if (leaving && !freed) entry.print.dispose();
       if (interaction) {
         if (!entry.state) {
           const canvas = deps.createCanvas(policy.stateWidth, pageCanvasHeight(policy.stateWidth));

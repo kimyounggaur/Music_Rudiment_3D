@@ -90,6 +90,8 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | GO_TO | 목차 줄·조작바 '목차'·마침 '차례로' = GO_TO(spreadId). NEXT/PREV와 같은 경로(한 번의 넘김, 한 칸 대기열, 경계, 숨김 복구). 잎 사이 45 ms, 공중 ≤ 3장(잎 풀 3), 잎당 min(1120, 1600/n) ms, 전체 ≤ 1.6 s | `tests/book-goto.test.ts`(8), `scripts/book-v3-e2e.ts`('R8: …'), 캡처 `goto_0`–`goto_7` |
 | 인쇄 창(R8) | 평소 현재 ± 1 펼침면(≤ 6쪽), GO_TO 동안 출발·첫 잎 먼 면·마지막 잎 가까운 면·도착(6쪽), ≤ 48 MiB. 사이 쪽은 인쇄 없는 종이 | `tests/book-goto.test.ts`, 캡처 `metrics.json`(`extra.printStats`) |
 | 목차·마침 파생 | 목차 체크·마침 체크·마침 도장 = `isSceneComplete`에서 파생, 새 저장 필드 없음. 마침의 문장은 `content/lesson.ts` 원문(제목·목표)과 쪽 이름표뿐 | `tests/print-layout.test.ts`(R8 2개) |
+| C10 관문(R9) | 부록 B 13항목을 일치 / 의도적 차이 / 불일치 / 미관측으로 판정. 정체성 5항목에 불일치가 있으면 확장·배포 금지, 미관측은 통과가 아니다. 원본 녹화(결정 6)가 없으면 미관측으로 둔다 | `docs/qa/BOOK_EXPERIENCE_GATE_V3.md`, `docs/qa/MOTION_COMPARISON.md`, `docs/qa/HUMAN_REVIEW_V3.md` |
+| 성능 예산(R9) | 첫 펼침면 draw calls ≤ 150, 레슨 장면 ≤ 40, 인쇄 텍스처 ≤ 48 MiB, 50회 왕복 뒤 geometries·textures·programs 증가 0. 넘김 p95 frame ≤ 33 ms는 headless에서 참고치 | `scripts/perf-budget.ts`(`docs/qa/refactor/R9/perf-budget*.json`, 실패 시 exit 1) |
 
 ## 5 고정 수치(설계서 부록 D, 제안값)
 

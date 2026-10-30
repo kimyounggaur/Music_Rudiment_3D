@@ -389,6 +389,7 @@ export default function BookApp() {
             root.dataset.frames = String(metrics.renderedFrames);
             root.dataset.geometries = String(metrics.geometries);
             root.dataset.textures = String(metrics.textures);
+            root.dataset.programs = String(metrics.programs);
             root.dataset.drawCalls = String(metrics.drawCalls);
             root.dataset.quality = metrics.quality;
           }
