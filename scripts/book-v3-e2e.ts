@@ -1,7 +1,7 @@
 /**
  * v3 printed-book e2e (CONTRACT_V3 B4; REFACTOR_PROMPTS_V3 R3-d/e).
  *
- *   node scripts/book-v3-e2e.ts [--base http://127.0.0.1:4173/] [--viewport 1280x720] [--out docs/qa/refactor/R3/e2e.json]
+ *   node scripts/book-v3-e2e.ts [--base http://127.0.0.1:4173/] [--viewport 1280x720] [--out docs/qa/refactor/R5/e2e-1280x720.json]
  *
  * Drives the real app on the local dev server through the same two input paths a learner has:
  * the accessible mirror (keyboard / assistive technology) and pointer presses on printed hotspots
@@ -14,11 +14,13 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { chromium } from 'playwright';
 import type { Page } from 'playwright';
+import { PAGE_LOGICAL } from '../src/book/print/pageLayout.ts';
 
 type Result = { name: string; pass: boolean; detail: unknown };
 type InspectorHotspot = { id: string; role: string; label: string; enabled: boolean; testId: string | null; center: { x: number; y: number } | null };
 type InspectorPage = { pageId: string; side: 'left' | 'right' | null; resolution: string; upgrading: boolean; printVersion: number; stateVersion: number; hotspots: InspectorHotspot[];
-  figures?: { id: string; rect: { x: number; y: number; w: number; h: number }; center: { x: number; y: number } | null }[] };
+  figures?: { id: string; rect: { x: number; y: number; w: number; h: number }; center: { x: number; y: number } | null }[];
+  flaps?: { id: string; hotspotId: string; open: boolean }[]; stamps?: { id: string; stamped: boolean }[] };
 type PrintStats = { bytes: number; budgetBytes: number; settled: number; drafts: number; states: number; recent: { pageId: string; layer: string; ms: number }[] };
 
 const args = new Map<string, string>();
@@ -114,12 +116,32 @@ try {
   record('mirror h1 takes page focus', dom.focused, { heading: dom.heading });
   record('mirror keeps 2D test ids', ['play-upper', 'play-lower', 'pause-resume-audio', 'stop-audio'].every(id => dom.testIds.includes(id)), dom.testIds);
 
-  // --- Quiz through the mirror: open the printed flap, answer with a radio.
+  // --- R5 (C1): one toolbar outside the book, never under the book; everything else is printed.
+  const chrome = await page.evaluate(() => {
+    const shown = (element: Element) => { const box = element.getBoundingClientRect();
+      return box.width > 0 && box.height > 0 && getComputedStyle(element).visibility !== 'hidden' && !element.closest('[inert], [aria-hidden="true"]'); };
+    const toolbar = document.querySelector<HTMLElement>('nav.book-toolbar');
+    const buttons = [...document.querySelectorAll<HTMLElement>('main.book-app button')].filter(button => !button.closest('.book-mirror') && shown(button));
+    const box = toolbar?.getBoundingClientRect() ?? null;
+    const bounds = (window as unknown as { __bookInspector: { snapshot(): { layout: { bookBounds: { left: number; top: number; right: number; bottom: number } } | null } } })
+      .__bookInspector.snapshot().layout?.bookBounds ?? null;
+    const overlap = box && bounds ? Math.max(0, Math.min(box.right, bounds.right) - Math.max(box.left, bounds.left))
+      * Math.max(0, Math.min(box.bottom, bounds.bottom) - Math.max(box.top, bounds.top)) : null;
+    return { visible: toolbar?.dataset.visible ?? null, height: box ? Math.round(box.height * 10) / 10 : null,
+      inViewport: !!box && box.top >= 0 && box.left >= 0 && box.bottom <= innerHeight + 0.5 && box.right <= innerWidth + 0.5,
+      outside: buttons.filter(button => !button.closest('nav.book-toolbar')).map(button => button.getAttribute('aria-label') ?? button.textContent?.trim() ?? ''),
+      buttons: buttons.filter(button => button.closest('nav.book-toolbar')).map(button => `${button.dataset.testid}:${Math.round(button.getBoundingClientRect().height)}`),
+      overlap: overlap === null ? null : Math.round(overlap), bounds, toolbar: box && { top: Math.round(box.top), bottom: Math.round(box.bottom) },
+      prev: document.querySelector('[data-testid="book-prev"]')?.getAttribute('aria-label') ?? null };
+  });
+  record('R5: one toolbar outside the book (≤ 56 px, in view, no other outside buttons)',
+    chrome.visible === 'true' && chrome.height !== null && chrome.height <= 56 && chrome.inViewport && chrome.outside.length === 0, chrome);
+  record('R5: the book never sits under the toolbar (bookBounds ∩ toolbar = 0)', chrome.overlap === 0, { overlap: chrome.overlap, bounds: chrome.bounds, toolbar: chrome.toolbar });
+
+  // --- Quiz through the mirror: the questions are printed (R5: no flap), answer with a radio.
+  const radios = await page.evaluate(() => document.querySelectorAll('.book-mirror input[type="radio"]').length);
+  record('R5: questions are printed on the page without a flap', radios === 6, { radios });
   let before = await root(page);
-  assert.ok(await mirrorClick(page, 'button[aria-expanded="false"]'), 'questions flap');
-  await page.waitForFunction(() => document.querySelectorAll('.book-mirror input[type="radio"]').length === 6, undefined, { timeout: 10_000 });
-  record('mirror flap opens the printed questions', (await root(page)).generation > before.generation);
-  before = await root(page);
   assert.ok(await mirrorClick(page, 'input[data-hotspot="page-1:q:same-end:same"]'), 'radio');
   await revisionAfter(page, before.revision);
   const answered = await page.evaluate(() => ({ checked: document.querySelector<HTMLInputElement>('.book-mirror input[data-hotspot="page-1:q:same-end:same"]')?.checked,
@@ -134,6 +156,87 @@ try {
   await revisionAfter(page, before.revision);
   const pointerAnswer = await page.evaluate(() => document.querySelector<HTMLInputElement>('.book-mirror input[data-hotspot="page-1:q:attacks:1-4"]')?.checked);
   record('pointer press on a printed radio answers', pointerAnswer === true && pressedRadio === radio.id, { pressed: pressedRadio });
+
+  // --- R5: the last right answer stamps the printed page (derived from the answers, no saved field).
+  const stampOf = async () => (await pages(page)).find(item => item.pageId === 'page-1')?.stamps?.find(stamp => stamp.id === 'scene-1-questions')?.stamped ?? null;
+  const stampBefore = await stampOf();
+  before = await root(page);
+  assert.ok(await mirrorClick(page, 'input[data-hotspot="page-1:q:attributes:fixed"]'), 'third radio');
+  await revisionAfter(page, before.revision);
+  await page.waitForFunction(() => ((window as unknown as { __bookInspector: { pages(): { pageId: string; stamps?: { id: string; stamped: boolean }[] }[] } }).__bookInspector.pages())
+    .find(item => item.pageId === 'page-1')?.stamps?.some(stamp => stamp.id === 'scene-1-questions' && stamp.stamped) ?? false, undefined, { timeout: 10_000, polling: 50 });
+  const stampMirror = await page.evaluate(() => document.querySelector('.book-mirror')?.textContent?.includes('확인 도장이 찍혔어요') ?? false);
+  record('R5: three right answers stamp the printed page', stampBefore === false && (await stampOf()) === true && stampMirror, { stampBefore, stampMirror });
+
+  // --- R5: the answer flap is a paper sheet that lifts 0 → 110° on its top hinge; the explanations are printed beneath.
+  // SwiftShader draws one frame in 0.5–3 s, longer than the 240 ms lift, so the stage clock is pinned (0 → 120 → 240 ms)
+  // to see the sheet move; the timing itself is unit-tested (tests/flap-layer.test.ts).
+  const flapInspector = (expression: string) => page.evaluate(source => (new Function('inspector', `return ${source};`))(
+    (window as unknown as { __bookInspector: unknown }).__bookInspector), expression);
+  const flapAngle = async (predicate: string) => {
+    await page.waitForFunction(source => (new Function('angle', `return ${source};`))(
+      (window as unknown as { __bookInspector: { flapAngles(): Record<string, number> } }).__bookInspector.flapAngles()['page-1:answer']), predicate, { timeout: 15_000, polling: 50 });
+    return flapInspector("inspector.flapAngles()['page-1:answer']") as Promise<number>;
+  };
+  await flapInspector('inspector.holdFlaps(0)');
+  assert.ok(await mirrorClick(page, 'button[data-hotspot="page-1:flap:answer"]'), 'answer flap');
+  await page.waitForFunction(() => ((window as unknown as { __bookInspector: { pages(): { pageId: string; flaps?: { id: string; open: boolean }[] }[] } }).__bookInspector.pages())
+    .find(item => item.pageId === 'page-1')?.flaps?.some(flap => flap.id === 'answer' && flap.open) ?? false, undefined, { timeout: 10_000, polling: 50 });
+  const at0 = await flapAngle('angle === 0');
+  await flapInspector('inspector.holdFlaps(120)');
+  const at120 = await flapAngle('angle > 0 && angle < 110');
+  await flapInspector('inspector.holdFlaps(240)');
+  const at240 = await flapAngle('angle === 110');
+  await flapInspector('inspector.holdFlaps(null)');
+  const explained = await page.evaluate(() => document.querySelector('.book-mirror')?.textContent?.includes('두 줄 모두 온음표 기준') ?? false);
+  record('R5: answer flap lifts 0 → 110° on its hinge (stage clock 0/120/240 ms); explanations printed beneath',
+    at0 === 0 && at120 > 40 && at120 < 70 && at240 === 110 && explained, { at0, at120, at240, explained });
+
+  // --- R5: pressing the standing paper itself folds it down (raycast on the sheet → the tab's command).
+  const sheetPoint = await page.evaluate(height => {
+    const inspector = (window as unknown as { __bookInspector: { pages(): { pageId: string; flaps?: { id: string; rect: { x: number; y: number; w: number } }[] }[];
+      pagePoint(side: 'left' | 'right', u: number, v: number): { x: number; y: number } | null; flapAt(x: number, y: number): string | null } }).__bookInspector;
+    const flap = inspector.pages().find(item => item.pageId === 'page-1')?.flaps?.find(item => item.id === 'answer');
+    const hinge = flap && inspector.pagePoint('left', (flap.rect.x + flap.rect.w / 2) / 1000, flap.rect.y / height);
+    if (!hinge) return null;
+    // The sheet stands up from its hinge: walk up the screen until the ray meets the paper.
+    for (let dy = 2; dy <= 160; dy += 2) if (inspector.flapAt(hinge.x, hinge.y - dy) === 'page-1:answer') return { x: hinge.x, y: hinge.y - dy - 3 };
+    return null;
+  }, PAGE_LOGICAL.height);
+  let foldedByPaper = false;
+  if (sheetPoint) {
+    await page.mouse.move(sheetPoint.x, sheetPoint.y);
+    await page.mouse.down();
+    await wait(40);
+    await page.mouse.up();
+    foldedByPaper = await page.waitForFunction(() => ((window as unknown as { __bookInspector: { pages(): { pageId: string; flaps?: { id: string; open: boolean }[] }[] } }).__bookInspector.pages())
+      .find(item => item.pageId === 'page-1')?.flaps?.some(flap => flap.id === 'answer' && !flap.open) ?? false, undefined, { timeout: 10_000, polling: 50 }).then(() => true, () => false);
+  }
+  record('R5: a press on the standing paper folds the flap down', foldedByPaper, { sheetPoint });
+
+  // --- R5: the records dialog is modal; arrows do not turn the book while it is open; focus returns.
+  await page.click('.book-toolbar [data-testid="records"]');
+  await page.waitForFunction(() => document.querySelector<HTMLDialogElement>('dialog.book-records')?.open === true, undefined, { timeout: 5_000 });
+  const inDialog = await page.evaluate(() => !!document.activeElement?.closest('dialog.book-records'));
+  await page.keyboard.press('ArrowRight');
+  await wait(700);
+  const whileOpen = await root(page);
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !document.querySelector<HTMLDialogElement>('dialog.book-records')?.open, undefined, { timeout: 5_000 });
+  // The dialog's close event (which moves focus back to 기록) is queued after the dialog closes.
+  await page.waitForFunction(() => (document.activeElement as HTMLElement | null)?.dataset.testid === 'records', undefined, { timeout: 3_000, polling: 50 }).catch(() => undefined);
+  const returned = await page.evaluate(() => (document.activeElement as HTMLElement | null)?.dataset.testid ?? null);
+  record('R5: records dialog is modal, the book ignores arrows, focus returns to 기록',
+    inDialog && whileOpen.spread === 'spread-1' && whileOpen.phase === 'spreadIdle' && returned === 'records', { inDialog, spread: whileOpen.spread, phase: whileOpen.phase, returned });
+
+  // --- R5 (keyboard): with the dialog closed, ArrowRight / ArrowLeft turn the book again (the bookmark buttons are gone).
+  await page.evaluate(() => document.querySelector<HTMLElement>('.book-mirror h1')?.focus({ preventScroll: true }));
+  await page.keyboard.press('ArrowRight');
+  const keyNext = await idle(page, 'spread-2', 120_000).then(() => true, () => false);
+  await page.evaluate(() => document.querySelector<HTMLElement>('.book-mirror h1')?.focus({ preventScroll: true }));
+  await page.keyboard.press('ArrowLeft');
+  const keyPrev = await idle(page, 'spread-1', 120_000).then(() => true, () => false);
+  record('R5: ArrowRight / ArrowLeft turn the book with the toolbar in place', keyNext && keyPrev, { keyNext, keyPrev });
 
   // --- Keyboard: Tab from the heading draws the focus ring on the paper (state layer).
   await page.evaluate(() => document.querySelector<HTMLElement>('.book-mirror h1')?.focus());
@@ -392,6 +495,25 @@ try {
   const mib = (bytes: number) => Number((bytes / 1048576).toFixed(2));
   record('print memory stays in budget after 20 round trips', end.bytes <= end.budgetBytes && end.bytes === start.bytes,
     { startMiB: mib(start.bytes), endMiB: mib(end.bytes), budgetMiB: mib(end.budgetBytes), settled: end.settled, drafts: end.drafts, states: end.states });
+
+  // --- R5: next is disabled on the last spread; prev on the first spread is 표지로 and closes the book.
+  for (const spread of ['spread-4', 'spread-5', 'spread-6']) {
+    await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-next"]')!.click());
+    await idle(page, spread, 60_000);
+  }
+  const lastNext = await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-next"]')?.disabled ?? null);
+  record('R5: next is disabled on the last spread', lastNext === true, { disabled: lastNext });
+  for (const spread of ['spread-5', 'spread-4', 'spread-3', 'spread-2', 'spread-1']) {
+    await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-prev"]')!.click());
+    await idle(page, spread, 60_000);
+  }
+  const firstPrev = await page.evaluate(() => document.querySelector('[data-testid="book-prev"]')?.getAttribute('aria-label') ?? null);
+  await page.evaluate(() => document.querySelector<HTMLButtonElement>('[data-testid="book-prev"]')!.click());
+  await page.waitForFunction(() => document.querySelector<HTMLElement>('main.book-app')?.dataset.phase === 'coverIdle', undefined, { timeout: 60_000, polling: 100 });
+  const closed = await page.evaluate(() => ({ toolbar: document.querySelector<HTMLElement>('nav.book-toolbar')?.dataset.visible ?? null,
+    hidden: getComputedStyle(document.querySelector('nav.book-toolbar')!).visibility }));
+  record('R5: prev on the first spread (표지로) closes the book; the toolbar hides but keeps its space',
+    firstPrev === '표지로' && closed.toolbar === 'false' && closed.hidden === 'hidden', { label: firstPrev, ...closed });
   record('no page errors', errors.length === 0, errors.slice(0, 8));
   await context.close();
 } catch (reason) {

@@ -6,7 +6,7 @@ import type { LessonCommand } from '../../lesson/controller.ts';
 import { lessonPageNumber, lessonTempoTiming } from '../../book/lessonPresentation.ts';
 import type { HotspotCommand, PageBlock, PageContext, PageSpec, PrintedButton } from '../../book/print/pageSpec.ts';
 import type { PageId } from '../../book/manifest.ts';
-import { EXPERIMENT_TITLES, laneCaption, listenLabel, PAGE_TEXT, RUNNING_HEADS } from './pageText.ts';
+import { answerLine, EXPERIMENT_TITLES, laneCaption, listenLabel, PAGE_TEXT, questionStampLabel, RUNNING_HEADS } from './pageText.ts';
 
 /**
  * v3 R3 printed lesson pages. Same text and commands as the 2D reading pages (LessonPages.tsx);
@@ -64,8 +64,15 @@ function leftPage(sceneId: SceneId): PageSpec {
   }
   if (sceneId === 'scene-6') blocks.push(...compositionChecks());
   if (scene.questions.length) {
-    blocks.push({ kind: 'flap', id: 'questions', hintKey: `${sceneId}/questions`, label: PAGE_TEXT.questions,
-      blocks: scene.questions.map(question => ({ kind: 'question', questionId: question.id }) as PageBlock) });
+    // v3 R5: the questions are printed on the page; the answers wait under a paper flap ('정답 보기',
+    // saved as hints[`${sceneId}/answer`]) and all-correct answers earn a stamp (derived, no new field).
+    blocks.push({ kind: 'heading', level: 3, text: PAGE_TEXT.questions });
+    for (const question of scene.questions) blocks.push({ kind: 'question', questionId: question.id });
+    blocks.push({ kind: 'flap', id: 'answer', hintKey: `${sceneId}/answer`, label: PAGE_TEXT.answer, cover: true, coverHint: PAGE_TEXT.answerHint, foldHint: PAGE_TEXT.answerFold,
+      blocks: scene.questions.map((question): PageBlock => ({ kind: 'paragraph', style: 'caption',
+        text: answerLine(question.prompt, question.options.find(option => option.value === question.correctValue)?.label ?? question.correctValue, question.explanation) })) });
+    blocks.push({ kind: 'stampSlot', id: `${sceneId}-questions`, label: questionStampLabel(scene.questions.length),
+      stamped: context => scene.questions.every(question => current(context).answers[question.id] === question.correctValue) });
   }
   return { pageId: `page-${lessonPageNumber(sceneId, 'left')}` as PageId, side: 'left', runningHead: RUNNING_HEADS.left, folio: lessonPageNumber(sceneId, 'left'), blocks };
 }
@@ -203,10 +210,15 @@ function compositionChecks(): PageBlock[] {
   ];
 }
 
+/** v3 R5: '가까이 보기' prints next to the transport on spread 1 (the R6 camera shot runs it). */
+const closeLookButton = (sceneId: SceneId): PrintedButton[] => sceneId === 'scene-1'
+  ? [{ id: 'look', label: PAGE_TEXT.closeLook, icon: 'look', testId: 'close-look', command: { type: 'shot', shotId: 'lanes-close' }, enabled: context => context.interactive }]
+  : [];
+
 function rightPage(sceneId: SceneId): PageSpec {
   const scene = getScene(sceneId);
   const blocks: PageBlock[] = [
-    { kind: 'buttons', id: 'listen', label: '듣기', compact: true, buttons: listenButtons(sceneId) },
+    { kind: 'buttons', id: 'listen', label: '듣기', compact: true, buttons: [...listenButtons(sceneId), ...closeLookButton(sceneId)] },
     { kind: 'paragraph', style: 'note', text: PAGE_TEXT.transportHelp },
     { kind: 'heading', level: 2, text: EXPERIMENT_TITLES[sceneId] },
     { kind: 'paragraph', style: 'caption', text: sceneId === 'scene-3' ? `${PAGE_TEXT.axisCaption} ${PAGE_TEXT.halfTarget}` : PAGE_TEXT.axisCaption },

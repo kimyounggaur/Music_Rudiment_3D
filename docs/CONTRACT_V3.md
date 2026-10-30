@@ -78,6 +78,10 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | 잉크 선 폭 | 화면 1.2–1.6 px, 거리 무관(정확한 폭의 안티앨리어싱) | `tests/ink-lines.test.ts`(셰이더), `scripts/figure-capture.ts`(캡처에서 FWHM 측정, 400% 크롭) |
 | 그림 예산 | 그림 ≤ 3,000 세그먼트, 장면 ≤ 6,000, 장식 ≤ 400, 장면 draw call ≤ 40 | `tests/book-lesson-scene.test.ts`, `tests/duration-figure.test.ts`, `scripts/book-v3-e2e.ts`, 캡처 `metrics.json`(`figure.calls`) |
 | 그림 창 | 레인·숫자·장식을 합친 그림이 인쇄 쪽의 그림 칸 안에 들어감 | `tests/book-lesson-scene.test.ts`(여섯 장면, 읽기 포즈의 올라선 윗면 포함) |
+| C1 조작바 | 책 밖 버튼은 하단 조작바(와 표지 조작)뿐, 높이 ≤ 56 px, 책 화면 범위(bookBounds)와 교차 0, 표지에서는 숨기되 자리는 유지 | `scripts/book-v3-e2e.ts`('R5: one toolbar…', 'R5: the book never sits under…'), 캡처 `metrics.json`(`extra.chrome`) |
+| C9 넘기기 | 첫 펼침면 이전 = 표지로(CLOSE_BOOK), 마지막 다음 = 비활성, 조작바 위 누름은 모서리 드래그를 시작하지 않음, ArrowLeft/Right | `tests/book-turn-hit.test.ts`(조작바·기록 대화상자 소유권), `scripts/book-v3-e2e.ts`('R5: next is disabled…', 'R5: prev on the first spread…', 'R5: ArrowRight / ArrowLeft…') |
+| EN02 모달 | 기록 대화상자가 열린 동안 책은 방향키를 받지 않고, 닫으면 초점이 '기록'으로 돌아옴 | `scripts/book-v3-e2e.ts`('R5: records dialog is modal…') |
+| 플랩·도장 파생 | 정답 플랩 열림 = `hints[\`${sceneId}/answer\`]`, 도장 = 저장된 답이 모두 정답. 새 저장 필드 없음. 덮인 자리는 열림·닫힘과 무관하게 같은 자리 | `tests/print-layout.test.ts`, `tests/flap-layer.test.ts`, `scripts/book-v3-e2e.ts`('R5: three right answers…', 'R5: answer flap lifts…', 'R5: a press on the standing paper…') |
 | 넘김 중 카메라 불변 | 드래그·넘김·닫기 중 카메라 이동 없음 | `tests/book-camera-rig.test.ts`(suspendFit), R6 `tests/shots.test.ts` |
 
 ## 5 고정 수치(설계서 부록 D, 제안값)

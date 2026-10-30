@@ -61,7 +61,11 @@ export type PageBlock =
   | Readonly<{ kind: 'eventList'; laneId: string }>
   | Readonly<{ kind: 'checklist'; id: string; label: string; items: Dynamic<readonly Readonly<{ label: string; done: boolean }>[]> }>
   | Readonly<{ kind: 'checkbox'; id: string; label: string; checked: Dynamic<boolean>; command: Dynamic<HotspotCommand>; enabled?: Dynamic<boolean> }>
-  | Readonly<{ kind: 'flap'; id: string; hintKey: Dynamic<string>; label: string; blocks: readonly PageBlock[] }>
+  /**
+   * A flap. `cover` (v3 R5): a paper flap lies over its content — the space is always reserved, the
+   * print shows the closed flap or the content, and the 3D book lifts a flap mesh on its top hinge.
+   */
+  | Readonly<{ kind: 'flap'; id: string; hintKey: Dynamic<string>; label: string; blocks: readonly PageBlock[]; cover?: boolean; coverHint?: string; foldHint?: string }>
   | Readonly<{ kind: 'secondsAxis'; ticks: Dynamic<readonly string[]>; label: Dynamic<string> }>
   | Readonly<{ kind: 'when'; test: (context: PageContext) => boolean; blocks: readonly PageBlock[] }>
   | Readonly<{ kind: 'stampSlot'; id: string; label: string; stamped: Dynamic<boolean> }>;

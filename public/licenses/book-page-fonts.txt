@@ -106,4 +106,4 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 The full SIL Open Font License 1.1 text is reproduced in section 1 above and applies equally.
 Source: https://github.com/notofonts/noto-cjk
 
-Subset files: /fonts/book-sans-regular.subset.woff2 (38884 bytes, sha256 fed8513da76a198822f366e697d7ffd0ee823ee12867e2d3dce2f3461d0d32d8); /fonts/book-sans-semibold.subset.woff2 (39456 bytes, sha256 e3b24baf081952076578d96d618a0bf5ec3fa755057eb9116912aa3cb3fd28f3); /fonts/book-serif-bold.subset.woff2 (78524 bytes, sha256 d7a6c34aaaaa808a5913de02ed03f684b2541dbc24ab57dd35db7c2247aaff18)
+Subset files: /fonts/book-sans-regular.subset.woff2 (39284 bytes, sha256 f39a67f8e9056846aa55af1fae065799a721f3a6bda34a9ad45ff7ec6726c68e); /fonts/book-sans-semibold.subset.woff2 (39712 bytes, sha256 942d3f1f2f21630251f56a63514e9372884bd6cea4a78c57c01bd5325ce75823); /fonts/book-serif-bold.subset.woff2 (79308 bytes, sha256 19f44b9e01b284a2de945c219d544f4b051e7fd9b268360d06b8749b9afda3d3)

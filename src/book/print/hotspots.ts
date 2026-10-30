@@ -37,6 +37,25 @@ function rounded(context: Canvas2D, rect: Rect, radius: number, k: number, grow 
   context.closePath();
 }
 
+/** The red '확인' stamp, slightly turned, inside a stamp slot (logical rect, canvas scale k). */
+export function paintStamp(context: Canvas2D, rect: Readonly<{ x: number; y: number; w: number; h: number }>, k: number): void {
+  const cx = (rect.x + rect.w / 2) * k, cy = (rect.y + rect.h / 2) * k, r = rect.w / 2 * k;
+  context.save();
+  context.translate(cx, cy);
+  context.rotate(-0.18);
+  context.strokeStyle = 'rgba(178,58,40,0.86)';
+  context.lineWidth = 4 * k;
+  context.beginPath(); context.arc(0, 0, r * 0.9, 0, Math.PI * 2); context.stroke();
+  context.lineWidth = 1.6 * k;
+  context.beginPath(); context.arc(0, 0, r * 0.76, 0, Math.PI * 2); context.stroke();
+  context.fillStyle = 'rgba(178,58,40,0.9)';
+  context.font = `700 ${(r * 0.5).toFixed(2)}px "Book Serif"`;
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText('확인', 0, 0);
+  context.restore();
+}
+
 export function paintState(context: Canvas2D, layout: PageLayout, interaction: PageInteraction): void {
   const k = context.canvas.width / PAGE_LOGICAL.width;
   context.save();
@@ -66,6 +85,8 @@ export function paintState(context: Canvas2D, layout: PageLayout, interaction: P
       context.setLineDash([]);
     }
   }
+  // v3 R5: stamps (derived from the saved answers) are drawn here, so the print keeps the empty slot.
+  for (const stamp of layout.stamps ?? []) if (stamp.stamped) paintStamp(context, stamp.rect, k);
   const hover = hotspot(interaction.hoverId);
   if (hover && hover.enabled && hover.id !== interaction.pressedId) {
     rounded(context, hover.rect, 9, k);

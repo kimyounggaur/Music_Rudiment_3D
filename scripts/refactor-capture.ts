@@ -7,6 +7,8 @@
  * cover, inspector-posed half-open cover, opened first spread, a held direct drag at about
  * half a turn, the second spread after ArrowRight, and the 2D reading book. Each capture records
  * layout metrics from the app's own data-layout and pixel luminance from the screenshot.
+ * v3 R5 adds `stamp` (three right answers) and `flap` (the answer flap lifting, 0/120/240 ms)
+ * states on the first spread, 2× crops of the left page, and toolbar metrics on every capture.
  */
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -172,6 +174,37 @@ async function inkMetrics(page: Page, layout: Layout | null): Promise<Record<str
   return result;
 }
 
+/**
+ * v3 R5 (C1): the toolbar outside the book, its overlap with the book's on-screen bounds, and any
+ * other visible button outside the toolbar, the cover controls and the (visually hidden) mirror.
+ */
+async function chromeMetrics(page: Page, layout: Layout | null): Promise<Record<string, unknown>> {
+  const dom = await page.evaluate(() => {
+    const shown = (element: Element) => { const box = element.getBoundingClientRect();
+      return box.width > 0 && box.height > 0 && getComputedStyle(element).visibility !== 'hidden' && !element.closest('[inert], [aria-hidden="true"]'); };
+    const toolbar = document.querySelector<HTMLElement>('nav.book-toolbar');
+    const box = toolbar?.getBoundingClientRect() ?? null;
+    const buttons = [...document.querySelectorAll<HTMLElement>('main.book-app button')].filter(button => !button.closest('.book-mirror') && shown(button));
+    return {
+      toolbarVisible: toolbar ? shown(toolbar) : false,
+      toolbarRect: box ? { left: box.left, top: box.top, right: box.right, bottom: box.bottom } : null,
+      toolbarButtons: buttons.filter(button => button.closest('nav.book-toolbar')).map(button => {
+        const rect = button.getBoundingClientRect();
+        return { id: button.dataset.testid ?? '', w: Math.round(rect.width), h: Math.round(rect.height) };
+      }),
+      coverButtons: buttons.filter(button => button.closest('.book-cover-controls')).length,
+      outsideButtons: buttons.filter(button => !button.closest('nav.book-toolbar') && !button.closest('.book-cover-controls'))
+        .map(button => button.getAttribute('aria-label') ?? button.textContent?.trim() ?? ''),
+    };
+  });
+  const bounds = layout?.bookBounds, rect = dom.toolbarRect;
+  const overlap = rect && bounds && dom.toolbarVisible
+    ? Math.max(0, Math.min(rect.right, bounds.right) - Math.max(rect.left, bounds.left)) * Math.max(0, Math.min(rect.bottom, bounds.bottom) - Math.max(rect.top, bounds.top)) : null;
+  return { ...dom, toolbarHeightPx: rect ? Number((rect.bottom - rect.top).toFixed(1)) : null,
+    bookToolbarOverlapPx2: overlap === null ? null : Number(overlap.toFixed(1)),
+    bookBottomToToolbarPx: rect && bounds && dom.toolbarVisible ? Number((rect.top - bounds.bottom).toFixed(1)) : null };
+}
+
 const captures: Capture[] = [];
 const browser = await chromium.launch({ headless: true, executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || undefined,
   args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'] });
@@ -231,9 +264,11 @@ try {
         // Spread of lit paper across the four printed margins: 0 means a flat, unlit sheet.
         samples.paperShadingPercent = Number(((Math.max(...margins) - Math.min(...margins)) / Math.max(...margins) * 100).toFixed(2));
       }
-      const ink = renderer === 'ink' && open && ['spread1', 'spread2', 'turn50'].includes(state) ? await inkMetrics(page, layout) : undefined;
+      const ink = renderer === 'ink' && open && ['spread1', 'spread2', 'turn50', 'stamp', 'flap'].includes(state) ? await inkMetrics(page, layout) : undefined;
+      const chrome = renderer === 'ink' ? await chromeMetrics(page, layout) : undefined;
       captures.push({ file: `${phase}/${file}`, viewport: name, state, renderer, phase, time: new Date().toISOString(),
-        data: await rootData(page), layout: layoutMetrics(layout, open), luminance: samples, extra: ink ? { ...extra, ink } : extra });
+        data: await rootData(page), layout: layoutMetrics(layout, open), luminance: samples,
+        extra: ink || chrome ? { ...extra, ...(ink ? { ink } : {}), ...(chrome ? { chrome } : {}) } : extra });
       process.stdout.write(`captured ${phase}/${file}\n`);
     }
 
@@ -265,6 +300,61 @@ try {
       await waitFor(page, `(() => { const r = document.querySelector('main.book-app'); return r?.dataset.phase === 'spreadIdle' && r?.dataset.scene === 'ready' && r?.dataset.printsReady === 'true'; })()`, 240_000);
       await wait(900);
       if (states.includes('spread1')) await shoot('spread1', true);
+    }
+    // v3 R5: a 2× crop of the left page (stamp, answer flap).
+    async function zoomLeft(label: string): Promise<string | null> {
+      const layout = await readLayout(page);
+      if (!layout) return null;
+      const quad = layout.left, xs = [quad.tl.x, quad.tr.x, quad.br.x, quad.bl.x], ys = [quad.tl.y, quad.tr.y, quad.br.y, quad.bl.y];
+      const x = Math.max(0, Math.floor(Math.min(...xs)) - 6), y = Math.max(0, Math.floor(Math.min(...ys)) - 6);
+      const width = Math.min(viewport.width - x, Math.ceil(Math.max(...xs)) - x + 6), height = Math.min(viewport.height - y, Math.ceil(Math.max(...ys)) - y + 6);
+      const result = await cdp.send('Page.captureScreenshot', { format: 'jpeg', quality: 88, clip: { x, y, width, height, scale: 2 } });
+      const file = `${name}_${label}_left2x_${renderer}.jpg`;
+      await writeFile(resolve(folder, file), Buffer.from(result.data, 'base64'));
+      process.stdout.write(`captured ${phase}/${file}\n`);
+      return `${phase}/${file}`;
+    }
+    const mirrorPress = (selector: string) => page.evaluate(css => {
+      const element = document.querySelector<HTMLButtonElement | HTMLInputElement>(`.book-mirror ${css}`);
+      if (!element || element.disabled) return false;
+      element.focus({ preventScroll: true });
+      element.click();
+      return true;
+    }, selector);
+    const settledPrints = `(() => { const r = document.querySelector('main.book-app'); const pages = window.__bookInspector?.pages() ?? [];
+      return r?.dataset.printsReady === 'true' && pages.every(item => !item.upgrading); })()`;
+    if (states.includes('stamp')) {
+      // Three right answers through the mirror (the path assistive technology uses); the stamp is derived.
+      for (const id of ['page-1:q:same-end:same', 'page-1:q:attacks:1-4', 'page-1:q:attributes:fixed']) {
+        const revision = await page.evaluate(() => Number(document.querySelector<HTMLElement>('main.book-app')?.dataset.lessonRevision));
+        assert.ok(await mirrorPress(`input[data-hotspot="${id}"]`), `mirror radio ${id}`);
+        await waitFor(page, `Number(document.querySelector('main.book-app')?.dataset.lessonRevision) > ${revision}`, 10_000);
+      }
+      await waitFor(page, `(window.__bookInspector?.pages() ?? []).find(item => item.pageId === 'page-1')?.stamps?.some(stamp => stamp.stamped) === true`, 10_000);
+      await waitFor(page, settledPrints, 30_000);
+      await nextFrames(page, 4);
+      await shoot('stamp', true, { zoom: await zoomLeft('stamp') });
+    }
+    if (states.includes('flap')) {
+      // The answer flap lifts on its top hinge: frames pinned at 0 / 120 / 240 ms (SwiftShader is too slow to sample live).
+      await page.evaluate(() => (window as unknown as { __bookInspector: { holdFlaps(ms: number | null): void } }).__bookInspector.holdFlaps(0));
+      assert.ok(await mirrorPress('button[data-hotspot="page-1:flap:answer"]'), 'answer flap');
+      await waitFor(page, `(window.__bookInspector?.pages() ?? []).find(item => item.pageId === 'page-1')?.flaps?.some(flap => flap.id === 'answer' && flap.open) === true`, 10_000);
+      await waitFor(page, settledPrints, 30_000);
+      const frames: Record<string, unknown>[] = [];
+      for (const ms of [0, 120, 240]) {
+        await page.evaluate(value => (window as unknown as { __bookInspector: { holdFlaps(ms: number | null): void } }).__bookInspector.holdFlaps(value), ms);
+        await nextFrames(page, 4);
+        const angle = await page.evaluate(() => (window as unknown as { __bookInspector: { flapAngles(): Record<string, number> } }).__bookInspector.flapAngles()['page-1:answer'] ?? null);
+        frames.push({ ms, angle, file: await zoomLeft(`flap_${String(ms).padStart(3, '0')}ms`) });
+      }
+      await shoot('flap', true, { frames });
+      await page.evaluate(() => (window as unknown as { __bookInspector: { holdFlaps(ms: number | null): void } }).__bookInspector.holdFlaps(null));
+      // Lower it again so the later captures match the earlier stages.
+      assert.ok(await mirrorPress('button[data-hotspot="page-1:flap:answer"]'), 'answer flap (close)');
+      await waitFor(page, `(window.__bookInspector?.pages() ?? []).find(item => item.pageId === 'page-1')?.flaps?.some(flap => flap.id === 'answer' && !flap.open) === true`, 10_000);
+      await waitFor(page, `(window.__bookInspector?.flapAngles() ?? {})['page-1:answer'] === 0`, 10_000);
+      await waitFor(page, settledPrints, 30_000);
     }
     if (states.includes('turn50')) {
       const layout = await readLayout(page);

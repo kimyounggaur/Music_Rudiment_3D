@@ -175,32 +175,36 @@ function paintItem(context: Canvas2D, item: LaidOutItem, k: number, notation: No
       break;
     }
     case 'stampSlot': {
+      // v3 R5: the print carries the empty slot; the stamp itself is drawn on the state layer.
       const cx = (item.rect.x + item.rect.w / 2) * k, cy = (item.rect.y + item.rect.h / 2) * k, r = item.rect.w / 2 * k;
-      if (item.stamped) {
-        context.save();
-        context.translate(cx, cy);
-        context.rotate(-0.18);
-        context.strokeStyle = 'rgba(178,58,40,0.86)';
-        context.lineWidth = 4 * k;
-        context.beginPath(); context.arc(0, 0, r * 0.9, 0, Math.PI * 2); context.stroke();
-        context.lineWidth = 1.6 * k;
-        context.beginPath(); context.arc(0, 0, r * 0.76, 0, Math.PI * 2); context.stroke();
-        context.fillStyle = 'rgba(178,58,40,0.9)';
-        context.font = `700 ${(r * 0.5).toFixed(2)}px "Book Serif"`;
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-        context.fillText('확인', 0, 0);
-        context.restore();
-        context.textAlign = 'start';
-        context.textBaseline = 'alphabetic';
-      } else {
-        context.strokeStyle = PRINT_COLORS.rule;
-        context.lineWidth = 1.4 * k;
-        context.setLineDash([5 * k, 5 * k]);
-        context.beginPath(); context.arc(cx, cy, r * 0.9, 0, Math.PI * 2); context.stroke();
-        context.setLineDash([]);
-      }
+      context.strokeStyle = PRINT_COLORS.rule;
+      context.lineWidth = 1.4 * k;
+      context.setLineDash([5 * k, 5 * k]);
+      context.beginPath(); context.arc(cx, cy, r * 0.9, 0, Math.PI * 2); context.stroke();
+      context.setLineDash([]);
       drawLines(context, item.label, k);
+      break;
+    }
+    case 'flapCover': {
+      // v3 R5: a paper flap lying over its content (ink on white; the paper shader multiplies the paper).
+      const { rect } = item;
+      roundedRect(context, { x: rect.x + 3, y: rect.y + 5, w: rect.w, h: rect.h }, 6, k);
+      context.fillStyle = 'rgba(37,39,33,0.09)';
+      context.fill();
+      roundedRect(context, rect, 6, k);
+      context.fillStyle = '#f4eee0';
+      context.fill();
+      context.strokeStyle = PRINT_COLORS.rule;
+      context.lineWidth = 1.2 * k;
+      context.stroke();
+      // The hinge: a fold line along the flap's top edge.
+      context.setLineDash([6 * k, 5 * k]);
+      context.beginPath();
+      context.moveTo((rect.x + 10) * k, (rect.y + 7) * k);
+      context.lineTo((rect.x + rect.w - 10) * k, (rect.y + 7) * k);
+      context.stroke();
+      context.setLineDash([]);
+      drawLines(context, item.hint, k);
       break;
     }
     case 'overflow':

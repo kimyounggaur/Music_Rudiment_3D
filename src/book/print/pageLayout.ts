@@ -47,6 +47,8 @@ export type LaidOutItem =
   | Readonly<{ kind: 'figure'; rect: Rect; figureId: string }>
   | Readonly<{ kind: 'flapTab'; rect: Rect; label: readonly TextLine[]; open: boolean; hotspotId: string }>
   | Readonly<{ kind: 'flapPanel'; rect: Rect }>
+  /** v3 R5: the closed paper flap printed over its (hidden) content. */
+  | Readonly<{ kind: 'flapCover'; rect: Rect; hint: readonly TextLine[] }>
   | Readonly<{ kind: 'axis'; x: number; y: number; w: number; ticks: readonly TextLine[] }>
   | Readonly<{ kind: 'stampSlot'; rect: Rect; stamped: boolean; label: readonly TextLine[] }>
   | Readonly<{ kind: 'overflow'; rect: Rect; label: readonly TextLine[] }>;
@@ -67,6 +69,11 @@ export type MirrorNode =
   | Readonly<{ kind: 'figure'; label: string }>;
 
 export type NoteHighlightBox = NotationBox & Readonly<{ laneId: string; source: 'notation' | 'cell' }>;
+/** v3 R5: a covered flap's paper rect (logical units, hinge on its top edge) for the 3D flap mesh. */
+/** A covered flap: `hint` is printed on the closed sheet, `foldHint` on its back (seen while it stands open). */
+export type FlapLayout = Readonly<{ id: string; hotspotId: string; rect: Rect; open: boolean; hint: string; foldHint: string }>;
+/** v3 R5: stamps are drawn on the state layer (derived from saved answers, never a new field). */
+export type StampLayout = Readonly<{ id: string; rect: Rect; stamped: boolean }>;
 export type PageLayout = Readonly<{
   pageId: string;
   width: number;
@@ -78,6 +85,8 @@ export type PageLayout = Readonly<{
   figureRects: Readonly<Record<string, Rect>>;
   noteBoxes: readonly NoteHighlightBox[];
   mirror: readonly MirrorNode[];
+  flaps: readonly FlapLayout[];
+  stamps: readonly StampLayout[];
 }>;
 
 export type TextMeasurer = (text: string, font: FontSpec) => number;
@@ -120,6 +129,8 @@ class Builder {
   readonly figureRects: Record<string, Rect> = {};
   readonly noteBoxes: NoteHighlightBox[] = [];
   readonly mirror: MirrorNode[] = [];
+  readonly flaps: FlapLayout[] = [];
+  readonly stamps: StampLayout[] = [];
   readonly spec: PageSpec;
   readonly context: PageContext;
   readonly services: LayoutServices;
@@ -338,7 +349,33 @@ function layoutBlocks(builder: Builder, blocks: readonly PageBlock[], cursor: Cu
         builder.hotspots.push({ id, rect, role: 'flap', label: block.label, enabled: context.interactive, expanded: open, command: { type: 'flap', key } });
         cursor.y += height + builder.gap(0.3);
         const children: MirrorNode[] = [{ kind: 'control', hotspotId: id }];
-        if (open) {
+        if (block.cover) {
+          // The content's space is always reserved; closed, only the paper flap over it is printed.
+          const top = cursor.y;
+          cursor.y += builder.gap(0.4);
+          const before = { items: builder.items.length, hotspots: builder.hotspots.length, noteBoxes: builder.noteBoxes.length };
+          const inner: MirrorNode[] = [];
+          layoutBlocks(builder, block.blocks, cursor, inner);
+          cursor.y += builder.gap(0.2);
+          const cover = { x: builder.left, y: top - builder.gap(0.15), w: builder.width, h: cursor.y - top + builder.gap(0.15) };
+          if (open) {
+            builder.items.splice(before.items, 0, { kind: 'flapPanel', rect: cover });
+            children.push(...inner);
+          } else {
+            builder.items.length = before.items; builder.hotspots.length = before.hotspots; builder.noteBoxes.length = before.noteBoxes;
+            const hintFont = builder.font(PRINT_TYPE.caption);
+            const hint = block.coverHint ?? `${block.label} · 종이를 들어 올려 보세요`;
+            const hintWidth = services.measure(hint, hintFont);
+            builder.items.push({ kind: 'flapCover', rect: cover, hint: [{ text: hint, x: cover.x + (cover.w - hintWidth) / 2,
+              baseline: cover.y + cover.h / 2 + PRINT_TYPE.caption.size * builder.s * 0.35, font: hintFont, color: PRINT_COLORS.muted }] });
+            // The paper flap itself lifts too (a pointer duplicate of the tab, which the mirror lists).
+            builder.hotspots.push({ id: `${id}:paper`, rect: cover, role: 'flap', label: block.label, enabled: context.interactive, expanded: false,
+              command: { type: 'flap', key }, mirror: false });
+          }
+          builder.flaps.push({ id: block.id, hotspotId: id, rect: cover, open, hint: block.coverHint ?? `${block.label} · 종이를 들어 올려 보세요`,
+            foldHint: block.foldHint ?? `${block.label} · 눌러서 다시 덮어요` });
+          cursor.y += builder.gap(0.4);
+        } else if (open) {
           const top = cursor.y;
           cursor.y += builder.gap(0.4);
           const inner: MirrorNode[] = [];
@@ -371,6 +408,7 @@ function layoutBlocks(builder: Builder, blocks: readonly PageBlock[], cursor: Cu
         const rect = { x: builder.right - size, y: cursor.y, w: size, h: size };
         const font = builder.font(PRINT_TYPE.meta);
         builder.items.push({ kind: 'stampSlot', rect, stamped, label: [{ text: block.label, x: rect.x, baseline: rect.y + size + 22 * builder.s, font, color: PRINT_COLORS.muted }] });
+        builder.stamps.push({ id: block.id, rect, stamped });
         cursor.y += size + 30 * builder.s;
         if (stamped) mirror.push({ kind: 'text', text: `${block.label} 확인 도장이 찍혔어요.` });
         break;
@@ -458,7 +496,8 @@ export function layoutPage(spec: PageSpec, context: PageContext, services: Layou
       label: [{ text: '이어지는 내용은 아래 ‘크게 읽기’에서 볼 수 있어요.', x: result.left, baseline: limit + 26, font, color: PRINT_COLORS.accent }] });
   }
   return { pageId: spec.pageId, width: PAGE_LOGICAL.width, height: PAGE_LOGICAL.height, scale: result.s, overflow,
-    items, hotspots: result.hotspots, figureRects: result.figureRects, noteBoxes: result.noteBoxes, mirror: result.mirror };
+    items, hotspots: result.hotspots, figureRects: result.figureRects, noteBoxes: result.noteBoxes, mirror: result.mirror,
+    flaps: result.flaps, stamps: result.stamps };
 }
 
 /** Topmost enabled-or-disabled hotspot containing the page-local point (logical units). */

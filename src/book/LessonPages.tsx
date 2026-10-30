@@ -9,7 +9,7 @@ import { eq, frac, sum } from '../domain/index.ts';
 import { currentAssessment, isSceneComplete, sceneEvents, sceneState } from '../lesson/controller.ts';
 import type { LessonCommand, LessonState } from '../lesson/controller.ts';
 import { lessonEditsAllowed, lessonPageNumber, lessonTempoTiming } from './lessonPresentation.ts';
-import { EXPERIMENT_TITLES, laneCaption, listenLabel, PAGE_TEXT, RUNNING_HEADS } from '../content/pages/pageText.ts';
+import { answerLine, EXPERIMENT_TITLES, laneCaption, listenLabel, PAGE_TEXT, questionStampLabel, RUNNING_HEADS } from '../content/pages/pageText.ts';
 import '../styles/lesson-pages.css';
 
 export type LessonPageProps = {
@@ -50,14 +50,15 @@ function useSelection(props: LessonPageProps) {
   };
 }
 
+/** v3 R5: same structure as the printed page — questions, the '정답 보기' flap, the derived stamp. */
 function Questions(props: LessonPageProps) {
   const scene = getScene(props.sceneId);
   const current = sceneState(props.lesson, props.sceneId);
   const prefix = useId();
   if (!scene.questions.length) return null;
-  return <details className="lesson-flap" open={props.hints?.[`${props.sceneId}/questions`] === 1}
-    onToggle={event => props.onHint?.(`${props.sceneId}/questions`, event.currentTarget.open)}>
-    <summary>{PAGE_TEXT.questions}</summary>
+  const stamped = scene.questions.every(question => current.answers[question.id] === question.correctValue);
+  return <section className="lesson-questions" aria-labelledby={`${prefix}-questions`}>
+    <h3 id={`${prefix}-questions`}>{PAGE_TEXT.questions}</h3>
     {scene.questions.map(question => <fieldset key={question.id} data-print-disabled="false" disabled={!props.interactive || hasPlayback(props)}>
       <legend>{question.prompt}</legend>
       {question.options.map(option => <label key={option.value}>
@@ -67,7 +68,17 @@ function Questions(props: LessonPageProps) {
         <span>{option.label}</span>
       </label>)}
     </fieldset>)}
-  </details>;
+    <details className="lesson-flap" open={props.hints?.[`${props.sceneId}/answer`] === 1}
+      onToggle={event => props.onHint?.(`${props.sceneId}/answer`, event.currentTarget.open)}>
+      <summary>{PAGE_TEXT.answer}</summary>
+      {scene.questions.map(question => <p key={question.id}>{answerLine(question.prompt,
+        question.options.find(option => option.value === question.correctValue)?.label ?? question.correctValue, question.explanation)}</p>)}
+    </details>
+    <p className="lesson-stamp" data-stamped={stamped} role="status">
+      <span className="lesson-stamp-mark" aria-hidden="true">{stamped ? '확인' : ''}</span>
+      {questionStampLabel(scene.questions.length)} · {stamped ? '도장이 찍혔어요' : '모두 맞히면 도장을 찍어 줘요'}
+    </p>
+  </section>;
 }
 
 function EventList(props: LessonPageProps & { events: readonly MusicEvent[]; laneId: string }) {
@@ -142,12 +153,12 @@ function Transport(props: LessonPageProps) {
   const paused = state === 'paused';
   return <div className="lesson-transport" aria-label="소리 조절">
     <button type="button" className="book-text-button lesson-pause-button" data-testid="pause-resume-audio"
-      data-print-disabled="true" data-print-text="일시정지" disabled={!props.interactive || state !== 'playing' && !paused}
+      data-print-disabled="true" data-print-text="잠깐 멈춤" disabled={!props.interactive || state !== 'playing' && !paused}
       onClick={paused ? props.onResume : props.onPause}>{paused ? PAGE_TEXT.resume : PAGE_TEXT.pause}</button>
     <button type="button" className="book-text-button" data-testid="stop-audio" data-print-disabled="true" disabled={!props.interactive || !hasPlayback(props)} onClick={props.onStop}>{PAGE_TEXT.stop}</button>
     <button type="button" className="book-text-button" aria-pressed={props.playback?.muted ?? false}
       data-print-disabled="false" disabled={!props.interactive} onClick={props.onMute}>{props.playback?.muted ? '음소거 해제' : '음소거'}</button>
-    <span className="lesson-play-status" data-print-text="정지 상태" role="status">{state === 'starting' ? '소리를 준비해요' : paused ? '일시정지' : state === 'playing' ? '재생 중' : '정지 상태'}</span>
+    <span className="lesson-play-status" data-print-text="정지 상태" role="status">{state === 'starting' ? '소리를 준비해요' : paused ? '잠깐 멈춤' : state === 'playing' ? '재생 중' : '정지 상태'}</span>
   </div>;
 }
 

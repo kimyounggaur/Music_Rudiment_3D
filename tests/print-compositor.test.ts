@@ -62,7 +62,8 @@ test('a page prints once per input change; repeated requests are cache hits', ()
 });
 
 function getFirstQuestion(): string {
-  const question = pageSpecFor('page-1').blocks.flatMap(block => block.kind === 'flap' ? block.blocks : []).find(block => block.kind === 'question');
+  // v3 R5: questions are printed on the page (no longer inside a flap).
+  const question = pageSpecFor('page-1').blocks.flatMap(block => block.kind === 'flap' ? block.blocks : [block]).find(block => block.kind === 'question');
   assert.ok(question && question.kind === 'question');
   return question.questionId;
 }

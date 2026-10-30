@@ -29,6 +29,12 @@ export interface BookInspector {
   sceneDrawCalls(): unknown;
   /** v3 R4: client coordinates of lane-unit figure points (x 0..10 along the bar, y up, z toward the reader). */
   figurePoints(laneId: string, points: readonly (readonly [number, number, number])[]): ({ x: number; y: number } | null)[];
+  /** v3 R5: paper flap angles in degrees by `${pageId}:${flapId}` (0 closed, 110 open). */
+  flapAngles(): Readonly<Record<string, number>>;
+  /** v3 R5: pin moving flaps `ms` after they start (null resumes real time). */
+  holdFlaps(ms: number | null): void;
+  /** v3 R5: the flap key of a standing paper sheet under a client point (the pointer's raycast). */
+  flapAt(clientX: number, clientY: number): string | null;
 }
 
 declare global {
@@ -157,6 +163,12 @@ export function attachBookInspector(options: BookInspectorOptions): () => void {
       options.getStage()?.invalidate();
     },
     sceneDrawCalls: () => structuredClone(options.getStage()?.measureSceneDrawCalls() ?? null),
+    flapAngles: () => ({ ...(options.getStage()?.flapAngles() ?? {}) }),
+    holdFlaps(ms) {
+      if (ms !== null && (typeof ms !== 'number' || !Number.isFinite(ms) || ms < 0)) throw new RangeError('holdFlaps takes a non-negative time in ms or null.');
+      options.getStage()?.holdFlaps(ms);
+    },
+    flapAt: (clientX, clientY) => options.getStage()?.flapAt(clientX, clientY) ?? null,
     figurePoints(laneId, points) {
       const scene = options.getScene?.(), stage = options.getStage();
       return points.map(point => {

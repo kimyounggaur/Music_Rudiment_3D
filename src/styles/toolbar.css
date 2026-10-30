@@ -1,0 +1,23 @@
+/* v3 R5 toolbar: one row outside the book, under it (REFACTOR_DESIGN_V3 §6 R5 (1)). */
+.book-toolbar{position:absolute;z-index:4;left:50%;bottom:0;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:10px;box-sizing:border-box;max-width:100%;min-height:52px;padding:4px max(10px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));background:#ece5d6eb;border:1px solid #bfb196;border-bottom:0;border-radius:10px 10px 0 0;box-shadow:0 -2px 14px #3a2f1f1f;pointer-events:auto;white-space:nowrap}
+.book-toolbar[data-visible="false"]{visibility:hidden}
+.book-toolbar-group{display:flex;align-items:center;gap:2px}
+.book-toolbar-button{min-width:44px;min-height:44px;padding:4px 10px;border:1px solid transparent;border-radius:6px;background:transparent;color:#2c393d;font-size:14px;font-weight:600;line-height:1.2}
+.book-toolbar-button:hover:not(:disabled){background:#f7f2e7;border-color:#bfb196}
+.book-toolbar-button[aria-pressed="true"]{background:#f7f2e7;border-color:#8c7b5b}
+.book-toolbar-button:disabled{opacity:.45}
+.book-toolbar-folio{min-width:58px;padding:0 4px;text-align:center;font-size:13px;color:#4a575b;font-variant-numeric:tabular-nums}
+/* Narrow (portrait phones): the same single row and 44 px targets; two-word labels take two lines. */
+@media (max-width:620px){.book-toolbar{gap:2px;padding-left:max(4px,env(safe-area-inset-left));padding-right:max(4px,env(safe-area-inset-right))}.book-toolbar-group{gap:0}.book-toolbar-button{max-width:58px;padding:2px 5px;font-size:12px;line-height:1.1;white-space:normal;word-break:keep-all}.book-toolbar-folio{min-width:0;padding:0 2px;font-size:11px}}
+@media (max-width:400px){.book-toolbar{left:0;right:0;transform:none;border-radius:0;justify-content:space-between}}
+/* Very narrow (≤ 380 px): the folio is read out but not drawn (each printed page carries its number). */
+@media (max-width:380px){.book-toolbar-folio{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}}
+/* Short landscape (568×320): the compressed row, 36 px controls in a 40 px bar. */
+@media (max-height:360px){.book-toolbar{gap:4px;min-height:40px;padding-top:2px;padding-bottom:max(2px,env(safe-area-inset-bottom))}.book-toolbar-button{min-width:36px;min-height:36px;max-width:none;padding:2px 6px;font-size:12px;white-space:nowrap}.book-toolbar-folio{min-width:44px;font-size:11px}}
+.book-app[data-inspection="true"] .book-toolbar{visibility:hidden}
+/* v3 R5 records dialog: the record tools in a modal outside the book. */
+.book-records{width:min(560px,calc(100vw - 24px));max-width:none;max-height:calc(100dvh - 32px);overflow:auto;padding:16px 20px 20px;border:1px solid #a6b2a3;border-radius:10px;background:#fbf9f0;color:#263e4b;box-shadow:0 18px 44px #1d2b2a55}
+.book-records::backdrop{background:#1d2b2a80}
+.book-records-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:4px}
+.book-records-heading h2{margin:0;font-size:18px}
+.book-records-body{margin:0;border:0}

@@ -32,10 +32,13 @@ function backupLabel(key: string, index: number): string {
   return `앱 보관 기록 ${index + 1}`;
 }
 
-/** Presentation only: the parent owns validation, storage and all record changes. */
-export function BookProgressTools(props: BookProgressToolsProps) {
+/**
+ * Presentation only: the parent owns validation, storage and all record changes. v3 R5: the same
+ * content serves the 2D page disclosure (BookProgressTools) and the toolbar's records dialog.
+ */
+export function BookProgressContent(props: BookProgressToolsProps) {
   const id = useId();
-  const root = useRef<HTMLDetailsElement>(null);
+  const root = useRef<HTMLDivElement>(null);
   const exportText = useRef<HTMLTextAreaElement>(null);
   const originalText = useRef<HTMLTextAreaElement>(null);
   const previewButton = useRef<HTMLButtonElement>(null);
@@ -91,13 +94,7 @@ export function BookProgressTools(props: BookProgressToolsProps) {
     }
   };
 
-  return <details ref={root} className="book-progress-tools" data-book-instrument="true" onToggle={event => {
-    // Opening the tools stops playback, even while the mutating controls are
-    // busy. A nested backup disclosure must not repeat that parent action.
-    if (event.target === event.currentTarget && event.currentTarget.open) props.onOpen();
-  }}>
-    <summary>기록과 설정</summary>
-    <div className="book-progress-content" aria-busy={props.busy}>
+  return <div ref={root} className="book-progress-content" aria-busy={props.busy}>
       {props.notice && <p className="book-progress-notice" role="status">{props.notice}</p>}
       <fieldset className="book-progress-settings" data-print-disabled="false" disabled={props.busy}>
         <legend>읽기와 소리</legend>
@@ -247,6 +244,17 @@ export function BookProgressTools(props: BookProgressToolsProps) {
           </div>
         </div>}
       </section>
-    </div>
+  </div>;
+}
+
+/** The 2D reading pages' disclosure: opening it stops playback, as before. */
+export function BookProgressTools(props: BookProgressToolsProps) {
+  return <details className="book-progress-tools" data-book-instrument="true" onToggle={event => {
+    // Opening the tools stops playback, even while the mutating controls are
+    // busy. A nested backup disclosure must not repeat that parent action.
+    if (event.target === event.currentTarget && event.currentTarget.open) props.onOpen();
+  }}>
+    <summary>기록과 설정</summary>
+    <BookProgressContent {...props} />
   </details>;
 }

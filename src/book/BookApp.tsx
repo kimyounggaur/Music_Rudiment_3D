@@ -3,13 +3,13 @@ import { bookCanInteract, bookReducer, bookToken, createBookState, tokenMatches 
 import type { BookEvent } from './controller.ts';
 import { BOOK_MOTION, tween } from './motion.ts';
 import type { BookStage, StageLayout, StageUpdate } from './stage.ts';
+import type { StageFlap } from './render/flaps.ts';
 import { pageStyle } from './pageProjection.ts';
 import { BOOK_MANIFEST, pagePrintIds, spreadIndex, turningLeaf } from './manifest.ts';
 import type { PageId, SpreadId } from './manifest.ts';
 import { arrowNavigationDirection, createTurnDrag, turnReleaseDecision, updateTurnDrag } from './gesture.ts';
 import type { TurnDragState } from './gesture.ts';
 import { turnCornerAtPoint, turnCornerRegion, turnInputAvailability, turnTargetOwnsInput } from './turnHit.ts';
-import { navigationButtonPosition } from './navigationPlacement.ts';
 import { lessonFigureExtent } from './lessonPresentation.ts';
 import { FIGURE_ENTRY_MS, figureEntryFrame, inverseSmoothStep } from './figures/choreography.ts';
 import type { PointerEvent as ReactPointerEvent } from 'react';
@@ -29,7 +29,9 @@ import type { PageHotspot } from './print/pageLayout.ts';
 import type { PageInteraction } from './print/hotspots.ts';
 import type { PagePlayback, PageUiState } from './print/pageSpec.ts';
 import { loadInitialBookProgress, supportsStoredSpread, useBookProgress } from './useBookProgress.ts';
-import { BookProgressTools } from './BookProgressTools.tsx';
+import { Toolbar } from './ui/Toolbar.tsx';
+import { RecordsDialog } from './ui/RecordsDialog.tsx';
+import { lessonPageNumber } from './lessonPresentation.ts';
 import { currentProfile } from './profile.ts';
 import type { BookPreferences } from '../persistence/bookProgress.ts';
 
@@ -96,6 +98,9 @@ export default function BookApp() {
   const [pressedId, setPressedId] = useState<string | null>(null);
   const [focusId, setFocusId] = useState<string | null>(null);
   const [pageUi, setPageUi] = useState<PageUiState>({ composeKind: 'note' });
+  // v3 R5: the toolbar (always laid out so the book's safe area never jumps) and its records dialog.
+  const toolbarRef = useRef<HTMLElement>(null);
+  const [recordsOpen, setRecordsOpen] = useState(false);
   const [holdPrintUpgrades, setHoldPrintUpgrades] = useState(false);
   const focusedBookTarget = useRef('');
   const hasOpenedBook = useRef(false);
@@ -172,6 +177,27 @@ export default function BookApp() {
     storePreferences({ mode: '3d' });
     send({ type: 'RETRY_3D' });
   }, [send, stop, storePreferences]);
+  // Opening the records stops playback, as the page tools did; closing returns focus to the toolbar.
+  const openRecords = useCallback(() => stop('record-tools'), [stop]);
+  const closeRecords = useCallback(() => {
+    setRecordsOpen(false);
+    toolbarRef.current?.querySelector<HTMLButtonElement>('[data-testid="records"]')?.focus({ preventScroll: true });
+  }, []);
+  // v3 R5: the book's safe area ends above the toolbar (the stage reads --book-safe-bottom; 2D uses the height).
+  useLayoutEffect(() => {
+    const toolbar = toolbarRef.current, host = hostRef.current;
+    if (!toolbar || !host) return;
+    const apply = () => {
+      const height = Math.ceil(toolbar.getBoundingClientRect().height);
+      host.style.setProperty('--book-safe-bottom', `${height}px`);
+      rootRef.current?.style.setProperty('--book-toolbar-height', `${height}px`);
+      stageRef.current?.invalidate();
+    };
+    apply();
+    const observer = new ResizeObserver(apply);
+    observer.observe(toolbar);
+    return () => observer.disconnect();
+  }, [book.mode, stageReady]);
   const changeReadingMode = () => {
     if (bookRef.current.mode === '2d') { retry3D(); return; }
     stop('reading-mode');
@@ -234,6 +260,9 @@ export default function BookApp() {
               stateVersion: surface.stateVersion, scale: surface.layout.scale, overflow: surface.layout.overflow, figureRects: surface.layout.figureRects,
               figures: Object.entries(surface.layout.figureRects).map(([id, rect]) => ({ id, rect,
                 center: side && stage ? stage.pagePoint(side, (rect.x + rect.w / 2) / PAGE_LOGICAL.width, (rect.y + rect.h / 2) / PAGE_LOGICAL.height) : null })),
+              flaps: surface.layout.flaps.map(flap => ({ id: flap.id, hotspotId: flap.hotspotId, open: flap.open, rect: flap.rect })),
+              stamps: surface.layout.stamps.map(stamp => ({ id: stamp.id, stamped: stamp.stamped, rect: stamp.rect,
+                center: side && stage ? stage.pagePoint(side, (stamp.rect.x + stamp.rect.w / 2) / PAGE_LOGICAL.width, (stamp.rect.y + stamp.rect.h / 2) / PAGE_LOGICAL.height) : null })),
               hotspots: surface.layout.hotspots.map(hotspot => ({ id: hotspot.id, role: hotspot.role, label: hotspot.label, enabled: hotspot.enabled,
                 testId: hotspot.testId ?? null, rect: hotspot.rect,
                 center: side && stage ? stage.pagePoint(side, (hotspot.rect.x + hotspot.rect.w / 2) / PAGE_LOGICAL.width, (hotspot.rect.y + hotspot.rect.h / 2) / PAGE_LOGICAL.height) : null })) };
@@ -502,9 +531,19 @@ export default function BookApp() {
     return !turnTargetOwnsInput(event.target) && !path.some(turnTargetOwnsInput);
   };
   const pageHit = (clientX: number, clientY: number): PageHit | null => {
+    const spread = BOOK_MANIFEST[spreadIndex(bookRef.current.currentSpreadId)];
+    // v3 R5: a standing paper flap is in front of the page; pressing it folds it down (its tab's command).
+    const flapKey = stageRef.current?.flapAt(clientX, clientY) ?? null;
+    if (flapKey) {
+      for (const [side, pageId] of [['left', spread.leftPageId], ['right', spread.rightPageId]] as const) {
+        const flapLayout = printsRef.current.get(pageId)?.layout;
+        const flap = flapLayout?.flaps.find(item => `${pageId}:${item.id}` === flapKey);
+        const tab = flap && flapLayout?.hotspots.find(item => item.id === flap.hotspotId);
+        if (tab) return { pageId, side, x: tab.rect.x + tab.rect.w / 2, y: tab.rect.y + tab.rect.h / 2, hotspot: tab, figure: false };
+      }
+    }
     const point = stageRef.current?.pagePointer(clientX, clientY);
     if (!point) return null;
-    const spread = BOOK_MANIFEST[spreadIndex(bookRef.current.currentSpreadId)];
     const pageId = point.side === 'left' ? spread.leftPageId : spread.rightPageId;
     const surfaceLayout = printsRef.current.get(pageId)?.layout;
     if (!surfaceLayout) return null;
@@ -590,6 +629,13 @@ export default function BookApp() {
   const mirrorPages = useMemo<readonly MirrorPage[]>(() => leftLayout && rightLayout
     ? [{ pageId: currentSpread.leftPageId, side: 'left', layout: leftLayout }, { pageId: currentSpread.rightPageId, side: 'right', layout: rightLayout }] : [],
   [leftLayout, rightLayout, currentSpread]);
+  // v3 R5: each covered answer area has a paper flap that lifts in 3D over its printed place.
+  const stageFlaps = useMemo<readonly StageFlap[]>(() => book.mode !== '3d' ? [] : mirrorPages.flatMap(page => page.layout.flaps.map(flap => ({
+    key: `${page.pageId}:${flap.id}`, side: page.side, open: flap.open, hint: flap.hint, foldHint: flap.foldHint,
+    rect: { u0: flap.rect.x / PAGE_LOGICAL.width, v0: flap.rect.y / PAGE_LOGICAL.height,
+      u1: (flap.rect.x + flap.rect.w) / PAGE_LOGICAL.width, v1: (flap.rect.y + flap.rect.h) / PAGE_LOGICAL.height },
+  }))), [mirrorPages, book.mode]);
+  useEffect(() => { stageRef.current?.setPageFlaps(stageFlaps, book.reducedMotion); }, [stageFlaps, book.reducedMotion, stageReady]);
   const printStatsRef = useRef(prints.stats);
   printStatsRef.current = prints.stats;
   const beginPress = (event: ReactPointerEvent<HTMLElement>, hit: PageHit, hotspot: PageHotspot) => {
@@ -612,7 +658,10 @@ export default function BookApp() {
     if (hotspot) runHotspot(hotspot);
     return true;
   };
-  const playbackStatus = playbackState === 'starting' ? '소리를 준비해요' : playbackState === 'paused' ? '일시정지' : playbackState === 'playing' ? '재생 중' : '정지 상태';
+  const playbackStatus = playbackState === 'starting' ? '소리를 준비해요' : playbackState === 'paused' ? '잠깐 멈춤' : playbackState === 'playing' ? '재생 중' : '정지 상태';
+  const toolbarVisible = book.isOpen && book.phase !== 'closing';
+  const lastSpread = spreadIndex(book.phase === 'cancelSettling' ? book.currentSpreadId : book.destinationSpreadId ?? book.currentSpreadId) + 1 >= BOOK_MANIFEST.length;
+  const folio = `${lessonPageNumber(currentSpread.sceneId, 'left')}–${lessonPageNumber(currentSpread.sceneId, 'right')}쪽 / ${BOOK_MANIFEST.length * 2}`;
 
   const intro = book.phase === 'introReady' || book.phase === 'introMoving';
   const coverVisible = !book.isOpen && book.phase !== 'opening';
@@ -668,6 +717,8 @@ export default function BookApp() {
     onPointerLeave={() => { if (!pointerOwner.current) { setDragHover(false); setHoverId(null); } }} onKeyDown={event => {
     if (event.key === 'Escape' && intro) { event.preventDefault(); send({ type: 'SKIP_INTRO', inputId: ++inputId.current }); }
     else if (event.key === 'Escape' && pointerOwner.current) { event.preventDefault(); cancelPointer(); }
+    // v3 R5: the records dialog is modal; the book does not take its keys (EN02).
+    else if (recordsOpen) return;
     else {
       const direction = arrowNavigationDirection({ ...event,
         // React's synthetic keyboard interface does not copy composition state
@@ -719,19 +770,13 @@ export default function BookApp() {
         }}>이어서 펼치기 {progress.savedSpread.replace('spread-', '')}</button>
         <button className="book-cover-primary book-text-button" onClick={() => open('spread-1')}>처음부터 둘러보기</button>
       </div> : <span className="book-cover-caption" aria-hidden="true">표지를 눌러 펼쳐 보세요</span>)}
-      {book.phase === 'coverIdle' && !progress.canSave && <p className="book-cover-storage-notice" role="status">{progress.notice} 책 안의 ‘기록과 설정’에서 원문을 내보낼 수 있어요.</p>}
+      {book.phase === 'coverIdle' && !progress.canSave && <p className="book-cover-storage-notice" role="status">{progress.notice} 책을 펼친 뒤 아래 조작바의 ‘기록’에서 원문을 내보낼 수 있어요.</p>}
       {error && book.mode === '2d' && <div className="book-cover-message" role="status">{error}<button onClick={retry3D}>3D 다시 시도</button></div>}
     </div>}
     {book.mode === '2d' && BOOK_MANIFEST.filter(spread => livePagesVisible && book.currentSpreadId === spread.spreadId).map(spread => {
       // v3 R3: DOM pages are the 2D reading book only. The 3D book is printed (no .book-page in 3D).
-      const progressTools = <>
-        {!progress.canSave && <p className="book-page-error" role="status">자동 저장을 멈췄어요. {progress.notice}</p>}
-        <BookProgressTools key={`${book.bookEpoch}:${spread.spreadId}`} busy={!bookCanInteract(book) || playingState(playback?.state)}
-          notice={progress.notice} protectedRaw={progress.protectedRaw} backups={progress.backups} exportedText={progress.exportedText}
-          preview={progress.preview} preferences={progress.preferences} onPreferences={updatePreferences}
-          onOpen={() => stop('record-tools')} onExport={progress.exportCurrent} onPreviewImport={progress.previewImport}
-          onConfirmImport={progress.confirmImport} onCancelImport={progress.cancelImport} onDelete={progress.deleteAll} />
-      </>;
+      // v3 R5: the record tools live in the toolbar's records dialog in both modes.
+      const progressTools = !progress.canSave ? <p className="book-page-error" role="status">자동 저장을 멈췄어요. {progress.notice}</p> : null;
       const props = { lesson, sceneId: spread.sceneId, interactive: true,
         playback, playingLane, onCommand: command, onPlay: play, onPause: pause, onResume: resume, onStop: () => stop('user-stop'), onMute: () => updatePreferences({ muted: !progress.preferences.muted }),
         onMode: changeReadingMode, mode: book.mode, reducedMotion: book.reducedMotion,
@@ -749,28 +794,20 @@ export default function BookApp() {
     })}
     {mirrorVisible && mirrorPages.length === 2 && <AccessibleMirror key={`${book.bookEpoch}:${book.sceneInstanceId}`} spreadId={book.currentSpreadId} pages={mirrorPages}
       inert={!interactive} onActivate={activateMirror} onFocusHotspot={focusMirror} />}
-    {book.mode === '3d' && book.isOpen && book.phase !== 'closing' && <nav className="book-toolbar" aria-label="책 도구">
-      {/* Provisional R3 toolbar (C1): global controls live outside the printed page; R5 completes it. */}
-      <button type="button" className="book-text-button" data-testid="reading-mode" aria-label="크게 읽기, 2D 책으로 전환" onClick={changeReadingMode}>크게 읽기</button>
-      <button type="button" className="book-text-button" aria-pressed={progress.preferences.muted}
-        onClick={() => updatePreferences({ muted: !progress.preferences.muted })}>{progress.preferences.muted ? '음소거 해제' : '음소거'}</button>
-      <span className="book-sr-only" role="status">{playbackStatus}</span>
-      <div className="book-toolbar-records">
-        {!progress.canSave && <p className="book-page-error" role="status">자동 저장을 멈췄어요. {progress.notice}</p>}
-        <BookProgressTools key={book.bookEpoch} busy={!interactive || playingState(playback?.state)}
-          notice={progress.notice} protectedRaw={progress.protectedRaw} backups={progress.backups} exportedText={progress.exportedText}
-          preview={progress.preview} preferences={progress.preferences} onPreferences={updatePreferences}
-          onOpen={() => stop('record-tools')} onExport={progress.exportCurrent} onPreviewImport={progress.previewImport}
-          onConfirmImport={progress.confirmImport} onCancelImport={progress.cancelImport} onDelete={progress.deleteAll} />
-      </div>
-    </nav>}
+    {/* v3 R5 (C1·C9): global controls in one row outside the book; the edge bookmarks are gone. */}
+    <Toolbar ref={toolbarRef} visible={toolbarVisible} first={book.currentSpreadId === 'spread-1'} last={lastSpread} folio={folio}
+      muted={progress.preferences.muted} reducedMotion={progress.preferences.reducedMotion} mode={book.mode} contentsEnabled={false}
+      onPrev={() => navigate('prev', 'button')} onNext={() => navigate('next', 'button')} onContents={() => {}}
+      onSound={() => updatePreferences({ muted: !progress.preferences.muted })}
+      onStill={() => updatePreferences({ reducedMotion: !progress.preferences.reducedMotion })}
+      onReadingMode={changeReadingMode} onRecords={() => setRecordsOpen(true)} />
+    <span className="book-sr-only" role="status">{book.isOpen ? playbackStatus : ''}</span>
+    <RecordsDialog key={book.bookEpoch} open={recordsOpen} onClose={closeRecords} storageNotice={progress.canSave ? null : progress.notice}
+      busy={!interactive || playingState(playback?.state)} notice={progress.notice} protectedRaw={progress.protectedRaw} backups={progress.backups}
+      exportedText={progress.exportedText} preview={progress.preview} preferences={progress.preferences} onPreferences={updatePreferences}
+      onOpen={openRecords} onExport={progress.exportCurrent} onPreviewImport={progress.previewImport}
+      onConfirmImport={progress.confirmImport} onCancelImport={progress.cancelImport} onDelete={progress.deleteAll} />
     {book.isOpen && book.phase !== 'closing' && <>
-      <div className="book-navigation book-navigation--prev" style={layout && book.mode === '3d' ? navigationButtonPosition(layout, 'prev') : undefined}>
-        <button data-testid="book-prev" className="book-text-button" aria-label={book.currentSpreadId === 'spread-1' ? '표지로' : '이전 펼침면'} onClick={() => navigate('prev', 'button')}>←</button>
-      </div>
-      <div className="book-navigation book-navigation--next" style={layout && book.mode === '3d' ? navigationButtonPosition(layout, 'next') : undefined}>
-        <button data-testid="book-next" className="book-text-button" aria-label="다음 펼침면" disabled={spreadIndex(book.phase === 'cancelSettling' ? book.currentSpreadId : book.destinationSpreadId ?? book.currentSpreadId) + 1 >= BOOK_MANIFEST.length} onClick={() => navigate('next', 'button')}>→</button>
-      </div>
       {layout && book.mode === '3d' && (['next', 'prev'] as const).flatMap(direction => (['top', 'bottom'] as const).map(corner => {
         const quad = direction === 'next' ? layout.right : layout.left;
         const region = turnCornerRegion(quad, direction, corner);

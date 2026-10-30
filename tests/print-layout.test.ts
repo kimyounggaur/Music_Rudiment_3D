@@ -71,21 +71,41 @@ test('right pages reserve a figure rect whose height is the spec ratio of the pa
   }
 });
 
-test('questions print one radio hotspot per option, and only while the flap is open', () => {
+test('v3 R5: questions print one radio per option; answers wait under a covered flap whose paper never moves; all-correct answers stamp', () => {
+  const words = (layout: ReturnType<typeof layoutPage>) => layout.items.flatMap(item => item.kind === 'text' ? item.lines.map(line => line.text) : []).join(' ');
   for (const spread of BOOK_MANIFEST) {
     const scene = getScene(spread.sceneId);
     if (!scene.questions.length) continue;
     const spec = pageSpecFor(spread.leftPageId);
     const closed = layoutPage(spec, contextFor(spread.leftPageId), stubServices);
-    assert.equal(closed.hotspots.filter(hotspot => hotspot.role === 'radio').length, 0);
-    const open = layoutPage(spec, contextFor(spread.leftPageId, createLessonState(), { hints: { [`${spread.sceneId}/questions`]: 1 } }), stubServices);
-    const radios = open.hotspots.filter(hotspot => hotspot.role === 'radio');
+    const radios = closed.hotspots.filter(hotspot => hotspot.role === 'radio');
     assert.equal(radios.length, scene.questions.reduce((total, question) => total + question.options.length, 0));
     for (const question of scene.questions) assert.equal(radios.filter(radio => radio.group === question.id).length, question.options.length);
     // Answers follow the same playback rule as the 2D fieldset.
-    const playing = layoutPage(spec, contextFor(spread.leftPageId, createLessonState(), { hints: { [`${spread.sceneId}/questions`]: 1 },
+    const playing = layoutPage(spec, contextFor(spread.leftPageId, createLessonState(), {
       playback: { state: 'playing', laneId: scene.lanes[0]!.laneId, activeEventId: null, error: null } }), stubServices);
     assert.ok(playing.hotspots.filter(hotspot => hotspot.role === 'radio').every(hotspot => !hotspot.enabled));
+    // The answer flap: closed it prints its paper over the reserved space; open, the explanations.
+    const flap = closed.flaps.find(item => item.id === 'answer');
+    assert.ok(flap && !flap.open, spread.leftPageId);
+    // The sheet carries its own words: how to lift it (front) and how to fold it down (back).
+    assert.ok(flap.hint.includes('들어 올려') && flap.foldHint.includes('덮기'), `${flap.hint} / ${flap.foldHint}`);
+    assert.ok(closed.items.some(item => item.kind === 'flapCover'));
+    const open = layoutPage(spec, contextFor(spread.leftPageId, createLessonState(), { hints: { [`${spread.sceneId}/answer`]: 1 } }), stubServices);
+    const opened = open.flaps.find(item => item.id === 'answer');
+    assert.ok(opened?.open);
+    assert.deepEqual(opened.rect, flap.rect, 'the flap paper keeps its place');
+    assert.deepEqual(open.stamps.map(stamp => stamp.rect), closed.stamps.map(stamp => stamp.rect), 'nothing below the flap moves');
+    // The explanation's longest word: distinctive on the page and never split by wrapping.
+    const fragment = scene.questions[0]!.explanation.split(' ').reduce((longest, word) => word.length > longest.length ? word : longest, '');
+    assert.ok(!words(closed).includes(fragment) && words(open).includes(fragment), `${spread.leftPageId}: explanations only under an open flap`);
+    assert.equal(open.hotspots.find(hotspot => hotspot.role === 'flap' && hotspot.id === flap.hotspotId)?.expanded, true);
+    // The stamp is derived from the saved answers (no new field): all correct → stamped.
+    assert.equal(closed.stamps.length, 1);
+    assert.equal(closed.stamps[0]!.stamped, false);
+    let lesson = reduceLesson(createLessonState(), { type: 'navigate', sceneId: spread.sceneId });
+    for (const question of scene.questions) lesson = reduceLesson(lesson, { type: 'answer', questionId: question.id, value: question.correctValue });
+    assert.equal(layoutPage(spec, contextFor(spread.leftPageId, lesson), stubServices).stamps[0]!.stamped, true);
   }
 });
 

@@ -84,6 +84,8 @@ export function turnTargetOwnsInput(target: unknown): boolean {
     if ((attr('role') ?? '').toLowerCase().split(/\s+/).some(role => controlRoles.has(role))) return true;
     if (attr('data-book-instrument') !== null || attr('data-instrument') !== null || attr('data-event-select') !== null) return true;
     if (element.classList?.contains('book-popup-window') || element.classList?.contains('book-progress-tools')) return true;
+    // v3 R5: the toolbar and the records dialog own their presses (never a page drag).
+    if (element.classList?.contains('book-toolbar') || element.classList?.contains('book-records')) return true;
     node = element.parentElement;
   }
   return false;

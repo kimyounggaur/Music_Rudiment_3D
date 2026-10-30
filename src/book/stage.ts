@@ -13,6 +13,8 @@ import { createPostPipeline, tierPixelRatio } from './render/postPipeline.ts';
 import type { PostPipeline } from './render/postPipeline.ts';
 import type { QualityTier } from './profile.ts';
 import { figureControlsOf } from './figures/figure.ts';
+import { createFlapLayer } from './render/flaps.ts';
+import type { StageFlap } from './render/flaps.ts';
 import type { FigureStats } from './figures/figure.ts';
 import {
   BOOK_DIMENSIONS, createFlatPageGeometry, createSpreadPageGeometry, createStackGeometry, createTurningLeafGeometry, leafProgressFromX, LEAF_THICKNESS,
@@ -89,6 +91,14 @@ export interface BookStage {
   setSceneGroup(group: Group | null): void;
   setSceneWindow(window: StageSceneWindow | null): void;
   pickScene(clientX: number, clientY: number, targets: Mesh[]): Mesh | null;
+  /** v3 R5: the spread's paper flaps (page-local rects); a changed `open` lifts or lowers the sheet. */
+  setPageFlaps(flaps: readonly StageFlap[], instant?: boolean): void;
+  /** DEV: current flap angles in degrees by key. */
+  flapAngles(): Readonly<Record<string, number>>;
+  /** DEV: pin moving flaps `ms` after they start (null resumes real time). */
+  holdFlaps(ms: number | null): void;
+  /** v3 R5: the key of a standing (or moving) paper flap under a client point, nearest first. */
+  flapAt(clientX: number, clientY: number): string | null;
   /** DEV: client coordinates of a world point (inspection and measurements). */
   projectToClient(point: readonly [number, number, number]): StagePoint | null;
   /** DEV: draw calls of one frame with and without the scene figure (renders twice, then restores). */
@@ -231,6 +241,13 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
   turningLeaf.visible = false;
   bookRoot.add(turningLeaf);
 
+  // v3 R5: paper flaps ride the static page meshes (their own page-local frame).
+  const flaps = createFlapLayer();
+  const flapPages = () => ({
+    left: { mesh: leftPage, width: D.pageWidth, height: D.pageHeight, surface: (u: number) => geometryState.left.amplitude * spreadHeight(1 - u) },
+    right: { mesh: rightPage, width: D.pageWidth, height: D.pageHeight, surface: (u: number) => geometryState.right.amplitude * spreadHeight(u) },
+  });
+  let flapsMoving = false;
   const sceneAnchor = new Group();
   sceneAnchor.name = 'ActiveSceneAnchor';
   bookRoot.add(sceneAnchor);
@@ -393,6 +410,8 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     figure?.setLift(lift);
     figure?.setReveal(reveal);
     sceneAnchor.visible = progress >= 1 && (lift > 0 || (reveal > 0 && !turn)) && (sceneWindow?.visible ?? true);
+    // Flaps belong to the still page: the leaf carries the print during a turn.
+    flaps.setVisible(progress >= 1 && !turn);
     sceneAnchor.position.set(0, rightSurfaceY, 0);
     applySceneWindow();
     bookRoot.updateMatrixWorld(true);
@@ -444,6 +463,7 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       post.setSize(width, height, pixelRatio);
     }
     applyObjects();
+    flapsMoving = flaps.update(performance.now(), flapPages());
     const safe = safeRect();
     fitCamera(rect, safe);
     // Ink widths are CSS pixels of this viewport.
@@ -470,6 +490,7 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     };
     options.onLayout?.(layout);
     metrics();
+    if (flapsMoving) invalidate();
   }
   function invalidate(): void {
     if (!disposed && !contextLost && pendingFrame === null) pendingFrame = requestAnimationFrame(render);
@@ -609,6 +630,23 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
         || intersection.point.z >= sceneWindow.minZ && intersection.point.z <= sceneWindow.maxZ);
       return (hit?.object as Mesh | undefined) ?? null;
     },
+    setPageFlaps(list, instant = false) {
+      if (disposed) return;
+      flaps.set(list, flapPages(), instant);
+      invalidate();
+    },
+    flapAngles: () => flaps.angles(),
+    holdFlaps(ms) { flaps.hold(ms); invalidate(); },
+    flapAt(clientX, clientY) {
+      const targets = flaps.targets();
+      if (disposed || !targets.length || state.turn) return null;
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.set((clientX - rect.left) / rect.width * 2 - 1, 1 - (clientY - rect.top) / rect.height * 2);
+      scene.updateMatrixWorld(true);
+      raycaster.setFromCamera(pointer, camera);
+      const hit = raycaster.intersectObjects(targets, false)[0];
+      return hit ? flaps.keyOf(hit.object) : null;
+    },
     projectToClient(point) {
       if (disposed || !layout || !point.every(Number.isFinite)) return null;
       const projected = project(new Vector3(point[0], point[1], point[2]));
@@ -644,6 +682,7 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       renderer.domElement.removeEventListener('webglcontextrestored', contextRestoredHandler);
       restoreSceneMaterials();
       if (borrowedScene) { borrowedScene.position.z = borrowedSceneZ; sceneAnchor.remove(borrowedScene); }
+      flaps.dispose();
       ownedCoverTexture?.dispose();
       ownedGeometries.forEach(geometry => geometry.dispose());
       ownedMaterials.forEach(material => material.dispose());

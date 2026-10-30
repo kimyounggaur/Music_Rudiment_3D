@@ -112,7 +112,7 @@ test('lesson buttons, inputs, labels, settings and instruments own input even in
     assert.equal(turnTargetOwnsInput(element('SPAN', {}, element(tag))), true, tag);
   }
   for (const attributes of [{ 'data-book-instrument': '' }, { 'data-instrument': '' }, { 'data-event-select': 'note-1' },
-    { class: 'book-popup-window' }, { class: 'book-progress-tools' }, { contenteditable: 'plaintext-only' },
+    { class: 'book-popup-window' }, { class: 'book-progress-tools' }, { class: 'book-toolbar' }, { class: 'book-records' }, { contenteditable: 'plaintext-only' },
     { role: 'slider' }, { role: 'radiogroup' }, { role: 'button' }]) {
     assert.equal(turnTargetOwnsInput(element('SPAN', {}, element('DIV', attributes))), true, JSON.stringify(attributes));
   }
