@@ -1,0 +1,532 @@
+{
+  "time": "2026-10-30T11:58:39.060Z",
+  "viewport": "1280x720",
+  "results": [
+    {
+      "name": "no HTML page elements in 3D",
+      "pass": true,
+      "detail": {
+        "pages": 0
+      }
+    },
+    {
+      "name": "R7: no effect before the first gesture; opening the cover sounds cover-open",
+      "pass": true,
+      "detail": {
+        "before": 0,
+        "effects": [
+          "cover-open:ok"
+        ]
+      }
+    },
+    {
+      "name": "R4: entry ends drawn and standing; scene ≤ 40 draw calls, ≤ 6,000 segments",
+      "pass": true,
+      "detail": {
+        "lift": 1,
+        "reveal": 1,
+        "segments": 572,
+        "calls": {
+          "total": 53,
+          "withoutScene": 44,
+          "scene": 9,
+          "figure": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "mirror h1 takes page focus",
+      "pass": true,
+      "detail": {
+        "heading": "같은 끝, 다른 시작"
+      }
+    },
+    {
+      "name": "mirror keeps 2D test ids",
+      "pass": true,
+      "detail": [
+        "play-upper",
+        "play-lower",
+        "pause-resume-audio",
+        "stop-audio",
+        "close-look"
+      ]
+    },
+    {
+      "name": "R5: one toolbar outside the book (≤ 56 px, in view, no other outside buttons)",
+      "pass": true,
+      "detail": {
+        "visible": "true",
+        "height": 53,
+        "inViewport": true,
+        "outside": [],
+        "buttons": [
+          "book-prev:44",
+          "book-contents:44",
+          "book-next:44",
+          "sound:44",
+          "still:44",
+          "reading-mode:44",
+          "records:44"
+        ],
+        "overlap": 0,
+        "bounds": {
+          "left": 270.48737526649865,
+          "right": 1009.5126247335014,
+          "top": 208.51998058470386,
+          "bottom": 644.5793630044461
+        },
+        "toolbar": {
+          "top": 667,
+          "bottom": 720
+        },
+        "prev": "이전 펼침면"
+      }
+    },
+    {
+      "name": "R5: the book never sits under the toolbar (bookBounds ∩ toolbar = 0)",
+      "pass": true,
+      "detail": {
+        "overlap": 0,
+        "bounds": {
+          "left": 270.48737526649865,
+          "right": 1009.5126247335014,
+          "top": 208.51998058470386,
+          "bottom": 644.5793630044461
+        },
+        "toolbar": {
+          "top": 667,
+          "bottom": 720
+        }
+      }
+    },
+    {
+      "name": "R5: questions are printed on the page without a flap",
+      "pass": true,
+      "detail": {
+        "radios": 6
+      }
+    },
+    {
+      "name": "mirror radio answers the quiz",
+      "pass": true,
+      "detail": {
+        "checked": true,
+        "feedback": "두 줄 모두 온음표 기준 길이1이며 90에서 8/3초입니다."
+      }
+    },
+    {
+      "name": "pointer press on a printed radio answers",
+      "pass": true,
+      "detail": {
+        "pressed": "page-1:q:attacks:1-4"
+      }
+    },
+    {
+      "name": "R5: three right answers stamp the printed page",
+      "pass": true,
+      "detail": {
+        "stampBefore": false,
+        "stampMirror": true
+      }
+    },
+    {
+      "name": "R5: answer flap lifts 0 → 110° on its hinge (stage clock 0/120/240 ms); explanations printed beneath",
+      "pass": true,
+      "detail": {
+        "at0": 0,
+        "at120": 55,
+        "at240": 110,
+        "explained": true
+      }
+    },
+    {
+      "name": "R5: a press on the standing paper folds the flap down",
+      "pass": true,
+      "detail": {
+        "sheetPoint": {
+          "x": 480.96889762695264,
+          "y": 502.7214641131089
+        }
+      }
+    },
+    {
+      "name": "R5: records dialog is modal, the book ignores arrows, focus returns to 기록",
+      "pass": true,
+      "detail": {
+        "inDialog": true,
+        "spread": "spread-1",
+        "phase": "spreadIdle",
+        "returned": "records"
+      }
+    },
+    {
+      "name": "R7: a keyboard turn sounds page-turn, then page-settle",
+      "pass": true,
+      "detail": {
+        "effects": [
+          "pen",
+          "stamp",
+          "flap",
+          "flap",
+          "page-turn",
+          "page-settle",
+          "page-turn",
+          "page-settle"
+        ]
+      }
+    },
+    {
+      "name": "R5: ArrowRight / ArrowLeft turn the book with the toolbar in place",
+      "pass": true,
+      "detail": {
+        "keyNext": true,
+        "keyPrev": true
+      }
+    },
+    {
+      "name": "R6: 가까이 보기 takes the camera into the figure (user-started shot)",
+      "pass": true,
+      "detail": {
+        "camera": "shot",
+        "label": "돌아오기",
+        "moved": 8.131
+      }
+    },
+    {
+      "name": "R7: pen on a printed control, but not while music plays",
+      "pass": true,
+      "detail": {
+        "pens": [
+          {
+            "allowed": true,
+            "played": true
+          },
+          {
+            "allowed": false,
+            "played": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "R6: a printed control works during the shot",
+      "pass": true,
+      "detail": {
+        "control": "play-upper",
+        "pressed": "page-2:listen:play-upper",
+        "playing": true
+      }
+    },
+    {
+      "name": "R6: the same button returns exactly to the reading pose (≤ 1e-6)",
+      "pass": true,
+      "detail": {
+        "maxDifference": 0
+      }
+    },
+    {
+      "name": "R6: ArrowRight during a shot returns to reading, then turns",
+      "pass": true,
+      "detail": {
+        "turned": true,
+        "samples": 4,
+        "turnFromShot": 0
+      }
+    },
+    {
+      "name": "R6: Escape ends the spread-2 shot",
+      "pass": true,
+      "detail": {
+        "shot": "strip-close",
+        "escaped": true
+      }
+    },
+    {
+      "name": "Tab focus is drawn on the printed page (AX21)",
+      "pass": true,
+      "detail": {
+        "hotspot": "page-1:q:same-end:same",
+        "root": "page-1:q:same-end:same",
+        "stateBefore": 22,
+        "stateAfter": 23
+      }
+    },
+    {
+      "name": "ten splits through the mirror",
+      "pass": true,
+      "detail": {
+        "splits": 10,
+        "notes": 11
+      }
+    },
+    {
+      "name": "R4: split draws the new boundary as a pen stroke over 240 ms (data first)",
+      "pass": true,
+      "detail": {
+        "notesBefore": 11,
+        "firstStroke": {
+          "events": 12,
+          "transition": {
+            "kind": "draw",
+            "boundaries": [
+              5.625
+            ]
+          }
+        },
+        "strokeFrames": 1,
+        "strokeEnded": true
+      }
+    },
+    {
+      "name": "draft print per edit ≤ 60 ms (performance measure print:draft)",
+      "pass": true,
+      "detail": {
+        "maxDraftMs": 5.4,
+        "draftMeasures": [
+          0.5,
+          0.2,
+          0.5,
+          0.2,
+          0.5,
+          0.1,
+          0.7,
+          0.3,
+          5.4,
+          0.2,
+          0.4,
+          0.3,
+          0.5,
+          0.3,
+          0.4,
+          0.3,
+          0.4,
+          0.7,
+          0.9,
+          0.4,
+          0.7,
+          0.3,
+          0.8,
+          0.2,
+          1.2,
+          0.2,
+          0.4,
+          0.2,
+          2.6,
+          0.2,
+          0.5,
+          0.3
+        ],
+        "clickToCommitMs": [
+          0.3,
+          0.4,
+          0.8,
+          0.4,
+          0.3,
+          0.2,
+          0.5,
+          0.3,
+          0.2,
+          0.3
+        ],
+        "clickToRenderedFrameMs": [
+          2803.4,
+          1544.9,
+          1793.8,
+          1951.2,
+          2969.7,
+          2141.4,
+          2039.2,
+          2422.4,
+          1311.3,
+          559
+        ],
+        "note": "commit = React render + synchronous draft print; frame adds texture upload and a full SwiftShader frame"
+      }
+    },
+    {
+      "name": "pointer press on printed 둘로 나누기 splits",
+      "pass": true,
+      "detail": {
+        "revision": 26,
+        "notes": 13
+      }
+    },
+    {
+      "name": "settled upgrade keeps the same print (jump 0)",
+      "pass": true,
+      "detail": {
+        "draftFrameCaptured": true,
+        "settledVsFinal": {
+          "mean": 0,
+          "max": 0
+        },
+        "draftVsFinal": {
+          "mean": 1.218,
+          "max": 122
+        },
+        "bestOffsetPx": {
+          "dx": 0,
+          "dy": 0
+        },
+        "correlation": 0.9114,
+        "box": {
+          "x0": 320,
+          "x1": 636,
+          "y0": 225,
+          "y1": 615
+        }
+      }
+    },
+    {
+      "name": "tap on the 3D figure selects that note",
+      "pass": true,
+      "detail": {
+        "figure": "scene-2-lanes",
+        "selectedBefore": "edit-scene-2-main-12-1",
+        "selectedAfter": "edit-scene-2-main-4-1",
+        "expected": "edit-scene-2-main-4-1"
+      }
+    },
+    {
+      "name": "BK12: no page DOM during the turn",
+      "pass": true,
+      "detail": {
+        "turningFrames": 27,
+        "phases": [
+          "preparingTurn",
+          "turningForward"
+        ]
+      }
+    },
+    {
+      "name": "2D reading book shows DOM pages with the same lesson",
+      "pass": true,
+      "detail": {
+        "pages": 2,
+        "mirror": false,
+        "pageRevision": "31",
+        "rootRevision": "31"
+      }
+    },
+    {
+      "name": "returns to the printed 3D book",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "print memory stays in budget after 20 round trips",
+      "pass": true,
+      "detail": {
+        "startMiB": 46.1,
+        "endMiB": 46.1,
+        "budgetMiB": 48,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2
+      }
+    },
+    {
+      "name": "R5/R8: next is disabled on the last spread (the closing)",
+      "pass": true,
+      "detail": {
+        "disabled": true
+      }
+    },
+    {
+      "name": "R8: the closing prints the six experiments and its stamp slot, and leads back to the contents",
+      "pass": true,
+      "detail": {
+        "headings": [
+          "마침",
+          "돌아보기"
+        ],
+        "stamps": [
+          {
+            "id": "book",
+            "stamped": false,
+            "rect": {
+              "x": 834,
+              "y": 681.25,
+              "w": 96,
+              "h": 96
+            },
+            "center": {
+              "x": 903.5125894312389,
+              "y": 403.3834855643552
+            }
+          }
+        ],
+        "back": "page-16:closing:contents"
+      }
+    },
+    {
+      "name": "R8: 목차 (toolbar) flies seven leaves from the closing to the contents, at most three in the air, planned ≤ 1.6 s",
+      "pass": true,
+      "detail": {
+        "frames": 1,
+        "leaves": 7,
+        "maxFlying": 0,
+        "wallMs": 0,
+        "plannedMs": 686,
+        "note": "wallMs includes SwiftShader frame time (0.5–3 s per frame)"
+      }
+    },
+    {
+      "name": "R8: a printed contents row turns four leaves to lesson 4 (pointer)",
+      "pass": true,
+      "detail": {
+        "row": "page-14:toc:spread-4",
+        "frames": 1,
+        "leaves": 4,
+        "maxFlying": 0,
+        "wallMs": 0,
+        "plannedMs": 800,
+        "contentsButton": {
+          "prev": "표지로",
+          "contents": true
+        }
+      }
+    },
+    {
+      "name": "R8: the contents in the mirror jump too (keyboard / assistive path); on the contents prev reads 표지로 and 목차 is off",
+      "pass": true,
+      "detail": {
+        "mirrorJump": true,
+        "mirrorLanded": true,
+        "prev": "표지로",
+        "contents": true
+      }
+    },
+    {
+      "name": "R8 BK08: ten quick nexts turn once plus one queued (2 → 4); next then prev comes back (4 → 5 → 4)",
+      "pass": true,
+      "detail": {
+        "afterTen": "spread-4",
+        "afterReversal": "spread-4"
+      }
+    },
+    {
+      "name": "R5/R8: prev from lesson 1 opens the contents; prev on the contents (표지로) closes the book; the toolbar hides but keeps its space",
+      "pass": true,
+      "detail": {
+        "label": "표지로",
+        "toolbar": "false",
+        "hidden": "hidden"
+      }
+    },
+    {
+      "name": "no page errors",
+      "pass": true,
+      "detail": []
+    }
+  ]
+}

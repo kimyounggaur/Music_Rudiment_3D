@@ -582,3 +582,73 @@ test('reducer does not mutate a retained lesson-independent input snapshot', () 
   assert.equal(Object.hasOwn(state, 'lesson'), false);
   assert.equal(Object.hasOwn(state, 'audioContext'), false);
 });
+
+// --- v3 R6 lesson shots (REFACTOR_DESIGN_V3 §6 R6 (2)).
+type ShotEvent = 'SHOT_START' | 'SHOT_END';
+const shotEvent = (state: BookState, type: ShotEvent): BookState => bookReducer(state, { type, token: bookToken(state) });
+
+test('R6: a shot starts only from a settled, interactive 3D spread and keeps the book interactive', () => {
+  const open = openBook();
+  const shot = shotEvent(open, 'SHOT_START');
+  assert.equal(shot.camera, 'shot');
+  assert.equal(bookCanInteract(shot), true, 'hotspots and picking stay live during a shot');
+  assert.equal(shotEvent(shot, 'SHOT_START'), shot, 'no second shot on top of one');
+  // Not settled, not open, not idle, or 2D: ignored.
+  assert.equal(shotEvent(idleCover(), 'SHOT_START').camera, 'settled');
+  const entering = complete(complete(bookReducer(idleCover(), { type: 'OPEN_BOOK', inputId: 1 }), 'COVER_COMPLETE'), 'CAMERA_COMPLETE');
+  assert.equal(entering.scene, 'entering');
+  assert.notEqual(shotEvent(entering, 'SHOT_START').camera, 'shot', 'the scene must be ready');
+  const turning = bookReducer(open, { type: 'NEXT' });
+  assert.equal(shotEvent(turning, 'SHOT_START'), turning);
+  const flat = openBook({ mode: '2d' });
+  assert.equal(shotEvent(flat, 'SHOT_START').camera, 'settled');
+  // A stale token is ignored like every other completion.
+  assert.equal(bookReducer(open, { type: 'SHOT_START', token: { ...bookToken(open), navigationToken: -1 } }), open);
+});
+
+test('R6: NEXT / PREV during a shot wait for the return and run on SHOT_END', () => {
+  const shot = shotEvent(openBook(), 'SHOT_START');
+  const queued = bookReducer(shot, { type: 'NEXT', source: 'keyboard' });
+  assert.equal(queued.phase, 'spreadIdle', 'no turn starts from a shot');
+  assert.equal(queued.camera, 'shot');
+  assert.equal(queued.pendingIntent, 'next');
+  assert.equal(queued.navigationToken, shot.navigationToken, 'the shot token stays valid for its return');
+  const returned = shotEvent(queued, 'SHOT_END');
+  assert.equal(returned.camera, 'settled');
+  assert.equal(returned.phase, 'preparingTurn');
+  assert.equal(returned.destinationSpreadId, adjacentSpread('spread-1', 'next')!.spreadId);
+  assert.equal(returned.pendingIntent, null);
+  // Without an intent the return just settles the camera.
+  const plain = shotEvent(shotEvent(openBook(), 'SHOT_START'), 'SHOT_END');
+  assert.equal(plain.camera, 'settled');
+  assert.equal(plain.phase, 'spreadIdle');
+  assert.equal(shotEvent(plain, 'SHOT_END'), plain, 'SHOT_END outside a shot is ignored');
+  // PREV on the first spread closes the book after the return; an impossible NEXT is not queued.
+  const first = shotEvent(openBook(), 'SHOT_START');
+  const close = shotEvent(bookReducer(first, { type: 'PREV' }), 'SHOT_END');
+  assert.equal(close.phase, 'closing');
+  const last = finishTurn(bookReducer(openBook(), { type: 'NEXT' }));
+  assert.equal(last.currentSpreadId, BOOK_MANIFEST.at(-1)!.spreadId);
+  const lastShot = shotEvent(last, 'SHOT_START');
+  assert.equal(bookReducer(lastShot, { type: 'NEXT' }).pendingIntent, null);
+  // CLOSE_BOOK waits in the same single slot.
+  const closing = bookReducer(shotEvent(openBook(), 'SHOT_START'), { type: 'CLOSE_BOOK' });
+  assert.equal(closing.pendingIntent, 'close');
+  assert.equal(closing.phase, 'spreadIdle');
+  assert.equal(shotEvent(closing, 'SHOT_END').phase, 'closing');
+});
+
+test('R6: a drag cannot start during a shot; hiding the page releases the shot', () => {
+  const shot = shotEvent(openBook(), 'SHOT_START');
+  const drag = bookReducer(shot, { type: 'TURN_DRAG_START', direction: 'next', gestureId: 9, pointerId: 3, corner: 'bottom', sample: sample(), surfacesReady: true });
+  assert.equal(drag, shot, 'refused: the reader first gets the reading pose back');
+  const queued = bookReducer(shot, { type: 'NEXT' });
+  const hidden = bookReducer(queued, { type: 'HIDE_DOCUMENT' });
+  assert.equal(hidden.camera, 'suspended', 'the existing hidden policy replaces the shot');
+  assert.equal(hidden.pendingIntent, null);
+  assert.equal(shotEvent(hidden, 'SHOT_END'), hidden, 'the old shot token is gone');
+  const shown = bookReducer(hidden, { type: 'SHOW_DOCUMENT' });
+  assert.equal(shown.camera, 'settled');
+  // Losing WebGL or switching to 2D ends it the same way.
+  assert.equal(bookReducer(shot, { type: 'USE_2D' }).camera, 'settled');
+});

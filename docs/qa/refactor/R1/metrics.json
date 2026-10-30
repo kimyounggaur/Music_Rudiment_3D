@@ -1,0 +1,1394 @@
+[
+  {
+    "file": "before/1280x720_cover_legacy.jpg",
+    "viewport": "1280x720",
+    "state": "cover",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:37:41.409Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "39",
+      "textures": "8",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 0,
+      "bookWidthRatio": 0.4037,
+      "bookHeightRatio": 0.9162,
+      "camera.span": 4.29881
+    },
+    "luminance": {
+      "cover": 0.91969
+    }
+  },
+  {
+    "file": "before/1280x720_opening50_legacy.jpg",
+    "viewport": "1280x720",
+    "state": "opening50",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:37:42.727Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "41",
+      "textures": "8",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 101.259,
+      "bookWidthRatio": 0.2778,
+      "bookHeightRatio": 0.8339,
+      "camera.span": 6.24569
+    },
+    "luminance": {
+      "cover": 0.25058
+    },
+    "extra": {
+      "posedBy": "__bookInspector.pose({coverProgress:0.5})"
+    }
+  },
+  {
+    "file": "before/1280x720_spread1_legacy.jpg",
+    "viewport": "1280x720",
+    "state": "spread1",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:37:54.106Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "77",
+      "textures": "6",
+      "geometries": "15"
+    },
+    "layout": {
+      "coverCenterErrorPx": 217.884,
+      "bookWidthRatio": 0.6396,
+      "bookHeightRatio": 0.7409,
+      "farEdgePx": 720.53,
+      "nearEdgePx": 720.53,
+      "farNearRatio": 1,
+      "rightPageTopPx": 360.23,
+      "rightPageHeightPx": 473.89,
+      "camera.span": 5.27659
+    },
+    "luminance": {
+      "leftPage": 0.85549,
+      "rightPage": 0.64332,
+      "spine": 0.66608,
+      "leftOuter": 0.78234,
+      "rightOuter": 0.85549
+    }
+  },
+  {
+    "file": "before/1280x720_spread2_legacy.jpg",
+    "viewport": "1280x720",
+    "state": "spread2",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:38:08.895Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "115",
+      "textures": "8",
+      "geometries": "13"
+    },
+    "layout": {
+      "coverCenterErrorPx": 217.884,
+      "bookWidthRatio": 0.6396,
+      "bookHeightRatio": 0.7409,
+      "farEdgePx": 720.49,
+      "nearEdgePx": 720.49,
+      "farNearRatio": 1,
+      "rightPageTopPx": 360.23,
+      "rightPageHeightPx": 473.89,
+      "camera.span": 5.27659
+    },
+    "luminance": {
+      "leftPage": 0.85549,
+      "rightPage": 0.85549,
+      "spine": 0.6235,
+      "leftOuter": 0.7602,
+      "rightOuter": 0.85549
+    }
+  },
+  {
+    "file": "before/1280x720_2d_legacy.jpg",
+    "viewport": "1280x720",
+    "state": "2d",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:38:09.939Z",
+    "data": {
+      "phase": "fallback2D",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "false",
+      "printCount": "0",
+      "threeReady": "true",
+      "frames": "115",
+      "textures": "8",
+      "geometries": "13"
+    },
+    "layout": {
+      "coverCenterErrorPx": 217.884,
+      "bookWidthRatio": 0.6396,
+      "bookHeightRatio": 0.7409,
+      "camera.span": 5.27659
+    },
+    "luminance": {
+      "cover": 0.85549
+    }
+  },
+  {
+    "file": "before/844x390_cover_legacy.jpg",
+    "viewport": "844x390",
+    "state": "cover",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:38:16.790Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "43",
+      "textures": "8",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 0,
+      "bookWidthRatio": 0.3219,
+      "bookHeightRatio": 0.8894,
+      "camera.span": 4.42801
+    },
+    "luminance": {
+      "cover": 0.91368
+    }
+  },
+  {
+    "file": "before/844x390_opening50_legacy.jpg",
+    "viewport": "844x390",
+    "state": "opening50",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:38:17.939Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "45",
+      "textures": "8",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 53.248,
+      "bookWidthRatio": 0.2216,
+      "bookHeightRatio": 0.8095,
+      "camera.span": 6.4334
+    },
+    "luminance": {
+      "cover": 0.31246
+    },
+    "extra": {
+      "posedBy": "__bookInspector.pose({coverProgress:0.5})"
+    }
+  },
+  {
+    "file": "before/844x390_spread1_legacy.jpg",
+    "viewport": "844x390",
+    "state": "spread1",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:38:22.745Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "65",
+      "textures": "6",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 114.577,
+      "bookWidthRatio": 0.5101,
+      "bookHeightRatio": 0.7193,
+      "farEdgePx": 378.9,
+      "nearEdgePx": 378.9,
+      "farNearRatio": 1,
+      "rightPageTopPx": 189.43,
+      "rightPageHeightPx": 249.2,
+      "camera.span": 5.43517
+    },
+    "luminance": {
+      "leftPage": 0.61728,
+      "rightPage": 0.85549,
+      "spine": 0.81517,
+      "leftOuter": 0.68451,
+      "rightOuter": 0.85549
+    }
+  },
+  {
+    "file": "before/844x390_spread2_legacy.jpg",
+    "viewport": "844x390",
+    "state": "spread2",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:38:35.300Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "165",
+      "textures": "8",
+      "geometries": "10"
+    },
+    "layout": {
+      "coverCenterErrorPx": 114.577,
+      "bookWidthRatio": 0.5101,
+      "bookHeightRatio": 0.7193,
+      "farEdgePx": 378.88,
+      "nearEdgePx": 378.88,
+      "farNearRatio": 1,
+      "rightPageTopPx": 189.43,
+      "rightPageHeightPx": 249.2,
+      "camera.span": 5.43517
+    },
+    "luminance": {
+      "leftPage": 0.71386,
+      "rightPage": 0.85549,
+      "spine": 0.79587,
+      "leftOuter": 0.66418,
+      "rightOuter": 0.85549
+    }
+  },
+  {
+    "file": "before/844x390_2d_legacy.jpg",
+    "viewport": "844x390",
+    "state": "2d",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:38:36.208Z",
+    "data": {
+      "phase": "fallback2D",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "false",
+      "printCount": "0",
+      "threeReady": "true",
+      "frames": "165",
+      "textures": "8",
+      "geometries": "10"
+    },
+    "layout": {
+      "coverCenterErrorPx": 114.577,
+      "bookWidthRatio": 0.5101,
+      "bookHeightRatio": 0.7193,
+      "camera.span": 5.43517
+    },
+    "luminance": {
+      "cover": 0.85549
+    }
+  },
+  {
+    "file": "before/390x844_cover_legacy.jpg",
+    "viewport": "390x844",
+    "state": "cover",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:38:44.005Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "41",
+      "textures": "8",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 0,
+      "bookWidthRatio": 0.8943,
+      "bookHeightRatio": 0.5276,
+      "camera.span": 7.46511
+    },
+    "luminance": {
+      "cover": 0.91214
+    }
+  },
+  {
+    "file": "before/390x844_opening50_legacy.jpg",
+    "viewport": "390x844",
+    "state": "opening50",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:38:45.229Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "43",
+      "textures": "8",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 66.978,
+      "bookWidthRatio": 0.6032,
+      "bookHeightRatio": 0.4705,
+      "camera.span": 11.06855
+    },
+    "luminance": {
+      "cover": 0.25942
+    },
+    "extra": {
+      "posedBy": "__bookInspector.pose({coverProgress:0.5})"
+    }
+  },
+  {
+    "file": "before/390x844_spread1_legacy.jpg",
+    "viewport": "390x844",
+    "state": "spread1",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:38:52.211Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "84",
+      "textures": "6",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 91.854,
+      "bookWidthRatio": 0.885,
+      "bookHeightRatio": 0.2665,
+      "farEdgePx": 303.76,
+      "nearEdgePx": 303.76,
+      "farNearRatio": 1,
+      "rightPageTopPx": 151.86,
+      "rightPageHeightPx": 199.78,
+      "camera.span": 14.67199
+    },
+    "luminance": {
+      "leftPage": 0.85549,
+      "rightPage": 0.83056,
+      "spine": 0.85481,
+      "leftOuter": 0.85549,
+      "rightOuter": 0.82684
+    }
+  },
+  {
+    "file": "before/390x844_spread2_legacy.jpg",
+    "viewport": "390x844",
+    "state": "spread2",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:39:04.191Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "191",
+      "textures": "8",
+      "geometries": "10"
+    },
+    "layout": {
+      "coverCenterErrorPx": 91.854,
+      "bookWidthRatio": 0.885,
+      "bookHeightRatio": 0.2665,
+      "farEdgePx": 303.74,
+      "nearEdgePx": 303.74,
+      "farNearRatio": 1,
+      "rightPageTopPx": 151.86,
+      "rightPageHeightPx": 199.78,
+      "camera.span": 14.67199
+    },
+    "luminance": {
+      "leftPage": 0.62001,
+      "rightPage": 0.83056,
+      "spine": 0.84186,
+      "leftOuter": 0.62001,
+      "rightOuter": 0.82684
+    }
+  },
+  {
+    "file": "before/390x844_2d_legacy.jpg",
+    "viewport": "390x844",
+    "state": "2d",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:39:05.021Z",
+    "data": {
+      "phase": "fallback2D",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "false",
+      "printCount": "0",
+      "threeReady": "true",
+      "frames": "191",
+      "textures": "8",
+      "geometries": "10"
+    },
+    "layout": {
+      "coverCenterErrorPx": 91.854,
+      "bookWidthRatio": 0.885,
+      "bookHeightRatio": 0.2665,
+      "camera.span": 14.67199
+    },
+    "luminance": {
+      "cover": 0.85549
+    }
+  },
+  {
+    "file": "after/1280x720_cover_ink.jpg",
+    "viewport": "1280x720",
+    "state": "cover",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:39:17.170Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "37",
+      "textures": "8",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 0,
+      "bookWidthRatio": 0.4198,
+      "bookHeightRatio": 0.8353,
+      "camera.fov": 30,
+      "camera.distance": 8.6794,
+      "camera.worldPerPixelAtAnchor": 0.00646,
+      "camera.span": 4.65128
+    },
+    "luminance": {
+      "cover": 0.8834
+    }
+  },
+  {
+    "file": "after/1280x720_opening50_ink.jpg",
+    "viewport": "1280x720",
+    "state": "opening50",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:39:18.551Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "39",
+      "textures": "8",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 97.55,
+      "bookWidthRatio": 0.2763,
+      "bookHeightRatio": 0.8159,
+      "camera.fov": 30,
+      "camera.distance": 13.2076,
+      "camera.worldPerPixelAtAnchor": 0.00983,
+      "camera.span": 7.07793
+    },
+    "luminance": {
+      "cover": 0.53152
+    },
+    "extra": {
+      "posedBy": "__bookInspector.pose({coverProgress:0.5})"
+    }
+  },
+  {
+    "file": "after/1280x720_spread1_ink.jpg",
+    "viewport": "1280x720",
+    "state": "spread1",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:39:28.796Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "76",
+      "textures": "6",
+      "geometries": "15"
+    },
+    "layout": {
+      "coverCenterErrorPx": 197.898,
+      "bookWidthRatio": 0.6251,
+      "bookHeightRatio": 0.6756,
+      "farEdgePx": 596.4,
+      "nearEdgePx": 704.26,
+      "farNearRatio": 0.8468,
+      "rightPageTopPx": 299.87,
+      "rightPageHeightPx": 437.94,
+      "camera.fov": 30,
+      "camera.distance": 10.98762,
+      "camera.worldPerPixelAtAnchor": 0.00818,
+      "camera.span": 5.88825
+    },
+    "luminance": {
+      "leftPage": 0.85549,
+      "rightPage": 0.53875,
+      "spine": 0.69785,
+      "leftOuter": 0.85549,
+      "rightOuter": 0.85549
+    }
+  },
+  {
+    "file": "after/1280x720_spread2_ink.jpg",
+    "viewport": "1280x720",
+    "state": "spread2",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:39:42.725Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "114",
+      "textures": "8",
+      "geometries": "13"
+    },
+    "layout": {
+      "coverCenterErrorPx": 197.898,
+      "bookWidthRatio": 0.6251,
+      "bookHeightRatio": 0.6756,
+      "farEdgePx": 596.34,
+      "nearEdgePx": 704.23,
+      "farNearRatio": 0.8468,
+      "rightPageTopPx": 299.18,
+      "rightPageHeightPx": 437.09,
+      "camera.fov": 30,
+      "camera.distance": 10.98762,
+      "camera.worldPerPixelAtAnchor": 0.00818,
+      "camera.span": 5.88825
+    },
+    "luminance": {
+      "leftPage": 0.85549,
+      "rightPage": 0.85549,
+      "spine": 0.66864,
+      "leftOuter": 0.85549,
+      "rightOuter": 0.85549
+    }
+  },
+  {
+    "file": "after/1280x720_2d_ink.jpg",
+    "viewport": "1280x720",
+    "state": "2d",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:39:43.809Z",
+    "data": {
+      "phase": "fallback2D",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "false",
+      "printCount": "0",
+      "threeReady": "true",
+      "frames": "114",
+      "textures": "8",
+      "geometries": "13"
+    },
+    "layout": {
+      "coverCenterErrorPx": 197.898,
+      "bookWidthRatio": 0.6251,
+      "bookHeightRatio": 0.6756,
+      "camera.fov": 30,
+      "camera.distance": 10.98762,
+      "camera.worldPerPixelAtAnchor": 0.00818,
+      "camera.span": 5.88825
+    },
+    "luminance": {
+      "cover": 0.85549
+    }
+  },
+  {
+    "file": "after/844x390_cover_ink.jpg",
+    "viewport": "844x390",
+    "state": "cover",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:39:50.075Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "43",
+      "textures": "8",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 0,
+      "bookWidthRatio": 0.3345,
+      "bookHeightRatio": 0.8128,
+      "camera.fov": 30,
+      "camera.distance": 8.91845,
+      "camera.worldPerPixelAtAnchor": 0.01225,
+      "camera.span": 4.77939
+    },
+    "luminance": {
+      "cover": 0.88275
+    }
+  },
+  {
+    "file": "after/844x390_opening50_ink.jpg",
+    "viewport": "844x390",
+    "state": "opening50",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:39:51.187Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "45",
+      "textures": "8",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 51.353,
+      "bookWidthRatio": 0.2202,
+      "bookHeightRatio": 0.7925,
+      "camera.fov": 30,
+      "camera.distance": 13.56091,
+      "camera.worldPerPixelAtAnchor": 0.01863,
+      "camera.span": 7.26727
+    },
+    "luminance": {
+      "cover": 0.46335
+    },
+    "extra": {
+      "posedBy": "__bookInspector.pose({coverProgress:0.5})"
+    }
+  },
+  {
+    "file": "after/844x390_spread1_ink.jpg",
+    "viewport": "844x390",
+    "state": "spread1",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:39:57.255Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "90",
+      "textures": "6",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 104.376,
+      "bookWidthRatio": 0.4989,
+      "bookHeightRatio": 0.6573,
+      "farEdgePx": 315.26,
+      "nearEdgePx": 370.66,
+      "farNearRatio": 0.8505,
+      "rightPageTopPx": 158.49,
+      "rightPageHeightPx": 230.68,
+      "camera.fov": 30,
+      "camera.distance": 11.2816,
+      "camera.worldPerPixelAtAnchor": 0.0155,
+      "camera.span": 6.04579
+    },
+    "luminance": {
+      "leftPage": 0.6257,
+      "rightPage": 0.85549,
+      "spine": 0.83418,
+      "leftOuter": 0.42303,
+      "rightOuter": 0.85549
+    }
+  },
+  {
+    "file": "after/844x390_spread2_ink.jpg",
+    "viewport": "844x390",
+    "state": "spread2",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:40:09.001Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "190",
+      "textures": "8",
+      "geometries": "10"
+    },
+    "layout": {
+      "coverCenterErrorPx": 104.376,
+      "bookWidthRatio": 0.4989,
+      "bookHeightRatio": 0.6573,
+      "farEdgePx": 315.23,
+      "nearEdgePx": 370.64,
+      "farNearRatio": 0.8505,
+      "rightPageTopPx": 158.13,
+      "rightPageHeightPx": 230.25,
+      "camera.fov": 30,
+      "camera.distance": 11.2816,
+      "camera.worldPerPixelAtAnchor": 0.0155,
+      "camera.span": 6.04579
+    },
+    "luminance": {
+      "leftPage": 0.69651,
+      "rightPage": 0.85549,
+      "spine": 0.81724,
+      "leftOuter": 0.7309,
+      "rightOuter": 0.85549
+    }
+  },
+  {
+    "file": "after/844x390_2d_ink.jpg",
+    "viewport": "844x390",
+    "state": "2d",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:40:09.855Z",
+    "data": {
+      "phase": "fallback2D",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "false",
+      "printCount": "0",
+      "threeReady": "true",
+      "frames": "190",
+      "textures": "8",
+      "geometries": "10"
+    },
+    "layout": {
+      "coverCenterErrorPx": 104.376,
+      "bookWidthRatio": 0.4989,
+      "bookHeightRatio": 0.6573,
+      "camera.fov": 30,
+      "camera.distance": 11.2816,
+      "camera.worldPerPixelAtAnchor": 0.0155,
+      "camera.span": 6.04579
+    },
+    "luminance": {
+      "cover": 0.85549
+    }
+  },
+  {
+    "file": "after/390x844_cover_ink.jpg",
+    "viewport": "390x844",
+    "state": "cover",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:40:17.284Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "42",
+      "textures": "8",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 0,
+      "bookWidthRatio": 0.8912,
+      "bookHeightRatio": 0.4846,
+      "camera.fov": 30,
+      "camera.distance": 14.94486,
+      "camera.worldPerPixelAtAnchor": 0.00949,
+      "camera.span": 8.00893
+    },
+    "luminance": {
+      "cover": 0.88352
+    }
+  },
+  {
+    "file": "after/390x844_opening50_ink.jpg",
+    "viewport": "390x844",
+    "state": "opening50",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:40:18.349Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "44",
+      "textures": "8",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 89.954,
+      "bookWidthRatio": 0.612,
+      "bookHeightRatio": 0.4801,
+      "camera.fov": 30,
+      "camera.distance": 21.64048,
+      "camera.worldPerPixelAtAnchor": 0.01374,
+      "camera.span": 11.5971
+    },
+    "luminance": {
+      "cover": 0.39406
+    },
+    "extra": {
+      "posedBy": "__bookInspector.pose({coverProgress:0.5})"
+    }
+  },
+  {
+    "file": "after/390x844_spread1_ink.jpg",
+    "viewport": "390x844",
+    "state": "spread1",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:40:24.633Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "87",
+      "textures": "6",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2531,
+      "farEdgePx": 284.38,
+      "nearEdgePx": 303.27,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.5,
+      "rightPageHeightPx": 189.8,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftPage": 0.85549,
+      "rightPage": 0.83022,
+      "spine": 0.84128,
+      "leftOuter": 0.85549,
+      "rightOuter": 0.86894
+    }
+  },
+  {
+    "file": "after/390x844_spread2_ink.jpg",
+    "viewport": "390x844",
+    "state": "spread2",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:40:34.860Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "189",
+      "textures": "8",
+      "geometries": "10"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2531,
+      "farEdgePx": 284.36,
+      "nearEdgePx": 303.25,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.37,
+      "rightPageHeightPx": 189.67,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftPage": 0.6205,
+      "rightPage": 0.83032,
+      "spine": 0.82376,
+      "leftOuter": 0.6205,
+      "rightOuter": 0.86988
+    }
+  },
+  {
+    "file": "after/390x844_2d_ink.jpg",
+    "viewport": "390x844",
+    "state": "2d",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:40:35.754Z",
+    "data": {
+      "phase": "fallback2D",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "false",
+      "printCount": "0",
+      "threeReady": "true",
+      "frames": "189",
+      "textures": "8",
+      "geometries": "10"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2531,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "cover": 0.85549
+    }
+  },
+  {
+    "file": "before/1280x720_turn50_legacy.jpg",
+    "viewport": "1280x720",
+    "state": "turn50",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:41:32.556Z",
+    "data": {
+      "phase": "turningForward",
+      "camera": "settled",
+      "scene": "disposed",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "92",
+      "textures": "8",
+      "geometries": "16"
+    },
+    "layout": {
+      "coverCenterErrorPx": 217.884,
+      "bookWidthRatio": 0.6396,
+      "bookHeightRatio": 0.9224,
+      "farEdgePx": 720.51,
+      "nearEdgePx": 720.51,
+      "farNearRatio": 1,
+      "rightPageTopPx": 360.23,
+      "rightPageHeightPx": 473.89,
+      "camera.span": 5.27659
+    },
+    "luminance": {
+      "leftPage": 0.85549,
+      "rightPage": 0.85549,
+      "spine": 0.76289,
+      "leftOuter": 0.77676,
+      "rightOuter": 0.85549
+    },
+    "extra": {
+      "heldTurn": {
+        "direction": "forward",
+        "progress": 0.36151803098618984,
+        "corner": "bottom"
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "1280x720",
+    "state": "errors",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:41:34.951Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "before/844x390_turn50_legacy.jpg",
+    "viewport": "844x390",
+    "state": "turn50",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:41:55.686Z",
+    "data": {
+      "phase": "turningForward",
+      "camera": "settled",
+      "scene": "disposed",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "112",
+      "textures": "8",
+      "geometries": "10"
+    },
+    "layout": {
+      "coverCenterErrorPx": 114.577,
+      "bookWidthRatio": 0.5101,
+      "bookHeightRatio": 0.889,
+      "farEdgePx": 378.89,
+      "nearEdgePx": 378.89,
+      "farNearRatio": 1,
+      "rightPageTopPx": 189.43,
+      "rightPageHeightPx": 249.2,
+      "camera.span": 5.43517
+    },
+    "luminance": {
+      "leftPage": 0.6773,
+      "rightPage": 0.48652,
+      "spine": 0.81201,
+      "leftOuter": 0.69957,
+      "rightOuter": 0.85549
+    },
+    "extra": {
+      "heldTurn": {
+        "direction": "forward",
+        "progress": 0.3275823649019003,
+        "corner": "bottom"
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "844x390",
+    "state": "errors",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:41:57.735Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "before/390x844_turn50_legacy.jpg",
+    "viewport": "390x844",
+    "state": "turn50",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:42:13.947Z",
+    "data": {
+      "phase": "turningForward",
+      "camera": "settled",
+      "scene": "disposed",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "109",
+      "textures": "8",
+      "geometries": "10"
+    },
+    "layout": {
+      "coverCenterErrorPx": 91.854,
+      "bookWidthRatio": 0.885,
+      "bookHeightRatio": 0.3284,
+      "farEdgePx": 303.75,
+      "nearEdgePx": 303.75,
+      "farNearRatio": 1,
+      "rightPageTopPx": 151.86,
+      "rightPageHeightPx": 199.78,
+      "camera.span": 14.67199
+    },
+    "luminance": {
+      "leftPage": 0.85549,
+      "rightPage": 0.47596,
+      "spine": 0.84885,
+      "leftOuter": 0.85549,
+      "rightOuter": 0.83072
+    },
+    "extra": {
+      "heldTurn": {
+        "direction": "forward",
+        "progress": 0.3171063046902418,
+        "corner": "bottom"
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "390x844",
+    "state": "errors",
+    "renderer": "legacy",
+    "phase": "before",
+    "time": "2026-10-30T02:42:17.849Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "after/1280x720_turn50_ink.jpg",
+    "viewport": "1280x720",
+    "state": "turn50",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:42:45.629Z",
+    "data": {
+      "phase": "turningForward",
+      "camera": "settled",
+      "scene": "disposed",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "99",
+      "textures": "8",
+      "geometries": "16"
+    },
+    "layout": {
+      "coverCenterErrorPx": 197.898,
+      "bookWidthRatio": 0.6251,
+      "bookHeightRatio": 0.9224,
+      "farEdgePx": 596.38,
+      "nearEdgePx": 704.25,
+      "farNearRatio": 0.8468,
+      "rightPageTopPx": 299.62,
+      "rightPageHeightPx": 437.63,
+      "camera.fov": 30,
+      "camera.distance": 10.98762,
+      "camera.worldPerPixelAtAnchor": 0.00818,
+      "camera.span": 5.88825
+    },
+    "luminance": {
+      "leftPage": 0.85549,
+      "rightPage": 0.85549,
+      "spine": 0.74877,
+      "leftOuter": 0.85549,
+      "rightOuter": 0.85549
+    },
+    "extra": {
+      "heldTurn": {
+        "direction": "forward",
+        "progress": 0.3603262323886156,
+        "corner": "bottom"
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "1280x720",
+    "state": "errors",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:42:47.764Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "after/844x390_turn50_ink.jpg",
+    "viewport": "844x390",
+    "state": "turn50",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:43:06.148Z",
+    "data": {
+      "phase": "turningForward",
+      "camera": "settled",
+      "scene": "disposed",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "116",
+      "textures": "8",
+      "geometries": "10"
+    },
+    "layout": {
+      "coverCenterErrorPx": 104.376,
+      "bookWidthRatio": 0.4989,
+      "bookHeightRatio": 0.8845,
+      "farEdgePx": 315.25,
+      "nearEdgePx": 370.65,
+      "farNearRatio": 0.8505,
+      "rightPageTopPx": 158.37,
+      "rightPageHeightPx": 230.54,
+      "camera.fov": 30,
+      "camera.distance": 11.2816,
+      "camera.worldPerPixelAtAnchor": 0.0155,
+      "camera.span": 6.04579
+    },
+    "luminance": {
+      "leftPage": 0.67802,
+      "rightPage": 0.48652,
+      "spine": 0.81893,
+      "leftOuter": 0.4801,
+      "rightOuter": 0.85549
+    },
+    "extra": {
+      "heldTurn": {
+        "direction": "forward",
+        "progress": 0.3234919961541891,
+        "corner": "bottom"
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "844x390",
+    "state": "errors",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:43:08.155Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "after/390x844_turn50_ink.jpg",
+    "viewport": "390x844",
+    "state": "turn50",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:43:23.862Z",
+    "data": {
+      "phase": "turningForward",
+      "camera": "settled",
+      "scene": "disposed",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "109",
+      "textures": "8",
+      "geometries": "10"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.3313,
+      "farEdgePx": 284.37,
+      "nearEdgePx": 303.27,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.46,
+      "rightPageHeightPx": 189.76,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftPage": 0.85549,
+      "rightPage": 0.47739,
+      "spine": 0.78005,
+      "leftOuter": 0.85549,
+      "rightOuter": 0.87413
+    },
+    "extra": {
+      "heldTurn": {
+        "direction": "forward",
+        "progress": 0.31541954539716244,
+        "corner": "bottom"
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "390x844",
+    "state": "errors",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T02:43:25.855Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  }
+]

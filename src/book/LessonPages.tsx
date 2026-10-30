@@ -9,6 +9,7 @@ import { eq, frac, sum } from '../domain/index.ts';
 import { currentAssessment, isSceneComplete, sceneEvents, sceneState } from '../lesson/controller.ts';
 import type { LessonCommand, LessonState } from '../lesson/controller.ts';
 import { lessonEditsAllowed, lessonPageNumber, lessonTempoTiming } from './lessonPresentation.ts';
+import { answerLine, EXPERIMENT_TITLES, laneCaption, listenLabel, PAGE_TEXT, questionStampLabel, RUNNING_HEADS } from '../content/pages/pageText.ts';
 import '../styles/lesson-pages.css';
 
 export type LessonPageProps = {
@@ -49,14 +50,15 @@ function useSelection(props: LessonPageProps) {
   };
 }
 
+/** v3 R5: same structure as the printed page — questions, the '정답 보기' flap, the derived stamp. */
 function Questions(props: LessonPageProps) {
   const scene = getScene(props.sceneId);
   const current = sceneState(props.lesson, props.sceneId);
   const prefix = useId();
   if (!scene.questions.length) return null;
-  return <details className="lesson-flap" open={props.hints?.[`${props.sceneId}/questions`] === 1}
-    onToggle={event => props.onHint?.(`${props.sceneId}/questions`, event.currentTarget.open)}>
-    <summary>생각을 확인해요</summary>
+  const stamped = scene.questions.every(question => current.answers[question.id] === question.correctValue);
+  return <section className="lesson-questions" aria-labelledby={`${prefix}-questions`}>
+    <h3 id={`${prefix}-questions`}>{PAGE_TEXT.questions}</h3>
     {scene.questions.map(question => <fieldset key={question.id} data-print-disabled="false" disabled={!props.interactive || hasPlayback(props)}>
       <legend>{question.prompt}</legend>
       {question.options.map(option => <label key={option.value}>
@@ -66,7 +68,17 @@ function Questions(props: LessonPageProps) {
         <span>{option.label}</span>
       </label>)}
     </fieldset>)}
-  </details>;
+    <details className="lesson-flap" open={props.hints?.[`${props.sceneId}/answer`] === 1}
+      onToggle={event => props.onHint?.(`${props.sceneId}/answer`, event.currentTarget.open)}>
+      <summary>{PAGE_TEXT.answer}</summary>
+      {scene.questions.map(question => <p key={question.id}>{answerLine(question.prompt,
+        question.options.find(option => option.value === question.correctValue)?.label ?? question.correctValue, question.explanation)}</p>)}
+    </details>
+    <p className="lesson-stamp" data-stamped={stamped} role="status">
+      <span className="lesson-stamp-mark" aria-hidden="true">{stamped ? '확인' : ''}</span>
+      {questionStampLabel(scene.questions.length)} · {stamped ? '도장이 찍혔어요' : '모두 맞히면 도장을 찍어 줘요'}
+    </p>
+  </section>;
 }
 
 function EventList(props: LessonPageProps & { events: readonly MusicEvent[]; laneId: string }) {
@@ -91,7 +103,7 @@ export function LessonLeftPage(props: LessonPageProps) {
   const select = useSelection(props);
   const width = Math.max(120, props.pageWidth ?? 360);
   return <div className="lesson-page-content" data-lesson-revision={props.lesson.revision}>
-    <p className="book-running-title">음악이론 교과서 · 음가</p>
+    <p className="book-running-title">{RUNNING_HEADS.left}</p>
     <h1 tabIndex={-1}>{scene.title}</h1>
     <p className="lesson-question">{scene.question}</p>
     <p className="lesson-meter">4/4 · 4분음표 = {current.tempo} · C4</p>
@@ -105,9 +117,9 @@ export function LessonLeftPage(props: LessonPageProps) {
           activeEventIds={activeId ? [activeId] : []} showEventList={false}
           onSelect={props.interactive && !hasPlayback(props) ? id => select(lane.laneId, id) : undefined}
           onReady={artifact => props.onNotationReady?.(lane.laneId, artifact)} onError={props.onNotationError} />
-        {props.sceneId === 'scene-1' && <p className="lesson-score-caption">{lane.laneId === 'upper' ? '한 번 시작해서 길게 · 온음표 1개' : '네 번 시작해서 짧게 · 4분음표 4개'}</p>}
+        {laneCaption(props.sceneId, lane.laneId) && <p className="lesson-score-caption">{laneCaption(props.sceneId, lane.laneId)}</p>}
         {['scene-2', 'scene-3', 'scene-4', 'scene-6'].includes(props.sceneId) && <EventList {...props} events={events} laneId={lane.laneId} />}
-        {(props.sceneId === 'scene-3' || props.sceneId === 'scene-6') && !events.length && <p className="lesson-draft-note">빈 초안 · 아직 음표나 쉼표를 넣지 않았어요.</p>}
+        {(props.sceneId === 'scene-3' || props.sceneId === 'scene-6') && !events.length && <p className="lesson-draft-note">{PAGE_TEXT.emptyDraft}</p>}
       </section>;
     })}
     <Questions {...props} />
@@ -141,12 +153,12 @@ function Transport(props: LessonPageProps) {
   const paused = state === 'paused';
   return <div className="lesson-transport" aria-label="소리 조절">
     <button type="button" className="book-text-button lesson-pause-button" data-testid="pause-resume-audio"
-      data-print-disabled="true" data-print-text="일시정지" disabled={!props.interactive || state !== 'playing' && !paused}
-      onClick={paused ? props.onResume : props.onPause}>{paused ? '이어 듣기' : '일시정지'}</button>
-    <button type="button" className="book-text-button" data-testid="stop-audio" data-print-disabled="true" disabled={!props.interactive || !hasPlayback(props)} onClick={props.onStop}>정지</button>
+      data-print-disabled="true" data-print-text="잠깐 멈춤" disabled={!props.interactive || state !== 'playing' && !paused}
+      onClick={paused ? props.onResume : props.onPause}>{paused ? PAGE_TEXT.resume : PAGE_TEXT.pause}</button>
+    <button type="button" className="book-text-button" data-testid="stop-audio" data-print-disabled="true" disabled={!props.interactive || !hasPlayback(props)} onClick={props.onStop}>{PAGE_TEXT.stop}</button>
     <button type="button" className="book-text-button" aria-pressed={props.playback?.muted ?? false}
       data-print-disabled="false" disabled={!props.interactive} onClick={props.onMute}>{props.playback?.muted ? '음소거 해제' : '음소거'}</button>
-    <span className="lesson-play-status" data-print-text="정지 상태" role="status">{state === 'starting' ? '소리를 준비해요' : paused ? '일시정지' : state === 'playing' ? '재생 중' : '정지 상태'}</span>
+    <span className="lesson-play-status" data-print-text="정지 상태" role="status">{state === 'starting' ? '소리를 준비해요' : paused ? '잠깐 멈춤' : state === 'playing' ? '재생 중' : '정지 상태'}</span>
   </div>;
 }
 
@@ -255,10 +267,6 @@ function CombinationControls(props: LessonPageProps) {
   </div>;
 }
 
-const experimentTitles: Readonly<Record<SceneId, string>> = {
-  'scene-1': '끝나는 순간을 비교해요', 'scene-2': '한 음표를 둘로', 'scene-3': '절반을 다르게 채워요',
-  'scene-4': '소리 없는 시간도 이어져요', 'scene-5': '같은 음가, 다른 속도', 'scene-6': '한 마디를 만들어요',
-};
 
 function RestControls(props: LessonPageProps) {
   const { controlsRef, edit } = useEditGroup(props);
@@ -362,7 +370,7 @@ function CompositionControls(props: LessonPageProps) {
 export function LessonRightPage(props: LessonPageProps) {
   const scene = getScene(props.sceneId);
   return <div className="lesson-page-content lesson-page-content--experiment" data-lesson-revision={props.lesson.revision}>
-    <p className="book-running-title">들어 보고 · 나누어 보고</p>
+    <p className="book-running-title">{RUNNING_HEADS.right}</p>
     <div className="lesson-page-tools">
       <button type="button" className="lesson-reading-button" data-testid="reading-mode" data-print-disabled="false" disabled={!props.interactive}
         aria-label={props.mode === '3d' ? '크게 읽기, 2D 책으로 전환' : '3D 책으로 돌아가기'} onClick={props.onMode}>
@@ -375,13 +383,13 @@ export function LessonRightPage(props: LessonPageProps) {
         data-testid={`play-${lane.laneId}`} data-print-disabled={!sceneEvents(props.lesson, props.sceneId, lane.laneId).length}
         disabled={!props.interactive || !sceneEvents(props.lesson, props.sceneId, lane.laneId).length || props.playback?.state === 'paused' || hasPlayback(props) && props.playingLane === lane.laneId}
         onClick={() => props.onPlay(lane.laneId)}>
-        {props.sceneId === 'scene-1' ? lane.laneId === 'upper' ? '위 줄 듣기' : '아래 줄 듣기' : props.sceneId === 'scene-3' ? `과제 ${lane.laneId} 듣기` : '내 리듬 듣기'}
+        {listenLabel(props.sceneId, lane.laneId)}
       </button>)}
     </div>
-    <p className="lesson-transport-help">일시정지 후 이어 들을 수 있어요. 음표 선택·수정은 정지 후 해 주세요.</p>
-    <h2>{experimentTitles[props.sceneId]}</h2>
-    <p className="lesson-axis-caption">가로 길이는 소리의 시간이에요.</p>
-    {props.sceneId === 'scene-3' && <p className="lesson-axis-caption">가운데 가이드가 목표 1/2예요. 빈 과제는 아직 재생할 수 없어요.</p>}
+    <p className="lesson-transport-help">{PAGE_TEXT.transportHelp}</p>
+    <h2>{EXPERIMENT_TITLES[props.sceneId]}</h2>
+    <p className="lesson-axis-caption">{PAGE_TEXT.axisCaption}</p>
+    {props.sceneId === 'scene-3' && <p className="lesson-axis-caption">{PAGE_TEXT.halfTarget}</p>}
     {props.mode === '2d' ? <div className="lesson-fallback-lanes">
       {scene.lanes.map(lane => <section key={lane.laneId} aria-label={lane.label}>
         <p>{lane.label}</p><ProportionalLane {...props} laneId={lane.laneId} />
@@ -392,14 +400,14 @@ export function LessonRightPage(props: LessonPageProps) {
     {props.sceneId === 'scene-4' && <RestControls {...props} />}
     {props.sceneId === 'scene-5' && <TempoControls {...props} />}
     {props.sceneId === 'scene-6' && <CompositionControls {...props} />}
-    {props.playback?.error && <p role="status" className="lesson-feedback">{props.playback.error.message} 소리 없는 설명으로도 계속할 수 있어요.</p>}
+    {props.playback?.error && <p role="status" className="lesson-feedback">{props.playback.error.message} {PAGE_TEXT.soundless}</p>}
     {props.lesson.feedback && <p role="status" className="lesson-feedback">{props.lesson.feedback}</p>}
     <details className="lesson-flap" open={props.hints?.[`${props.sceneId}/alternative`] === 1}
       onToggle={event => props.onHint?.(`${props.sceneId}/alternative`, event.currentTarget.open)}>
-      <summary>소리 없이 살펴보기</summary>
+      <summary>{PAGE_TEXT.alternative}</summary>
       <p>{scene.alternative}</p>
       {props.sceneId === 'scene-1' && <button type="button" className="book-text-button" data-print-disabled="false" disabled={!props.interactive || hasPlayback(props)}
-        onClick={() => { props.onCommand({ type: 'observeLane', laneId: 'upper', mode: 'text' }); props.onCommand({ type: 'observeLane', laneId: 'lower', mode: 'text' }); }}>두 줄 설명을 확인했어요</button>}
+        onClick={() => { props.onCommand({ type: 'observeLane', laneId: 'upper', mode: 'text' }); props.onCommand({ type: 'observeLane', laneId: 'lower', mode: 'text' }); }}>{PAGE_TEXT.observed}</button>}
     </details>
     {props.progressTools}
     <small className="lesson-page-number">{lessonPageNumber(props.sceneId, 'right')}</small>

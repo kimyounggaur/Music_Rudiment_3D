@@ -10,6 +10,8 @@ import type { BookState } from './controller.ts';
 import { BOOK_MANIFEST } from './manifest.ts';
 import { audioOwnerIsCurrent, sameAudioOwner } from './audioOwnership.ts';
 import { lessonPlaybackDuration } from './lessonPresentation.ts';
+import { playSynthSfx } from './sfx/synthSfx.ts';
+import type { SfxContext, SfxName } from './sfx/synthSfx.ts';
 import type { BookAudioOwner } from './audioOwnership.ts';
 
 export interface BookAudioOptions {
@@ -28,7 +30,7 @@ export interface BookAudio {
   resume(): Promise<PlaybackSnapshot | null>;
   stop(reason?: string): void;
   toggleMute(): void;
-  setPreferences(preferences: Readonly<{ muted: boolean; volume: number }>): void;
+  setPreferences(preferences: Readonly<{ muted: boolean; volume: number; sfx?: boolean }>): void;
 }
 
 const running = (snapshot: PlaybackSnapshot) => snapshot.state === 'starting' || snapshot.state === 'playing';
@@ -176,12 +178,13 @@ export function useBookAudio(options: BookAudioOptions): BookAudio {
     publish(engine.getPlaybackSnapshot(), owner.current?.laneId ?? null);
   }, [publish]);
 
-  const setPreferences = useCallback((preferences: Readonly<{ muted: boolean; volume: number }>) => {
+  const setPreferences = useCallback((preferences: Readonly<{ muted: boolean; volume: number; sfx?: boolean }>) => {
     const engine = audioRef.current;
     if (!engine) return;
     // These setters store values without creating/unlocking an AudioContext.
     engine.setMuted(preferences.muted);
     engine.setChannelGain('master', preferences.volume);
+    engine.setSfxEnabled(preferences.sfx ?? true);
     publish(engine.getPlaybackSnapshot(), owner.current?.laneId ?? null);
   }, [publish]);
 
@@ -192,7 +195,9 @@ export function useBookAudio(options: BookAudioOptions): BookAudio {
   }, [options, isCurrent, stop]);
 
   useEffect(() => {
-    const engine = new TransportAdapter();
+    // v3 R7: the same single context also plays the book's procedural effects (own gain under master).
+    const engine = new TransportAdapter({ sfx: (name, context, destination, when) =>
+      playSynthSfx(name as SfxName, context as unknown as SfxContext, destination, when).nodes });
     audioRef.current = engine;
     mounted.current = true;
     // A paused book has no RAF. Native audio interruption must still reset its

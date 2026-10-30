@@ -1,0 +1,76 @@
+{
+  "time": "2026-10-30T10:14:49.682Z",
+  "sampleRate": 48000,
+  "rows": [
+    {
+      "name": "page-turn",
+      "designS": 0.35,
+      "audibleS": 0.3288,
+      "lengthError": -0.06,
+      "peak": 0.4382,
+      "peakDbfs": -7.17,
+      "rms": 0.06385,
+      "pass": true
+    },
+    {
+      "name": "page-settle",
+      "designS": 0.06,
+      "audibleS": 0.0585,
+      "lengthError": -0.026,
+      "peak": 0.3003,
+      "peakDbfs": -10.45,
+      "rms": 0.0367,
+      "pass": true
+    },
+    {
+      "name": "cover-open",
+      "designS": 0.25,
+      "audibleS": 0.248,
+      "lengthError": -0.008,
+      "peak": 0.4103,
+      "peakDbfs": -7.74,
+      "rms": 0.0815,
+      "pass": true
+    },
+    {
+      "name": "cover-close",
+      "designS": 0.25,
+      "audibleS": 0.2492,
+      "lengthError": -0.003,
+      "peak": 0.3989,
+      "peakDbfs": -7.98,
+      "rms": 0.08222,
+      "pass": true
+    },
+    {
+      "name": "pen",
+      "designS": 0.043,
+      "audibleS": 0.0426,
+      "lengthError": -0.01,
+      "peak": 0.3117,
+      "peakDbfs": -10.13,
+      "rms": 0.01535,
+      "pass": true
+    },
+    {
+      "name": "flap",
+      "designS": 0.15,
+      "audibleS": 0.1492,
+      "lengthError": -0.006,
+      "peak": 0.3846,
+      "peakDbfs": -8.3,
+      "rms": 0.03458,
+      "pass": true
+    },
+    {
+      "name": "stamp",
+      "designS": 0.12,
+      "audibleS": 0.1192,
+      "lengthError": -0.007,
+      "peak": 0.3645,
+      "peakDbfs": -8.77,
+      "rms": 0.05049,
+      "pass": true
+    }
+  ]
+}

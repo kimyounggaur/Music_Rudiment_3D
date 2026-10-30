@@ -1,0 +1,3761 @@
+[
+  {
+    "file": "after/1280x720_cover_ink.jpg",
+    "viewport": "1280x720",
+    "state": "cover",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:18:49.496Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "24",
+      "textures": "27",
+      "geometries": "11",
+      "drawCalls": "87",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 0,
+      "bookWidthRatio": 0.3553,
+      "bookHeightRatio": 0.7167,
+      "camera.fov": 30,
+      "camera.distance": 10.10843,
+      "camera.worldPerPixelAtAnchor": 0.00752,
+      "camera.span": 5.41709
+    },
+    "luminance": {
+      "cover": 0.84148
+    },
+    "extra": {
+      "chrome": {
+        "toolbarVisible": false,
+        "toolbarRect": {
+          "left": 383.109375,
+          "top": 667,
+          "right": 896.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [],
+        "coverButtons": 1,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": null,
+        "bookBottomToToolbarPx": null
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_spread1_ink.jpg",
+    "viewport": "1280x720",
+    "state": "spread1",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:20:08.030Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "56",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "101",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.17,
+      "nearEdgePx": 650.21,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 279.99,
+      "rightPageHeightPx": 400.78,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80558,
+      "leftGutter": 0.79815,
+      "rightGutter": 0.81616,
+      "rightOuter": 0.78071,
+      "leftPage": 0.81751,
+      "rightPage": 0.80536,
+      "edgeToGutterPercent": -1.77,
+      "paperShadingPercent": 4.34
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 101,
+            "withoutScene": 87,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.9,
+          "lastSettledMs": 13.3
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.2707,
+          "pxPerUnitH": 0.3002,
+          "bodyFontPx": 5.63,
+          "bodyXHeightPx": 2.99,
+          "hotspotMinPx": 7.7,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.2725,
+          "pxPerUnitH": 0.3035,
+          "bodyFontPx": 7.08,
+          "bodyXHeightPx": 3.76,
+          "hotspotMinPx": 13.1,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 383.109375,
+          "top": 667,
+          "right": 896.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_stamp_ink.jpg",
+    "viewport": "1280x720",
+    "state": "stamp",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:20:32.047Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "63",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "101",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.17,
+      "nearEdgePx": 650.21,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 279.99,
+      "rightPageHeightPx": 400.78,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80558,
+      "leftGutter": 0.79815,
+      "rightGutter": 0.81616,
+      "rightOuter": 0.78071,
+      "leftPage": 0.81751,
+      "rightPage": 0.80536,
+      "edgeToGutterPercent": -1.77,
+      "paperShadingPercent": 4.34
+    },
+    "extra": {
+      "zoom": "after/1280x720_stamp_left2x_ink.jpg",
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 101,
+            "withoutScene": 87,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.3,
+          "lastSettledMs": 0.3
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.2707,
+          "pxPerUnitH": 0.3002,
+          "bodyFontPx": 5.63,
+          "bodyXHeightPx": 2.99,
+          "hotspotMinPx": 7.7,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.2725,
+          "pxPerUnitH": 0.3035,
+          "bodyFontPx": 7.08,
+          "bodyXHeightPx": 3.76,
+          "hotspotMinPx": 13.1,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 383.109375,
+          "top": 667,
+          "right": 896.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_flap_ink.jpg",
+    "viewport": "1280x720",
+    "state": "flap",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:23:17.565Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "121",
+      "textures": "32",
+      "geometries": "19",
+      "drawCalls": "107",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.17,
+      "nearEdgePx": 650.21,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 279.99,
+      "rightPageHeightPx": 400.78,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80558,
+      "leftGutter": 0.79815,
+      "rightGutter": 0.81616,
+      "rightOuter": 0.78071,
+      "leftPage": 0.81751,
+      "rightPage": 0.80536,
+      "edgeToGutterPercent": -1.77,
+      "paperShadingPercent": 4.34
+    },
+    "extra": {
+      "frames": [
+        {
+          "ms": 0,
+          "angle": 0,
+          "file": "after/1280x720_flap_000ms_left2x_ink.jpg"
+        },
+        {
+          "ms": 120,
+          "angle": 55,
+          "file": "after/1280x720_flap_120ms_left2x_ink.jpg"
+        },
+        {
+          "ms": 240,
+          "angle": 110,
+          "file": "after/1280x720_flap_240ms_left2x_ink.jpg"
+        }
+      ],
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 107,
+            "withoutScene": 93,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.1,
+          "lastSettledMs": 0.3
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.2707,
+          "pxPerUnitH": 0.3002,
+          "bodyFontPx": 5.63,
+          "bodyXHeightPx": 2.99,
+          "hotspotMinPx": 7.7,
+          "hotspots": 12
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.2725,
+          "pxPerUnitH": 0.3035,
+          "bodyFontPx": 7.08,
+          "bodyXHeightPx": 3.76,
+          "hotspotMinPx": 13.1,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 383.109375,
+          "top": 667,
+          "right": 896.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_turn50_ink.jpg",
+    "viewport": "1280x720",
+    "state": "turn50",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:25:34.810Z",
+    "data": {
+      "phase": "turningForward",
+      "camera": "settled",
+      "scene": "disposed",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "163",
+      "textures": "34",
+      "geometries": "20",
+      "drawCalls": "99",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.8482,
+      "farEdgePx": 557.14,
+      "nearEdgePx": 650.18,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 279.78,
+      "rightPageHeightPx": 400.54,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80554,
+      "leftGutter": 0.77,
+      "rightGutter": 0.75023,
+      "rightOuter": 0.7812,
+      "leftPage": 0.81758,
+      "rightPage": 0.45753,
+      "edgeToGutterPercent": 4.19,
+      "paperShadingPercent": 6.87
+    },
+    "extra": {
+      "heldTurn": {
+        "direction": "forward",
+        "progress": 0.34373832307755947,
+        "corner": "bottom"
+      },
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 0,
+        "mirrorPresent": false,
+        "figure": {
+          "lift": 0,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 99,
+            "withoutScene": 99,
+            "scene": 0,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.1,
+          "lastSettledMs": 0
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.2708,
+          "pxPerUnitH": 0.3004,
+          "bodyFontPx": 5.63,
+          "bodyXHeightPx": 2.99,
+          "hotspotMinPx": 7.7,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.2723,
+          "pxPerUnitH": 0.3033,
+          "bodyFontPx": 7.08,
+          "bodyXHeightPx": 3.75,
+          "hotspotMinPx": 13.1,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 383.109375,
+          "top": 667,
+          "right": 896.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_spread2_ink.jpg",
+    "viewport": "1280x720",
+    "state": "spread2",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:27:17.540Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "196",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.07,
+      "nearEdgePx": 650.12,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 279.39,
+      "rightPageHeightPx": 400.08,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80488,
+      "leftGutter": 0.80594,
+      "rightGutter": 0.81662,
+      "rightOuter": 0.78206,
+      "leftPage": 0.818,
+      "rightPage": 0.75944,
+      "edgeToGutterPercent": -2.24,
+      "paperShadingPercent": 4.23
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 14,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "scissors",
+          "stats": {
+            "segments": 275,
+            "ink": 183,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 1,
+            "hits": 1,
+            "labels": 3
+          },
+          "calls": {
+            "total": 96,
+            "withoutScene": 87,
+            "scene": 9,
+            "figure": {
+              "segments": 275,
+              "ink": 183,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 1,
+              "hits": 1,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 46.1,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 4,
+          "states": 2,
+          "lastDraftMs": 0.1,
+          "lastSettledMs": 7.1
+        },
+        "left": {
+          "pageId": "page-3",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.271,
+          "pxPerUnitH": 0.3008,
+          "bodyFontPx": 7.05,
+          "bodyXHeightPx": 3.74,
+          "hotspotMinPx": 9.7,
+          "hotspots": 7
+        },
+        "right": {
+          "pageId": "page-4",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.272,
+          "pxPerUnitH": 0.3028,
+          "bodyFontPx": 7.07,
+          "bodyXHeightPx": 3.75,
+          "hotspotMinPx": 13.1,
+          "hotspots": 3
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 383.109375,
+          "top": 667,
+          "right": 896.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_2d_ink.jpg",
+    "viewport": "1280x720",
+    "state": "2d",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:27:27.858Z",
+    "data": {
+      "phase": "fallback2D",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "false",
+      "printCount": "0",
+      "threeReady": "true",
+      "frames": "196",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "cover": 0.85549
+    },
+    "extra": {
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 381.15625,
+          "top": 667,
+          "right": 898.84375,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 86,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [
+          "1번째 온음표, 온음표의 1/1, 시작 0/1",
+          "3D 책으로 돌아가기",
+          "잠깐 멈춤",
+          "정지",
+          "음소거",
+          "내 리듬 듣기",
+          "둘로 나누기",
+          "앞 음표와 합치기",
+          "뒤 음표와 합치기",
+          "되돌리기",
+          "다시 하기"
+        ],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "1280x720",
+    "state": "errors",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:27:27.859Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "after/844x390_cover_ink.jpg",
+    "viewport": "844x390",
+    "state": "cover",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:28:10.896Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "26",
+      "textures": "27",
+      "geometries": "11",
+      "drawCalls": "87",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 0,
+      "bookWidthRatio": 0.2362,
+      "bookHeightRatio": 0.5908,
+      "camera.fov": 30,
+      "camera.distance": 12.25872,
+      "camera.worldPerPixelAtAnchor": 0.01684,
+      "camera.span": 6.56943
+    },
+    "luminance": {
+      "cover": 0.84692
+    },
+    "extra": {
+      "chrome": {
+        "toolbarVisible": false,
+        "toolbarRect": {
+          "left": 165.109375,
+          "top": 337,
+          "right": 678.890625,
+          "bottom": 390
+        },
+        "toolbarButtons": [],
+        "coverButtons": 1,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": null,
+        "bookBottomToToolbarPx": null
+      }
+    }
+  },
+  {
+    "file": "after/844x390_spread1_ink.jpg",
+    "viewport": "844x390",
+    "state": "spread1",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:28:37.495Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "59",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "101",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "farEdgePx": 275.39,
+      "nearEdgePx": 316.74,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 138.33,
+      "rightPageHeightPx": 194.32,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.8046,
+      "leftGutter": 0.80593,
+      "rightGutter": 0.8143,
+      "rightOuter": 0.77711,
+      "leftPage": 0.8203,
+      "rightPage": 0.80522,
+      "edgeToGutterPercent": -2.44,
+      "paperShadingPercent": 4.57
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 101,
+            "withoutScene": 87,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.9,
+          "lastSettledMs": 10.6
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.1314,
+          "pxPerUnitH": 0.1473,
+          "bodyFontPx": 2.73,
+          "bodyXHeightPx": 1.45,
+          "hotspotMinPx": 3.7,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1321,
+          "pxPerUnitH": 0.1488,
+          "bodyFontPx": 3.44,
+          "bodyXHeightPx": 1.82,
+          "hotspotMinPx": 6.3,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 165.109375,
+          "top": 337,
+          "right": 678.890625,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "after/844x390_stamp_ink.jpg",
+    "viewport": "844x390",
+    "state": "stamp",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:28:48.736Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "67",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "101",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "farEdgePx": 275.39,
+      "nearEdgePx": 316.74,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 138.33,
+      "rightPageHeightPx": 194.32,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.8046,
+      "leftGutter": 0.80593,
+      "rightGutter": 0.8143,
+      "rightOuter": 0.77711,
+      "leftPage": 0.8203,
+      "rightPage": 0.80522,
+      "edgeToGutterPercent": -2.44,
+      "paperShadingPercent": 4.57
+    },
+    "extra": {
+      "zoom": "after/844x390_stamp_left2x_ink.jpg",
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 101,
+            "withoutScene": 87,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.5,
+          "lastSettledMs": 0.2
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.1314,
+          "pxPerUnitH": 0.1473,
+          "bodyFontPx": 2.73,
+          "bodyXHeightPx": 1.45,
+          "hotspotMinPx": 3.7,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1321,
+          "pxPerUnitH": 0.1488,
+          "bodyFontPx": 3.44,
+          "bodyXHeightPx": 1.82,
+          "hotspotMinPx": 6.3,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 165.109375,
+          "top": 337,
+          "right": 678.890625,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "after/844x390_flap_ink.jpg",
+    "viewport": "844x390",
+    "state": "flap",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:29:57.619Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "131",
+      "textures": "32",
+      "geometries": "19",
+      "drawCalls": "107",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "farEdgePx": 275.39,
+      "nearEdgePx": 316.74,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 138.33,
+      "rightPageHeightPx": 194.32,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.8046,
+      "leftGutter": 0.80593,
+      "rightGutter": 0.8143,
+      "rightOuter": 0.77711,
+      "leftPage": 0.8203,
+      "rightPage": 0.80522,
+      "edgeToGutterPercent": -2.44,
+      "paperShadingPercent": 4.57
+    },
+    "extra": {
+      "frames": [
+        {
+          "ms": 0,
+          "angle": 0,
+          "file": "after/844x390_flap_000ms_left2x_ink.jpg"
+        },
+        {
+          "ms": 120,
+          "angle": 55,
+          "file": "after/844x390_flap_120ms_left2x_ink.jpg"
+        },
+        {
+          "ms": 240,
+          "angle": 110,
+          "file": "after/844x390_flap_240ms_left2x_ink.jpg"
+        }
+      ],
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 107,
+            "withoutScene": 93,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.2,
+          "lastSettledMs": 0.2
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.1314,
+          "pxPerUnitH": 0.1473,
+          "bodyFontPx": 2.73,
+          "bodyXHeightPx": 1.45,
+          "hotspotMinPx": 3.7,
+          "hotspots": 12
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1321,
+          "pxPerUnitH": 0.1488,
+          "bodyFontPx": 3.44,
+          "bodyXHeightPx": 1.82,
+          "hotspotMinPx": 6.3,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 165.109375,
+          "top": 337,
+          "right": 678.890625,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "after/844x390_turn50_ink.jpg",
+    "viewport": "844x390",
+    "state": "turn50",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:30:44.596Z",
+    "data": {
+      "phase": "turningForward",
+      "camera": "settled",
+      "scene": "disposed",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "176",
+      "textures": "34",
+      "geometries": "20",
+      "drawCalls": "99",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.7544,
+      "farEdgePx": 275.37,
+      "nearEdgePx": 316.73,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 138.24,
+      "rightPageHeightPx": 194.22,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.805,
+      "leftGutter": 0.78797,
+      "rightGutter": 0.76753,
+      "rightOuter": 0.54137,
+      "leftPage": 0.82023,
+      "rightPage": 0.48203,
+      "edgeToGutterPercent": -15.53,
+      "paperShadingPercent": 32.75
+    },
+    "extra": {
+      "heldTurn": {
+        "direction": "forward",
+        "progress": 0.31605147011578083,
+        "corner": "bottom"
+      },
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 0,
+        "mirrorPresent": false,
+        "figure": {
+          "lift": 0,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 99,
+            "withoutScene": 99,
+            "scene": 0,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.1,
+          "lastSettledMs": 0.2
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.1314,
+          "pxPerUnitH": 0.1474,
+          "bodyFontPx": 2.73,
+          "bodyXHeightPx": 1.45,
+          "hotspotMinPx": 3.7,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1321,
+          "pxPerUnitH": 0.1487,
+          "bodyFontPx": 3.43,
+          "bodyXHeightPx": 1.82,
+          "hotspotMinPx": 6.3,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 165.109375,
+          "top": 337,
+          "right": 678.890625,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "after/844x390_spread2_ink.jpg",
+    "viewport": "844x390",
+    "state": "spread2",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:31:22.281Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "213",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "farEdgePx": 275.34,
+      "nearEdgePx": 316.7,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 138.06,
+      "rightPageHeightPx": 194.02,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.80539,
+      "leftGutter": 0.80931,
+      "rightGutter": 0.81638,
+      "rightOuter": 0.77449,
+      "leftPage": 0.82009,
+      "rightPage": 0.77207,
+      "edgeToGutterPercent": -2.9,
+      "paperShadingPercent": 5.13
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 14,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "scissors",
+          "stats": {
+            "segments": 275,
+            "ink": 183,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 1,
+            "hits": 1,
+            "labels": 3
+          },
+          "calls": {
+            "total": 96,
+            "withoutScene": 87,
+            "scene": 9,
+            "figure": {
+              "segments": 275,
+              "ink": 183,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 1,
+              "hits": 1,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 46.1,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 4,
+          "states": 2,
+          "lastDraftMs": 0.2,
+          "lastSettledMs": 1.6
+        },
+        "left": {
+          "pageId": "page-3",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1315,
+          "pxPerUnitH": 0.1476,
+          "bodyFontPx": 3.42,
+          "bodyXHeightPx": 1.81,
+          "hotspotMinPx": 4.7,
+          "hotspots": 7
+        },
+        "right": {
+          "pageId": "page-4",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1319,
+          "pxPerUnitH": 0.1485,
+          "bodyFontPx": 3.43,
+          "bodyXHeightPx": 1.82,
+          "hotspotMinPx": 6.3,
+          "hotspots": 3
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 165.109375,
+          "top": 337,
+          "right": 678.890625,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "after/844x390_2d_ink.jpg",
+    "viewport": "844x390",
+    "state": "2d",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:31:25.480Z",
+    "data": {
+      "phase": "fallback2D",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "false",
+      "printCount": "0",
+      "threeReady": "true",
+      "frames": "213",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "cover": 0.85549
+    },
+    "extra": {
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 163.15625,
+          "top": 337,
+          "right": 680.84375,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 86,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [
+          "1번째 온음표, 온음표의 1/1, 시작 0/1",
+          "3D 책으로 돌아가기",
+          "잠깐 멈춤",
+          "정지",
+          "음소거",
+          "내 리듬 듣기",
+          "둘로 나누기",
+          "앞 음표와 합치기",
+          "뒤 음표와 합치기",
+          "되돌리기",
+          "다시 하기"
+        ],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "844x390",
+    "state": "errors",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:31:25.481Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "after/390x844_cover_ink.jpg",
+    "viewport": "390x844",
+    "state": "cover",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:31:59.830Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "25",
+      "textures": "27",
+      "geometries": "11",
+      "drawCalls": "87",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 0,
+      "bookWidthRatio": 0.8931,
+      "bookHeightRatio": 0.4846,
+      "camera.fov": 30,
+      "camera.distance": 14.94486,
+      "camera.worldPerPixelAtAnchor": 0.00949,
+      "camera.span": 8.00893
+    },
+    "luminance": {
+      "cover": 0.84267
+    },
+    "extra": {
+      "chrome": {
+        "toolbarVisible": false,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [],
+        "coverButtons": 1,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": null,
+        "bookBottomToToolbarPx": null
+      }
+    }
+  },
+  {
+    "file": "after/390x844_spread1_ink.jpg",
+    "viewport": "390x844",
+    "state": "spread1",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:32:31.883Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "57",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "101",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "farEdgePx": 284.33,
+      "nearEdgePx": 303.21,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.47,
+      "rightPageHeightPx": 189.62,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.75033,
+      "leftGutter": 0.75484,
+      "rightGutter": 0.77662,
+      "rightOuter": 0.6922,
+      "leftPage": 0.78109,
+      "rightPage": 0.76132,
+      "edgeToGutterPercent": -6.16,
+      "paperShadingPercent": 10.87
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 101,
+            "withoutScene": 87,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.7,
+          "lastSettledMs": 1.5
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.1286,
+          "pxPerUnitH": 0.1465,
+          "bodyFontPx": 2.67,
+          "bodyXHeightPx": 1.42,
+          "hotspotMinPx": 3.7,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1289,
+          "pxPerUnitH": 0.1472,
+          "bodyFontPx": 3.35,
+          "bodyXHeightPx": 1.78,
+          "hotspotMinPx": 6.2,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "after/390x844_stamp_ink.jpg",
+    "viewport": "390x844",
+    "state": "stamp",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:32:40.287Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "63",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "101",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "farEdgePx": 284.33,
+      "nearEdgePx": 303.21,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.47,
+      "rightPageHeightPx": 189.62,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.75033,
+      "leftGutter": 0.75484,
+      "rightGutter": 0.77662,
+      "rightOuter": 0.6922,
+      "leftPage": 0.78109,
+      "rightPage": 0.76132,
+      "edgeToGutterPercent": -6.16,
+      "paperShadingPercent": 10.87
+    },
+    "extra": {
+      "zoom": "after/390x844_stamp_left2x_ink.jpg",
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 101,
+            "withoutScene": 87,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.3,
+          "lastSettledMs": 0.3
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.1286,
+          "pxPerUnitH": 0.1465,
+          "bodyFontPx": 2.67,
+          "bodyXHeightPx": 1.42,
+          "hotspotMinPx": 3.7,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1289,
+          "pxPerUnitH": 0.1472,
+          "bodyFontPx": 3.35,
+          "bodyXHeightPx": 1.78,
+          "hotspotMinPx": 6.2,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "after/390x844_flap_ink.jpg",
+    "viewport": "390x844",
+    "state": "flap",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:33:43.092Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "126",
+      "textures": "32",
+      "geometries": "19",
+      "drawCalls": "107",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "farEdgePx": 284.33,
+      "nearEdgePx": 303.21,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.47,
+      "rightPageHeightPx": 189.62,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.75033,
+      "leftGutter": 0.75484,
+      "rightGutter": 0.77662,
+      "rightOuter": 0.6922,
+      "leftPage": 0.78109,
+      "rightPage": 0.76132,
+      "edgeToGutterPercent": -6.16,
+      "paperShadingPercent": 10.87
+    },
+    "extra": {
+      "frames": [
+        {
+          "ms": 0,
+          "angle": 0,
+          "file": "after/390x844_flap_000ms_left2x_ink.jpg"
+        },
+        {
+          "ms": 120,
+          "angle": 55,
+          "file": "after/390x844_flap_120ms_left2x_ink.jpg"
+        },
+        {
+          "ms": 240,
+          "angle": 110,
+          "file": "after/390x844_flap_240ms_left2x_ink.jpg"
+        }
+      ],
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 107,
+            "withoutScene": 93,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.1,
+          "lastSettledMs": 0.1
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.1286,
+          "pxPerUnitH": 0.1465,
+          "bodyFontPx": 2.67,
+          "bodyXHeightPx": 1.42,
+          "hotspotMinPx": 3.7,
+          "hotspots": 12
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1289,
+          "pxPerUnitH": 0.1472,
+          "bodyFontPx": 3.35,
+          "bodyXHeightPx": 1.78,
+          "hotspotMinPx": 6.2,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "after/390x844_turn50_ink.jpg",
+    "viewport": "390x844",
+    "state": "turn50",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:34:27.668Z",
+    "data": {
+      "phase": "turningForward",
+      "camera": "settled",
+      "scene": "disposed",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "171",
+      "textures": "34",
+      "geometries": "20",
+      "drawCalls": "99",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.3313,
+      "farEdgePx": 284.32,
+      "nearEdgePx": 303.2,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.43,
+      "rightPageHeightPx": 189.57,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.74993,
+      "leftGutter": 0.71556,
+      "rightGutter": 0.7136,
+      "rightOuter": 0.48523,
+      "leftPage": 0.78123,
+      "rightPage": 0.45903,
+      "edgeToGutterPercent": -15.71,
+      "paperShadingPercent": 35.3
+    },
+    "extra": {
+      "heldTurn": {
+        "direction": "forward",
+        "progress": 0.3154424335807562,
+        "corner": "bottom"
+      },
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 0,
+        "mirrorPresent": false,
+        "figure": {
+          "lift": 0,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 99,
+            "withoutScene": 99,
+            "scene": 0,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.1,
+          "lastSettledMs": 0.1
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.1286,
+          "pxPerUnitH": 0.1466,
+          "bodyFontPx": 2.68,
+          "bodyXHeightPx": 1.42,
+          "hotspotMinPx": 3.7,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1289,
+          "pxPerUnitH": 0.1472,
+          "bodyFontPx": 3.35,
+          "bodyXHeightPx": 1.78,
+          "hotspotMinPx": 6.2,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "after/390x844_spread2_ink.jpg",
+    "viewport": "390x844",
+    "state": "spread2",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:35:03.467Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "207",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "farEdgePx": 284.3,
+      "nearEdgePx": 303.19,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.34,
+      "rightPageHeightPx": 189.49,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.74726,
+      "leftGutter": 0.76487,
+      "rightGutter": 0.77936,
+      "rightOuter": 0.69341,
+      "leftPage": 0.78164,
+      "rightPage": 0.71868,
+      "edgeToGutterPercent": -7.19,
+      "paperShadingPercent": 11.03
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 14,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "scissors",
+          "stats": {
+            "segments": 275,
+            "ink": 183,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 1,
+            "hits": 1,
+            "labels": 3
+          },
+          "calls": {
+            "total": 96,
+            "withoutScene": 87,
+            "scene": 9,
+            "figure": {
+              "segments": 275,
+              "ink": 183,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 1,
+              "hits": 1,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 46.1,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 4,
+          "states": 2,
+          "lastDraftMs": 0.3,
+          "lastSettledMs": 7.8
+        },
+        "left": {
+          "pageId": "page-3",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1287,
+          "pxPerUnitH": 0.1467,
+          "bodyFontPx": 3.34,
+          "bodyXHeightPx": 1.77,
+          "hotspotMinPx": 4.6,
+          "hotspots": 7
+        },
+        "right": {
+          "pageId": "page-4",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1288,
+          "pxPerUnitH": 0.1471,
+          "bodyFontPx": 3.35,
+          "bodyXHeightPx": 1.78,
+          "hotspotMinPx": 6.2,
+          "hotspots": 3
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "after/390x844_2d_ink.jpg",
+    "viewport": "390x844",
+    "state": "2d",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:35:06.641Z",
+    "data": {
+      "phase": "fallback2D",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "false",
+      "printCount": "0",
+      "threeReady": "true",
+      "frames": "207",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "cover": 0.85549
+    },
+    "extra": {
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 53,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [
+          "1번째 온음표, 온음표의 1/1, 시작 0/1",
+          "3D 책으로 돌아가기",
+          "잠깐 멈춤",
+          "정지",
+          "음소거",
+          "내 리듬 듣기",
+          "둘로 나누기",
+          "앞 음표와 합치기",
+          "뒤 음표와 합치기",
+          "되돌리기",
+          "다시 하기"
+        ],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "390x844",
+    "state": "errors",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:35:06.642Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "after/568x320_cover_ink.jpg",
+    "viewport": "568x320",
+    "state": "cover",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:35:26.698Z",
+    "data": {
+      "phase": "coverIdle",
+      "camera": "settled",
+      "scene": "unmounted",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "22",
+      "textures": "27",
+      "geometries": "11",
+      "drawCalls": "87",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 0,
+      "bookWidthRatio": 0.2889,
+      "bookHeightRatio": 0.5925,
+      "camera.fov": 30,
+      "camera.distance": 12.22279,
+      "camera.worldPerPixelAtAnchor": 0.02047,
+      "camera.span": 6.55017
+    },
+    "luminance": {
+      "cover": 0.84347
+    },
+    "extra": {
+      "chrome": {
+        "toolbarVisible": false,
+        "toolbarRect": {
+          "left": 91.2734375,
+          "top": 279,
+          "right": 476.7265625,
+          "bottom": 320
+        },
+        "toolbarButtons": [],
+        "coverButtons": 1,
+        "outsideButtons": [],
+        "toolbarHeightPx": 41,
+        "bookToolbarOverlapPx2": null,
+        "bookBottomToToolbarPx": null
+      }
+    }
+  },
+  {
+    "file": "after/568x320_spread1_ink.jpg",
+    "viewport": "568x320",
+    "state": "spread1",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:35:45.273Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "57",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "101",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 68.421,
+      "bookWidthRatio": 0.5166,
+      "bookHeightRatio": 0.5401,
+      "farEdgePx": 224.65,
+      "nearEdgePx": 258.16,
+      "farNearRatio": 0.8702,
+      "rightPageTopPx": 112.84,
+      "rightPageHeightPx": 158.56,
+      "camera.fov": 30,
+      "camera.distance": 13.12275,
+      "camera.worldPerPixelAtAnchor": 0.02198,
+      "camera.span": 7.03246
+    },
+    "luminance": {
+      "leftOuter": 0.7979,
+      "leftGutter": 0.80704,
+      "rightGutter": 0.81214,
+      "rightOuter": 0.76199,
+      "leftPage": 0.82002,
+      "rightPage": 0.80493,
+      "edgeToGutterPercent": -3.8,
+      "paperShadingPercent": 6.18
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 101,
+            "withoutScene": 87,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 3.9,
+          "lastSettledMs": 8.8
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.1072,
+          "pxPerUnitH": 0.1201,
+          "bodyFontPx": 2.23,
+          "bodyXHeightPx": 1.18,
+          "hotspotMinPx": 3.1,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1078,
+          "pxPerUnitH": 0.1213,
+          "bodyFontPx": 2.8,
+          "bodyXHeightPx": 1.49,
+          "hotspotMinPx": 5.2,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 91.2734375,
+          "top": 279,
+          "right": 476.7265625,
+          "bottom": 320
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 36,
+            "h": 36
+          },
+          {
+            "id": "book-contents",
+            "w": 38,
+            "h": 36
+          },
+          {
+            "id": "book-next",
+            "w": 36,
+            "h": 36
+          },
+          {
+            "id": "sound",
+            "w": 38,
+            "h": 36
+          },
+          {
+            "id": "still",
+            "w": 65,
+            "h": 36
+          },
+          {
+            "id": "reading-mode",
+            "w": 65,
+            "h": 36
+          },
+          {
+            "id": "records",
+            "w": 38,
+            "h": 36
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 41,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 15.9
+      }
+    }
+  },
+  {
+    "file": "after/568x320_spread2_ink.jpg",
+    "viewport": "568x320",
+    "state": "spread2",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:36:12.317Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "89",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 68.421,
+      "bookWidthRatio": 0.5166,
+      "bookHeightRatio": 0.5401,
+      "farEdgePx": 224.61,
+      "nearEdgePx": 258.12,
+      "farNearRatio": 0.8702,
+      "rightPageTopPx": 112.62,
+      "rightPageHeightPx": 158.32,
+      "camera.fov": 30,
+      "camera.distance": 13.12275,
+      "camera.worldPerPixelAtAnchor": 0.02198,
+      "camera.span": 7.03246
+    },
+    "luminance": {
+      "leftOuter": 0.79704,
+      "leftGutter": 0.81083,
+      "rightGutter": 0.81489,
+      "rightOuter": 0.76894,
+      "leftPage": 0.82002,
+      "rightPage": 0.77593,
+      "edgeToGutterPercent": -3.81,
+      "paperShadingPercent": 5.64
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 14,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "scissors",
+          "stats": {
+            "segments": 275,
+            "ink": 183,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 1,
+            "hits": 1,
+            "labels": 3
+          },
+          "calls": {
+            "total": 96,
+            "withoutScene": 87,
+            "scene": 9,
+            "figure": {
+              "segments": 275,
+              "ink": 183,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 1,
+              "hits": 1,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 46.1,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 4,
+          "states": 2,
+          "lastDraftMs": 1.5,
+          "lastSettledMs": 12.8
+        },
+        "left": {
+          "pageId": "page-3",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1073,
+          "pxPerUnitH": 0.1203,
+          "bodyFontPx": 2.79,
+          "bodyXHeightPx": 1.48,
+          "hotspotMinPx": 3.8,
+          "hotspots": 7
+        },
+        "right": {
+          "pageId": "page-4",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1076,
+          "pxPerUnitH": 0.121,
+          "bodyFontPx": 2.8,
+          "bodyXHeightPx": 1.48,
+          "hotspotMinPx": 5.2,
+          "hotspots": 3
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 91.2734375,
+          "top": 279,
+          "right": 476.7265625,
+          "bottom": 320
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 36,
+            "h": 36
+          },
+          {
+            "id": "book-contents",
+            "w": 38,
+            "h": 36
+          },
+          {
+            "id": "book-next",
+            "w": 36,
+            "h": 36
+          },
+          {
+            "id": "sound",
+            "w": 38,
+            "h": 36
+          },
+          {
+            "id": "still",
+            "w": 65,
+            "h": 36
+          },
+          {
+            "id": "reading-mode",
+            "w": 65,
+            "h": 36
+          },
+          {
+            "id": "records",
+            "w": 38,
+            "h": 36
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 41,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 15.9
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "568x320",
+    "state": "errors",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:36:12.336Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "after/360x740_spread1_ink.jpg",
+    "viewport": "360x740",
+    "state": "spread1",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:36:51.178Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "33",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "101",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 77.641,
+      "bookWidthRatio": 0.8783,
+      "bookHeightRatio": 0.2576,
+      "farEdgePx": 260.15,
+      "nearEdgePx": 278.23,
+      "farNearRatio": 0.935,
+      "rightPageTopPx": 130.37,
+      "rightPageHeightPx": 173.71,
+      "camera.fov": 30,
+      "camera.distance": 27.11558,
+      "camera.worldPerPixelAtAnchor": 0.01964,
+      "camera.span": 14.5312
+    },
+    "luminance": {
+      "leftOuter": 0.76331,
+      "leftGutter": 0.77102,
+      "rightGutter": 0.78342,
+      "rightOuter": 0.71365,
+      "leftPage": 0.79082,
+      "rightPage": 0.77408,
+      "edgeToGutterPercent": -5.25,
+      "paperShadingPercent": 8.91
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 101,
+            "withoutScene": 87,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 37.27,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 2,
+          "states": 2,
+          "lastDraftMs": 0.8,
+          "lastSettledMs": 7.1
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.1178,
+          "pxPerUnitH": 0.1343,
+          "bodyFontPx": 2.45,
+          "bodyXHeightPx": 1.3,
+          "hotspotMinPx": 3.4,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1181,
+          "pxPerUnitH": 0.1349,
+          "bodyFontPx": 3.07,
+          "bodyXHeightPx": 1.63,
+          "hotspotMinPx": 5.7,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 687,
+          "right": 360,
+          "bottom": 740
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 58,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 58,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 235
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "360x740",
+    "state": "errors",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T08:36:51.180Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "after/1280x720_spread1_legacy.jpg",
+    "viewport": "1280x720",
+    "state": "spread1",
+    "renderer": "legacy",
+    "phase": "after",
+    "time": "2026-10-30T08:37:12.097Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "47",
+      "textures": "6",
+      "geometries": "15"
+    },
+    "layout": {
+      "coverCenterErrorPx": 217.884,
+      "bookWidthRatio": 0.6396,
+      "bookHeightRatio": 0.7409,
+      "farEdgePx": 720.53,
+      "nearEdgePx": 720.53,
+      "farNearRatio": 1,
+      "rightPageTopPx": 360.23,
+      "rightPageHeightPx": 473.89,
+      "camera.span": 5.27659
+    },
+    "luminance": {
+      "leftOuter": 0.85549,
+      "leftGutter": 0.85549,
+      "rightGutter": 0.85459,
+      "rightOuter": 0.85549,
+      "leftPage": 0.85549,
+      "rightPage": 0.64332,
+      "edgeToGutterPercent": 0.05,
+      "paperShadingPercent": 0.11
+    }
+  },
+  {
+    "file": "",
+    "viewport": "1280x720",
+    "state": "errors",
+    "renderer": "legacy",
+    "phase": "after",
+    "time": "2026-10-30T08:37:12.100Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "after/844x390_spread1_legacy.jpg",
+    "viewport": "844x390",
+    "state": "spread1",
+    "renderer": "legacy",
+    "phase": "after",
+    "time": "2026-10-30T08:37:23.174Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "64",
+      "textures": "6",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 114.577,
+      "bookWidthRatio": 0.5101,
+      "bookHeightRatio": 0.7193,
+      "farEdgePx": 378.9,
+      "nearEdgePx": 378.9,
+      "farNearRatio": 1,
+      "rightPageTopPx": 189.43,
+      "rightPageHeightPx": 249.2,
+      "camera.span": 5.43517
+    },
+    "luminance": {
+      "leftOuter": 0.85549,
+      "leftGutter": 0.82039,
+      "rightGutter": 0.74802,
+      "rightOuter": 0.80235,
+      "leftPage": 0.61728,
+      "rightPage": 0.85549,
+      "edgeToGutterPercent": 5.39,
+      "paperShadingPercent": 12.56
+    }
+  },
+  {
+    "file": "",
+    "viewport": "844x390",
+    "state": "errors",
+    "renderer": "legacy",
+    "phase": "after",
+    "time": "2026-10-30T08:37:23.175Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "after/390x844_spread1_legacy.jpg",
+    "viewport": "390x844",
+    "state": "spread1",
+    "renderer": "legacy",
+    "phase": "after",
+    "time": "2026-10-30T08:37:34.931Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "60",
+      "textures": "6",
+      "geometries": "9"
+    },
+    "layout": {
+      "coverCenterErrorPx": 91.854,
+      "bookWidthRatio": 0.885,
+      "bookHeightRatio": 0.2665,
+      "farEdgePx": 303.76,
+      "nearEdgePx": 303.76,
+      "farNearRatio": 1,
+      "rightPageTopPx": 151.86,
+      "rightPageHeightPx": 199.78,
+      "camera.span": 14.67199
+    },
+    "luminance": {
+      "leftOuter": 0.68472,
+      "leftGutter": 0.7944,
+      "rightGutter": 0.72719,
+      "rightOuter": 0.7675,
+      "leftPage": 0.63694,
+      "rightPage": 0.83056,
+      "edgeToGutterPercent": -4.78,
+      "paperShadingPercent": 13.81
+    }
+  },
+  {
+    "file": "",
+    "viewport": "390x844",
+    "state": "errors",
+    "renderer": "legacy",
+    "phase": "after",
+    "time": "2026-10-30T08:37:34.932Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  }
+]

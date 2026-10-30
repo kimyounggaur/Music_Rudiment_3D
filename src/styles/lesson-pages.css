@@ -25,3 +25,6 @@
   .lesson-page-tools{grid-template-columns:repeat(2,minmax(44px,1fr))}
   .lesson-page-tools .lesson-reading-button{grid-column:1/-1}
 }
+
+/* v3 R5: the questions' stamp in the 2D reading book (the 3D page draws it on the state layer). */
+.lesson-stamp{display:flex;align-items:center;gap:10px;font-size:13px;color:#5d6a6e}.lesson-stamp-mark{display:inline-grid;place-items:center;width:44px;height:44px;border:2px dashed #b9b2a0;border-radius:50%;font-family:"Batang",serif;font-weight:700;color:#b23a28;transform:rotate(-10deg)}.lesson-stamp[data-stamped="true"] .lesson-stamp-mark{border:3px solid #b23a28cc}

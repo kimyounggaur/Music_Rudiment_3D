@@ -1,10 +1,13 @@
-import { BOOK_MANIFEST, adjacentSpread, spreadIndex } from './manifest.ts';
+import { BOOK_MANIFEST, bookIndex, bookNeighbour } from './manifest.ts';
 import type { NavigationDirection, SpreadId } from './manifest.ts';
 
 export type BookPhase = 'bootLoading' | 'introReady' | 'introMoving' | 'coverIdle' | 'opening'
   | 'spreadIdle' | 'preparingTurn' | 'turningForward' | 'turningBack' | 'settling'
   | 'cancelSettling' | 'closing' | 'fallback2D' | 'recoverableError';
-export type CameraState = 'loading' | 'intro' | 'settled' | 'reframing' | 'suspended';
+/** v3 R6: 'shot' = a reader-started lesson shot; the book stays interactive and turns wait for the return. */
+export type CameraState = 'loading' | 'intro' | 'settled' | 'reframing' | 'suspended' | 'shot';
+/** One queued intent (the existing single-slot policy); 'close' only arises while a shot returns. */
+export type PendingIntent = NavigationDirection | 'close' | Readonly<{ goTo: SpreadId }>;
 export type SceneState = 'unmounted' | 'loading' | 'entering' | 'ready' | 'playing' | 'paused' | 'exiting' | 'disposed';
 export type TransportState = 'locked' | 'stopped' | 'starting' | 'playing' | 'paused' | 'unavailable';
 export type NavigationSource = 'button' | 'keyboard' | 'drag';
@@ -36,7 +39,7 @@ export type BookState = BookToken & Readonly<{
   destinationSpreadId: SpreadId | null;
   direction: NavigationDirection | null;
   progress: number;
-  pendingIntent: NavigationDirection | null;
+  pendingIntent: PendingIntent | null;
   gesture: TurnGesture | null;
   coverComplete: boolean;
   cameraComplete: boolean;
@@ -55,6 +58,8 @@ export type BookEvent =
   | Readonly<{ type: 'RESTORE_CLOSED'; mode: '3d' | '2d'; reducedMotion: boolean }>
   | (WithToken & Readonly<{ type: 'COVER_COMPLETE' | 'CAMERA_COMPLETE' | 'SCENE_READY' | 'SCENE_EXITED' | 'TURN_PREPARED' | 'TURN_COMPLETE' | 'SETTLED' }>)
   | Readonly<{ type: 'NEXT' | 'PREV'; source?: NavigationSource }>
+  /** v3 R8: jump to any spread of the book (contents entries, the toolbar's contents); n leaves turn in sequence. */
+  | Readonly<{ type: 'GO_TO'; spreadId: SpreadId; source?: NavigationSource }>
   | (WithToken & Readonly<{ type: 'TURN_PROGRESS'; progress: number }>)
   | Readonly<{ type: 'TURN_DRAG_START'; direction: NavigationDirection; gestureId: number; pointerId: number; corner: 'top' | 'bottom'; sample: PointerSample; surfacesReady: boolean }>
   | (WithToken & Readonly<{ type: 'TURN_DRAG_MOVE'; gestureId: number; sample: PointerSample; progress: number; activated: boolean }>)
@@ -63,6 +68,7 @@ export type BookEvent =
   | Readonly<{ type: 'CLOSE_BOOK' | 'HIDE_DOCUMENT' | 'SHOW_DOCUMENT' | 'WEBGL_LOST' | 'USE_2D' | 'RETRY_3D' }>
   | (WithToken & Readonly<{ type: 'LOAD_FAIL'; reason: string }>)
   | Readonly<{ type: 'SET_REDUCED_MOTION'; value: boolean }>
+  | (WithToken & Readonly<{ type: 'SHOT_START' | 'SHOT_END' }>)
   | (WithToken & Readonly<{ type: 'TRANSPORT_STARTING' | 'TRANSPORT_PAUSED' | 'TRANSPORT_STOPPED' | 'TRANSPORT_UNAVAILABLE' }>)
   | (WithToken & Readonly<{ type: 'TRANSPORT_PLAYING'; sessionId: number }>);
 
@@ -88,7 +94,7 @@ export function tokenMatches(state: BookState, token: BookToken): boolean {
 
 export function bookCanInteract(state: BookState): boolean {
   return !state.hidden && state.isOpen && (state.phase === 'spreadIdle' || state.phase === 'fallback2D')
-    && state.camera === 'settled' && ['ready', 'playing', 'paused'].includes(state.scene);
+    && (state.camera === 'settled' || state.camera === 'shot') && ['ready', 'playing', 'paused'].includes(state.scene);
 }
 
 const idlePhase = (state: BookState): BookPhase => state.mode === '2d' ? 'fallback2D' : 'spreadIdle';
@@ -98,14 +104,21 @@ const activeTurn = (state: BookState) => state.phase === 'preparingTurn' || turn
 const validSample = (sample: PointerSample) => [sample.x, sample.y, sample.time, sample.velocity].every(Number.isFinite);
 const clampProgress = (progress: number) => Math.max(0, Math.min(1, progress));
 
-function beginNavigation(state: BookState, direction: NavigationDirection): BookState {
-  const destination = adjacentSpread(state.currentSpreadId, direction, state.spreadCount);
-  if (!destination) return direction === 'prev' && spreadIndex(state.currentSpreadId) === 0 ? beginClose(state) : state;
+/** NEXT, PREV and GO_TO share this path: one turn from the current spread to `destination` (one or more leaves). */
+function beginTurnTo(state: BookState, destination: SpreadId): BookState {
+  const from = bookIndex(state.currentSpreadId, state.spreadCount), to = bookIndex(destination, state.spreadCount);
+  if (from < 0 || to < 0 || from === to) return state;
   return {
     ...state, phase: 'preparingTurn', scene: 'exiting', transport: stopTransport(state), transportSessionId: null,
-    destinationSpreadId: destination.spreadId, direction, progress: 0, pendingIntent: null, gesture: null,
+    destinationSpreadId: destination, direction: to > from ? 'next' : 'prev', progress: 0, pendingIntent: null, gesture: null,
     navigationToken: state.navigationToken + 1, error: null,
   };
+}
+
+function beginNavigation(state: BookState, direction: NavigationDirection): BookState {
+  const destination = bookNeighbour(state.currentSpreadId, direction, state.spreadCount);
+  if (!destination) return direction === 'prev' && bookIndex(state.currentSpreadId, state.spreadCount) === 0 ? beginClose(state) : state;
+  return beginTurnTo(state, destination.spreadId);
 }
 
 function beginClose(state: BookState): BookState {
@@ -117,15 +130,37 @@ function beginClose(state: BookState): BookState {
   };
 }
 
+/** Run a queued intent once nothing holds it (scene entered, shot returned). */
+function runIntent(state: BookState, intent: PendingIntent): BookState {
+  if (intent === 'close') return beginClose(state);
+  if (typeof intent === 'object') return beginTurnTo(state, intent.goTo);
+  return beginNavigation(state, intent);
+}
+
+/** A navigation that cannot start now waits in the single slot (shot, active turn, entering scene). */
+function acceptGoTo(state: BookState, target: SpreadId): BookState {
+  if (state.gesture?.pointerActive || bookIndex(target, state.spreadCount) < 0) return state;
+  if (state.camera === 'shot' && bookCanInteract(state)) return target === state.currentSpreadId ? state : { ...state, pendingIntent: { goTo: target } };
+  if (bookCanInteract(state)) return beginTurnTo(state, target);
+  if (state.hidden || !state.isOpen || state.phase === 'closing' || state.phase === 'recoverableError') return state;
+  const after = state.phase === 'cancelSettling' ? state.currentSpreadId : state.destinationSpreadId ?? state.currentSpreadId;
+  return target !== after && (activeTurn(state) || state.scene === 'entering') ? { ...state, pendingIntent: { goTo: target } } : state;
+}
+
 function acceptNavigation(state: BookState, direction: NavigationDirection): BookState {
   if (state.gesture?.pointerActive) return state;
+  // v3 R6: a turn never starts from a shot; it waits for the camera's return (SHOT_END).
+  if (state.camera === 'shot' && bookCanInteract(state)) {
+    const valid = bookNeighbour(state.currentSpreadId, direction, state.spreadCount) || direction === 'prev' && bookIndex(state.currentSpreadId, state.spreadCount) === 0;
+    return valid ? { ...state, pendingIntent: direction } : state;
+  }
   if (bookCanInteract(state)) return beginNavigation(state, direction);
   if (state.hidden || !state.isOpen || state.phase === 'closing' || state.phase === 'recoverableError') return state;
   // Cancellation lands back on the current spread; a committed turn lands on
   // its destination. Guard the pending intent again after that actual landing.
   // An impossible last-page NEXT must not overwrite a previously valid PREV.
   const after = state.phase === 'cancelSettling' ? state.currentSpreadId : state.destinationSpreadId ?? state.currentSpreadId;
-  const valid = adjacentSpread(after, direction, state.spreadCount) || direction === 'prev' && spreadIndex(after, state.spreadCount) === 0;
+  const valid = bookNeighbour(after, direction, state.spreadCount) || direction === 'prev' && bookIndex(after, state.spreadCount) === 0;
   return valid && (activeTurn(state) || state.scene === 'entering') ? { ...state, pendingIntent: direction } : state;
 }
 
@@ -182,7 +217,7 @@ export function bookReducer(state: BookState, event: BookEvent): BookState {
       return state.phase === 'introReady' || state.phase === 'introMoving' ? { ...state, phase: 'coverIdle', camera: 'settled', consumedIntroInputId: event.inputId } : state;
     case 'OPEN_BOOK':
       if (state.hidden || state.isOpen || !(state.phase === 'coverIdle' || state.phase === 'fallback2D') || state.camera !== 'settled'
-        || !state.firstSpreadReady || event.inputId === state.consumedIntroInputId || spreadIndex(event.spreadId ?? state.currentSpreadId, state.spreadCount) < 0) return state;
+        || !state.firstSpreadReady || event.inputId === state.consumedIntroInputId || bookIndex(event.spreadId ?? state.currentSpreadId, state.spreadCount) < 0) return state;
       return { ...state, phase: 'opening', camera: 'reframing', scene: 'unmounted', coverComplete: false, cameraComplete: false,
         currentSpreadId: event.spreadId ?? state.currentSpreadId,
         navigationToken: state.navigationToken + 1, consumedIntroInputId: null, error: null };
@@ -198,10 +233,11 @@ export function bookReducer(state: BookState, event: BookEvent): BookState {
     case 'SCENE_READY': {
       if (!state.isOpen || state.scene !== 'entering' || state.hidden) return state;
       const ready = { ...state, scene: 'ready' as const };
-      return ready.pendingIntent ? beginNavigation({ ...ready, pendingIntent: null }, ready.pendingIntent) : ready;
+      return ready.pendingIntent ? runIntent({ ...ready, pendingIntent: null }, ready.pendingIntent) : ready;
     }
     case 'NEXT': return acceptNavigation(state, 'next');
     case 'PREV': return acceptNavigation(state, 'prev');
+    case 'GO_TO': return acceptGoTo(state, event.spreadId);
     case 'TURN_PREPARED':
       if (state.phase !== 'preparingTurn') return state;
       return { ...state, scene: 'disposed', phase: state.gesture?.releaseDecision === 'commit' ? 'settling' : state.direction === 'next' ? 'turningForward' : 'turningBack' };
@@ -219,7 +255,7 @@ export function bookReducer(state: BookState, event: BookEvent): BookState {
         direction: null, progress: 0, gesture: null, scene: 'entering', sceneInstanceId: state.sceneInstanceId + 1 };
     }
     case 'TURN_DRAG_START': {
-      if (!bookCanInteract(state) || !event.surfacesReady || !validSample(event.sample) || !adjacentSpread(state.currentSpreadId, event.direction, state.spreadCount)) return state;
+      if (!bookCanInteract(state) || state.camera === 'shot' || !event.surfacesReady || !validSample(event.sample) || !bookNeighbour(state.currentSpreadId, event.direction, state.spreadCount)) return state;
       const navigating = beginNavigation(state, event.direction);
       return { ...navigating, gesture: { id: event.gestureId, pointerId: event.pointerId, corner: event.corner,
         pointerActive: true, activated: false, latest: { ...event.sample }, releaseDecision: null } };
@@ -238,7 +274,7 @@ export function bookReducer(state: BookState, event: BookEvent): BookState {
     }
     case 'TURN_CANCEL':
       return state.gesture && (event.gestureId === undefined || state.gesture.id === event.gestureId) ? cancelTurn(state) : state;
-    case 'CLOSE_BOOK': return beginClose(state);
+    case 'CLOSE_BOOK': return state.camera === 'shot' ? (bookCanInteract(state) ? { ...state, pendingIntent: 'close' } : state) : beginClose(state);
     case 'HIDE_DOCUMENT': {
       if (state.hidden) return state;
       const recovered = stableRecovery(state, state.mode, true);
@@ -256,6 +292,13 @@ export function bookReducer(state: BookState, event: BookEvent): BookState {
     case 'LOAD_FAIL':
       return { ...stableRecovery(state, state.mode, state.hidden), phase: 'recoverableError', scene: 'disposed', error: event.reason };
     case 'SET_REDUCED_MOTION': return { ...state, reducedMotion: event.value };
+    case 'SHOT_START':
+      return bookCanInteract(state) && state.camera === 'settled' && state.mode === '3d' && state.phase === 'spreadIdle' ? { ...state, camera: 'shot' } : state;
+    case 'SHOT_END': {
+      if (state.camera !== 'shot') return state;
+      const settled = { ...state, camera: 'settled' as const, pendingIntent: null };
+      return state.pendingIntent && bookCanInteract(settled) ? runIntent(settled, state.pendingIntent) : settled;
+    }
     case 'TRANSPORT_STARTING':
       return bookCanInteract(state) && (state.scene === 'ready' || state.scene === 'paused') && state.transport !== 'unavailable'
         ? { ...state, transport: 'starting', transportSessionId: state.transport === 'paused' ? state.transportSessionId : null } : state;

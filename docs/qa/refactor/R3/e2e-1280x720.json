@@ -1,0 +1,217 @@
+{
+  "time": "2026-10-30T05:25:35.958Z",
+  "viewport": "1280x720",
+  "results": [
+    {
+      "name": "no HTML page elements in 3D",
+      "pass": true,
+      "detail": {
+        "pages": 0
+      }
+    },
+    {
+      "name": "mirror h1 takes page focus",
+      "pass": true,
+      "detail": {
+        "heading": "같은 끝, 다른 시작"
+      }
+    },
+    {
+      "name": "mirror keeps 2D test ids",
+      "pass": true,
+      "detail": [
+        "play-upper",
+        "play-lower",
+        "pause-resume-audio",
+        "stop-audio"
+      ]
+    },
+    {
+      "name": "mirror flap opens the printed questions",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "mirror radio answers the quiz",
+      "pass": true,
+      "detail": {
+        "checked": true,
+        "feedback": "두 줄 모두 온음표 기준 길이1이며 90에서 8/3초입니다."
+      }
+    },
+    {
+      "name": "pointer press on a printed radio answers",
+      "pass": true,
+      "detail": {
+        "pressed": "page-1:q:attacks:1-4"
+      }
+    },
+    {
+      "name": "Tab focus is drawn on the printed page (AX21)",
+      "pass": true,
+      "detail": {
+        "hotspot": "page-1:flap:questions",
+        "root": "page-1:flap:questions",
+        "stateBefore": 6,
+        "stateAfter": 7
+      }
+    },
+    {
+      "name": "ten splits through the mirror",
+      "pass": true,
+      "detail": {
+        "splits": 10,
+        "notes": 11
+      }
+    },
+    {
+      "name": "draft print per edit ≤ 60 ms (performance measure print:draft)",
+      "pass": true,
+      "detail": {
+        "maxDraftMs": 1.4,
+        "draftMeasures": [
+          0.3,
+          0.3,
+          0.4,
+          0.2,
+          1.1,
+          0.2,
+          1.4,
+          0.3,
+          0.5,
+          0.2,
+          0.8,
+          0.1,
+          0.7,
+          0.2,
+          0.5,
+          0.2,
+          0.3,
+          0.4,
+          0.6,
+          0.2,
+          0.8,
+          0.2,
+          0.5,
+          0.3,
+          1.4,
+          0.3,
+          0.5,
+          0.1
+        ],
+        "clickToCommitMs": [
+          0.1,
+          0,
+          0.1,
+          0.1,
+          0.4,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.2
+        ],
+        "clickToRenderedFrameMs": [
+          996.9,
+          3083.5,
+          1567.2,
+          1568.5,
+          1643.6,
+          3155.4,
+          3307.9,
+          1512.4,
+          1594.4,
+          1491.3
+        ],
+        "note": "commit = React render + synchronous draft print; frame adds texture upload and a full SwiftShader frame"
+      }
+    },
+    {
+      "name": "pointer press on printed 둘로 나누기 splits",
+      "pass": true,
+      "detail": {
+        "revision": 18,
+        "notes": 12
+      }
+    },
+    {
+      "name": "settled upgrade keeps the same print (jump 0)",
+      "pass": true,
+      "detail": {
+        "draftFrameCaptured": true,
+        "settledVsFinal": {
+          "mean": 0,
+          "max": 0
+        },
+        "draftVsFinal": {
+          "mean": 1.055,
+          "max": 137
+        },
+        "bestOffsetPx": {
+          "dx": 0,
+          "dy": 0
+        },
+        "correlation": 0.9051,
+        "box": {
+          "x0": 294,
+          "x1": 636,
+          "y0": 240,
+          "y1": 665
+        }
+      }
+    },
+    {
+      "name": "tap on the 3D figure selects that note",
+      "pass": true,
+      "detail": {
+        "figure": "scene-2-lanes",
+        "selectedBefore": "edit-scene-2-main-11-1",
+        "selectedAfter": "edit-scene-2-main-4-1",
+        "expected": "edit-scene-2-main-4-1"
+      }
+    },
+    {
+      "name": "BK12: no page DOM during the turn",
+      "pass": true,
+      "detail": {
+        "turningFrames": 28,
+        "phases": [
+          "preparingTurn",
+          "turningForward"
+        ]
+      }
+    },
+    {
+      "name": "2D reading book shows DOM pages with the same lesson",
+      "pass": true,
+      "detail": {
+        "pages": 2,
+        "mirror": false,
+        "pageRevision": "23",
+        "rootRevision": "23"
+      }
+    },
+    {
+      "name": "returns to the printed 3D book",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "print memory stays in budget after 20 round trips",
+      "pass": true,
+      "detail": {
+        "startMiB": 46.1,
+        "endMiB": 46.1,
+        "budgetMiB": 48,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2
+      }
+    },
+    {
+      "name": "no page errors",
+      "pass": true,
+      "detail": []
+    }
+  ]
+}

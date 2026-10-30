@@ -1,5 +1,10 @@
-/** Authoring proposals, not measured Every Joule timings. */
-export const BOOK_MOTION = Object.freeze({ intro: 1100, cover: 1000, turn: 1120, enter: 600, revisit: 200, exit: 180, settle: 100 });
+/**
+ * Authoring proposals, not measured Every Joule timings. v3 R4 adds the ink figure tokens (design
+ * appendix D): pen reveal, paper→standing lift with its delay, the stagger between figures and the
+ * split/merge stroke; R5 adds the paper flap's lift. Existing values are unchanged.
+ */
+export const BOOK_MOTION = Object.freeze({ intro: 1100, cover: 1000, turn: 1120, enter: 600, revisit: 200, exit: 180, settle: 100,
+  reveal: 520, lift: 600, liftDelay: 120, stagger: 45, splitMerge: 240, flap: 240 });
 export function smoothStep(value: number): number {
   const p = Math.max(0, Math.min(1, value));
   return p * p * p * (p * (p * 6 - 15) + 10);

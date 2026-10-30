@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { MusicEvent } from '../content/types.ts';
 import { validateEvents } from '../content/validation.ts';
-import { eventLabel } from '../scenes/DurationScene2D.tsx';
+import { eventLabel } from '../scenes/durationWorld.ts';
 
 type NotationRuntime = Readonly<{
   module: typeof import('vexflow/core');

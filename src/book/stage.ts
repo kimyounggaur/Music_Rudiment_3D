@@ -1,15 +1,28 @@
 import {
-  ACESFilmicToneMapping, AmbientLight, Box3, BoxGeometry, Color,
-  DirectionalLight, Group, LineSegments, Material, Mesh, MeshBasicMaterial, MeshStandardMaterial,
-  OrthographicCamera, PCFShadowMap, Plane, PlaneGeometry, Quaternion,
-  Raycaster, Scene, ShadowMaterial, SRGBColorSpace, Texture, TextureLoader,
-  Vector2, Vector3, WebGLRenderer,
+  Box3, BoxGeometry, Group, LineSegments, Material, Mesh, MeshStandardMaterial, NeutralToneMapping,
+  PCFShadowMap, Plane, Raycaster, Scene, SRGBColorSpace, Texture, TextureLoader, Vector2, Vector3, WebGLRenderer,
 } from 'three';
+import type { BufferGeometry } from 'three';
+import { balancedAnchor, blendTo, createCameraRig, fitDistance, placeRig, READING_POSE } from './render/cameraRig.ts';
+import { resolveShot } from './render/shots.ts';
+import type { ShotSpec } from './render/shots.ts';
+import type { FitResult, RigPose } from './render/cameraRig.ts';
+import { CLOSED_ANCHOR, closedFramePoints, OPEN_ANCHOR, openFramePoints, SCENE_EXTENT } from './render/bookFraming.ts';
+import { createForeEdgeTexture, createPaperMaterial } from './render/paperMaterial.ts';
+import { createBookEnvironment } from './render/environment.ts';
+import type { BookEnvironment } from './render/environment.ts';
+import { createPostPipeline, tierPixelRatio } from './render/postPipeline.ts';
+import type { PostPipeline } from './render/postPipeline.ts';
+import type { QualityTier } from './profile.ts';
+import { figureControlsOf } from './figures/figure.ts';
+import { createFlapLayer } from './render/flaps.ts';
+import type { StageFlap } from './render/flaps.ts';
+import type { FigureStats } from './figures/figure.ts';
 import {
-  BOOK_DIMENSIONS, createFlatPageGeometry, createTurningLeafGeometry,
-  leafPoint, leafProgressFromX, LEAF_THICKNESS, stackHeights, unitProgress, updateTurningLeafGeometry,
+  BOOK_DIMENSIONS, createFlatPageGeometry, createSpreadPageGeometry, createStackGeometry, createTurningLeafGeometry, leafProgressFromX, LEAF_THICKNESS,
+  spreadAmplitude, spreadHeight, stackHeights, unitProgress, updateSpreadPageGeometry, updateStackGeometry, updateTurningLeafGeometry,
 } from './geometry.ts';
-import type { BookCorner, BookTurnDirection } from './geometry.ts';
+import type { BookCorner, BookTurnDirection, SpineSide } from './geometry.ts';
 
 export type StagePoint = { x: number; y: number };
 export type StageQuad = { tl: StagePoint; tr: StagePoint; br: StagePoint; bl: StagePoint };
@@ -26,7 +39,10 @@ export interface StageLayout {
   safeRect: StageRect;
   coverUvCenter: StagePoint;
   coverCenterErrorPx: number;
-  camera: { position: number[]; target: number[]; quaternion: number[]; span: number };
+  /** span = visible world height at the anchor distance (kept for the orthographic-era fixtures). */
+  camera: { position: number[]; target: number[]; quaternion: number[]; span: number; fov?: number; distance?: number; worldPerPixelAtAnchor?: number;
+    /** v3 R6: the lesson shot being shown, if any (the camera is then between reading and shot). */
+    shot?: { id: string; t: number } | null };
   bookBounds: StageRect;
   openWidthFraction: number;
 }
@@ -35,17 +51,42 @@ export interface StageUpdate {
   introProgress: number;
   currentSpreadIndex: number;
   spreadCount: number;
-  turn: { direction: BookTurnDirection; progress: number; corner: BookCorner } | null;
+  /**
+   * The turn in progress. v3 R8 GO_TO: `leaves` holds each leaf's own progress, oldest first. Leaf k
+   * leaves the stack at spread position currentSpreadIndex ± k and flies in pool slot k mod 3 while
+   * 0 < progress < 1; the stacks follow the leaves that have moved.
+   */
+  turn: { direction: BookTurnDirection; progress: number; corner: BookCorner; leaves?: readonly number[] } | null;
+  /** v3 R4: the scene figure's lift (0 = drawn flat on the paper, 1 = standing). */
   sceneProgress?: number;
+  /** v3 R4: the pen's progress over the scene figure (0 = nothing drawn, 1 = fully drawn). */
+  sceneReveal?: number;
   suspendFit?: boolean;
   inspectionWireframe?: boolean;
+  /**
+   * v3 R6: a lesson shot at linear progress t (0 = the reading pose itself, 1 = the shot camera).
+   * `side` places a page-rect region; figure regions use the standing scene figure's world bounds.
+   */
+  shot?: Readonly<{ spec: ShotSpec; side: 'left' | 'right' | null; t: number }> | null;
 }
 export interface StageTextures {
   staticLeft: Texture | null;
   staticRight: Texture | null;
   turnFront: Texture | null;
   turnBack: Texture | null;
+  /** v3 R3 state layers (selection, playback note, hover, pressed, focus) for the same faces. */
+  staticLeftState: Texture | null;
+  staticRightState: Texture | null;
+  turnFrontState: Texture | null;
+  turnBackState: Texture | null;
+  /** v3 R8: the second and third leaves of the pool (GO_TO). They share the compositor's page textures. */
+  turnFront1: Texture | null;
+  turnBack1: Texture | null;
+  turnFront2: Texture | null;
+  turnBack2: Texture | null;
 }
+/** A point on the printed page: u from the left edge, v from the top edge (print canvas orientation). */
+export type PagePointerHit = Readonly<{ side: 'left' | 'right'; u: number; v: number }>;
 export interface StageMetrics {
   renderedFrames: number;
   geometries: number;
@@ -53,6 +94,8 @@ export interface StageMetrics {
   programs: number;
   contextLost: boolean;
   coverReady: boolean;
+  drawCalls: number;
+  quality: QualityTier;
 }
 export interface StageSceneWindow {
   /** Page/world Z units. The book root is untransformed and the scene anchor has Z=0. */
@@ -67,7 +110,23 @@ export interface BookStage {
   setSceneGroup(group: Group | null): void;
   setSceneWindow(window: StageSceneWindow | null): void;
   pickScene(clientX: number, clientY: number, targets: Mesh[]): Mesh | null;
+  /** v3 R5: the spread's paper flaps (page-local rects); a changed `open` lifts or lowers the sheet. */
+  setPageFlaps(flaps: readonly StageFlap[], instant?: boolean): void;
+  /** DEV: current flap angles in degrees by key. */
+  flapAngles(): Readonly<Record<string, number>>;
+  /** DEV: pin moving flaps `ms` after they start (null resumes real time). */
+  holdFlaps(ms: number | null): void;
+  /** v3 R5: the key of a standing (or moving) paper flap under a client point, nearest first. */
+  flapAt(clientX: number, clientY: number): string | null;
+  /** DEV: client coordinates of a world point (inspection and measurements). */
+  projectToClient(point: readonly [number, number, number]): StagePoint | null;
+  /** DEV: draw calls of one frame with and without the scene figure (renders twice, then restores). */
+  measureSceneDrawCalls(): Readonly<{ total: number; withoutScene: number; scene: number; figure: FigureStats | null }> | null;
   pointerProjection(clientX: number, clientY: number, grabbedOffsetX?: number): { x: number; y: number; z: number; u: number; v: number; turnProgress?: number } | null;
+  /** v3 R3: the printed page under a client point (raycast on the curved page meshes), when the book is open and still. */
+  pagePointer(clientX: number, clientY: number): PagePointerHit | null;
+  /** v3 R3: client coordinates of a page-local point (u right, v down), for inspection and tests. */
+  pagePoint(side: 'left' | 'right', u: number, v: number): StagePoint | null;
   getLayout(): StageLayout | null;
   invalidate(): void;
   dispose(): void;
@@ -77,29 +136,35 @@ interface StageOptions {
   onFailure?: (error: Error) => void;
   onMetrics?: (metrics: StageMetrics) => void;
   coverTexture?: Texture;
+  quality?: QualityTier;
 }
 
 const D = BOOK_DIMENSIONS;
-const VIEW_DIRECTION = new Vector3(0, 10, 5).normalize();
-const VIEW_RIGHT = new Vector3(1, 0, 0);
-const VIEW_UP = new Vector3(0, VIEW_DIRECTION.z, -VIEW_DIRECTION.y);
-const PAGE_CORNERS = [[0, -1], [1, -1], [1, 1], [0, 1]] as const;
+/** Intro starts slightly farther away and to the side, then settles on the exact cover fit. */
+const INTRO_OFFSET = new Vector3(0.3, 0, 0.12);
+const INTRO_DISTANCE = 0.16;
+/** v3 R2 binding materials: cloth-bound boards, warm paper edges (CONTRACT_V3 C7). */
+export const BINDING_TOKENS = Object.freeze({ board: '#55707c', boardRoughness: 0.82, innerBoard: '#e6ddc5', paperEdge: '#e4dac4', coverRoughness: 0.62 });
 
 export function createBookStage(host: HTMLElement, options: StageOptions = {}): BookStage | null {
+  const quality: QualityTier = options.quality ?? 'high';
   let renderer: WebGLRenderer;
   try {
-    renderer = new WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    // With a post chain, SMAA replaces MSAA; the low tier renders directly with MSAA.
+    renderer = new WebGLRenderer({ antialias: quality === 'low', alpha: false, powerPreference: 'high-performance' });
   } catch (error) {
     options.onFailure?.(error instanceof Error ? error : new Error(String(error)));
     return null;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  const pixelRatio = tierPixelRatio(quality, window.devicePixelRatio || 1);
+  renderer.setPixelRatio(pixelRatio);
   renderer.outputColorSpace = SRGBColorSpace;
-  renderer.toneMapping = ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.1;
+  renderer.toneMapping = NeutralToneMapping;
+  renderer.toneMappingExposure = 0.92;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = PCFShadowMap;
   renderer.localClippingEnabled = true;
+  renderer.info.autoReset = false;
   renderer.domElement.className = 'book-webgl-canvas';
   renderer.domElement.style.cssText = 'display:block;width:100%;height:100%;touch-action:inherit;';
   renderer.domElement.setAttribute('aria-hidden', 'true');
@@ -111,116 +176,104 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
   host.append(safeProbe);
 
   const scene = new Scene();
-  scene.background = new Color('#d9d1c4');
-  const camera = new OrthographicCamera(-5, 5, 3, -3, 0.1, 40);
-  camera.position.copy(VIEW_DIRECTION.clone().multiplyScalar(12));
-  camera.lookAt(0, 0, 0);
-  const fixedQuaternion = new Quaternion().copy(camera.quaternion);
-  const cameraTarget = new Vector3();
+  const environment: BookEnvironment = createBookEnvironment(renderer, scene, quality);
+  const rig = createCameraRig();
+  const camera = rig.camera;
+  const pose: RigPose = READING_POSE;
+  /** The reading fit (the pose a shot returns to) and the frame actually applied (reading or a shot blend). */
+  let cameraFit: FitResult | null = null;
+  let appliedFit: FitResult | null = null;
+  const post: PostPipeline = createPostPipeline(renderer, scene, camera, quality);
   const bookRoot = new Group();
   bookRoot.name = 'BookRoot';
   scene.add(bookRoot);
-  const ownedGeometries = new Set<ReturnType<typeof createFlatPageGeometry>>();
+  const ownedGeometries = new Set<BufferGeometry>();
   const ownedMaterials = new Set<Material>();
-  const ownGeometry = <T extends ReturnType<typeof createFlatPageGeometry>>(geometry: T): T => {
-    ownedGeometries.add(geometry); return geometry;
-  };
+  const ownedTextures = new Set<Texture>();
+  const ownGeometry = <T extends BufferGeometry>(geometry: T): T => { ownedGeometries.add(geometry); return geometry; };
   const ownMaterial = <T extends Material>(material: T): T => { ownedMaterials.add(material); return material; };
-  const coverEdge = ownMaterial(new MeshStandardMaterial({ color: '#68665c', roughness: 0.88 }));
-  const innerCover = ownMaterial(new MeshStandardMaterial({ color: '#e6ddc5', roughness: 1 }));
-  const paperSide = ownMaterial(new MeshStandardMaterial({ color: '#d9d0b9', roughness: 1 }));
-  const ruleMaterial = ownMaterial(new MeshStandardMaterial({ color: '#c2b9a3', roughness: 1 }));
-  // Printed CSS/SVG pixels already contain their intended color. Lighting and
-  // ACES must not brighten the ink when live DOM becomes a moving texture.
-  const leftMaterial = ownMaterial(new MeshBasicMaterial({ color: '#f4eedc', toneMapped: false }));
-  const rightMaterial = ownMaterial(new MeshBasicMaterial({ color: '#f4eedc', toneMapped: false }));
-  const leafFrontMaterial = ownMaterial(new MeshBasicMaterial({ color: '#f4eedc', toneMapped: false }));
-  const leafBackMaterial = ownMaterial(new MeshBasicMaterial({ color: '#f4eedc', toneMapped: false }));
-  const leafEdgeMaterial = ownMaterial(paperSide.clone());
-  const artworkMaterial = ownMaterial(new MeshBasicMaterial({ color: '#ffffff', toneMapped: false }));
-  // Receive physical shadows separately on the identical surface. Polygon
-  // offset changes depth testing only; the paper's position/curvature stays exact.
-  const printShadowMaterial = ownMaterial(new ShadowMaterial({ color: '#26343b', opacity: 0.28,
-    toneMapped: false, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }));
-  const hiddenShadowEdge = ownMaterial(new ShadowMaterial({ visible: false }));
-  function printShadow(parent: Mesh, curved = false): Mesh {
-    const overlay = new Mesh(parent.geometry, curved
-      ? [printShadowMaterial, printShadowMaterial, hiddenShadowEdge] : printShadowMaterial);
-    overlay.name = `${parent.name}Shadow`;
-    overlay.receiveShadow = true;
-    // Child placement makes every pose, hinge and visibility follow the paper.
-    parent.add(overlay);
-    return overlay;
-  }
+  const board = ownMaterial(new MeshStandardMaterial({ color: BINDING_TOKENS.board, roughness: BINDING_TOKENS.boardRoughness, metalness: 0 }));
+  const innerCover = ownMaterial(new MeshStandardMaterial({ color: BINDING_TOKENS.innerBoard, roughness: 0.95, metalness: 0 }));
+  const foreEdgeTexture = createForeEdgeTexture();
+  ownedTextures.add(foreEdgeTexture);
+  const foreEdge = ownMaterial(new MeshStandardMaterial({ color: '#ffffff', map: foreEdgeTexture, roughness: 0.96, metalness: 0 }));
+  const stackTop = ownMaterial(createPaperMaterial({ name: 'stack-top' }));
+  const leftMaterial = ownMaterial(createPaperMaterial({ name: 'page-left' }));
+  const rightMaterial = ownMaterial(createPaperMaterial({ name: 'page-right' }));
+  const leafFrontMaterial = ownMaterial(createPaperMaterial({ name: 'leaf-front' }));
+  const leafBackMaterial = ownMaterial(createPaperMaterial({ name: 'leaf-back' }));
+  // v3 R8: two more leaves for GO_TO (a pool of three; slot 0 is the ordinary turning leaf).
+  const poolFrontMaterials = [leafFrontMaterial, ownMaterial(createPaperMaterial({ name: 'leaf-front-1' })), ownMaterial(createPaperMaterial({ name: 'leaf-front-2' }))] as const;
+  const poolBackMaterials = [leafBackMaterial, ownMaterial(createPaperMaterial({ name: 'leaf-back-1' })), ownMaterial(createPaperMaterial({ name: 'leaf-back-2' }))] as const;
+  const leafEdgeMaterial = ownMaterial(new MeshStandardMaterial({ color: BINDING_TOKENS.paperEdge, roughness: 0.96, metalness: 0 }));
+  const artworkMaterial = ownMaterial(new MeshStandardMaterial({ color: '#ffffff', roughness: BINDING_TOKENS.coverRoughness, metalness: 0 }));
 
-  const backCover = new Mesh(ownGeometry(new BoxGeometry(D.coverWidth, D.coverThickness, D.coverHeight)), coverEdge);
+  const shadowed = <T extends Mesh>(mesh: T, cast = true): T => { mesh.castShadow = cast; mesh.receiveShadow = true; return mesh; };
+  // Box faces: +x, -x, +y (inside, endpaper), -y (desk), +z, -z.
+  const backCover = shadowed(new Mesh(ownGeometry(new BoxGeometry(D.coverWidth, D.coverThickness, D.coverHeight)),
+    [board, board, innerCover, board, board, board]));
   backCover.name = 'BackCover';
   backCover.position.set(D.coverWidth / 2, D.coverThickness / 2, 0);
-  backCover.castShadow = true;
-  backCover.receiveShadow = true;
   bookRoot.add(backCover);
-  const spine = new Mesh(ownGeometry(new BoxGeometry(0.12, D.totalStackHeight + D.coverThickness, D.coverHeight)), coverEdge);
+  // The spine follows the hinge: full book height when closed, down to the board when open,
+  // so it never shows as a strip in the gutter between the curved pages.
+  const spineHeight = 2 * D.coverThickness + D.totalStackHeight;
+  const spine = shadowed(new Mesh(ownGeometry(new BoxGeometry(0.12, 1, D.coverHeight)), board));
   spine.name = 'Spine';
-  spine.position.set(-0.025, (D.totalStackHeight + D.coverThickness) / 2, 0);
-  spine.castShadow = true;
+  spine.scale.y = spineHeight;
+  spine.position.set(-0.025, spineHeight / 2, 0);
   bookRoot.add(spine);
 
   const coverHinge = new Group();
   coverHinge.name = 'FrontCoverHinge';
   bookRoot.add(coverHinge);
-  const frontCover = new Mesh(
-    ownGeometry(new BoxGeometry(D.coverWidth, D.coverThickness, D.coverHeight)),
-    [coverEdge, coverEdge, coverEdge, innerCover, coverEdge, coverEdge],
-  );
+  const frontCover = shadowed(new Mesh(ownGeometry(new BoxGeometry(D.coverWidth, D.coverThickness, D.coverHeight)),
+    [board, board, board, innerCover, board, board]));
   frontCover.name = 'FrontCover';
   frontCover.position.x = D.coverWidth / 2;
-  frontCover.castShadow = true;
-  frontCover.receiveShadow = true;
   coverHinge.add(frontCover);
-  const artwork = new Mesh(ownGeometry(createFlatPageGeometry(D.coverWidth, D.coverHeight)), artworkMaterial);
+  const artwork = shadowed(new Mesh(ownGeometry(createFlatPageGeometry(D.coverWidth, D.coverHeight)), artworkMaterial), false);
   artwork.name = 'VerifiedFrontArtwork';
   artwork.position.y = D.coverThickness / 2 + 0.001;
   coverHinge.add(artwork);
 
-  const unitStackGeometry = ownGeometry(new BoxGeometry(D.pageWidth, 1, D.pageHeight));
-  const rightStack = new Mesh(unitStackGeometry, paperSide);
+  // Stacks and pages share the spread profile. The left side is built in its own page-local
+  // frame (spine at the far end) and turned by π inside the hinge, so local +Y is world +Y.
+  const initial = stackHeights(0, 6);
+  const geometryState = { right: { height: initial.right, amplitude: spreadAmplitude(initial.right) }, left: { height: initial.left, amplitude: spreadAmplitude(initial.left) } };
+  const stackGeometry = (spine: SpineSide, state: { height: number; amplitude: number }) => ownGeometry(createStackGeometry(D.pageWidth, D.pageHeight, spine, state.height, state.amplitude));
+  const rightStack = shadowed(new Mesh(stackGeometry('start', geometryState.right), [stackTop, foreEdge]));
   rightStack.name = 'RightPageStack';
-  rightStack.castShadow = true;
-  rightStack.receiveShadow = true;
+  rightStack.position.set(0, D.coverThickness, 0);
   bookRoot.add(rightStack);
-  const leftStack = new Mesh(unitStackGeometry, paperSide);
+  const leftStack = shadowed(new Mesh(stackGeometry('end', geometryState.left), [stackTop, foreEdge]));
   leftStack.name = 'LeftPageStack';
-  leftStack.castShadow = true;
-  leftStack.receiveShadow = true;
+  leftStack.rotation.z = Math.PI;
+  leftStack.position.set(D.pageWidth, -D.coverThickness / 2, 0);
   coverHinge.add(leftStack);
-  const rightPage = new Mesh(ownGeometry(createFlatPageGeometry(D.pageWidth, D.pageHeight)), rightMaterial);
+  const rightPage = shadowed(new Mesh(ownGeometry(createSpreadPageGeometry(D.pageWidth, D.pageHeight, 'start', geometryState.right.amplitude)), rightMaterial), false);
   rightPage.name = 'StaticRightPage';
-  const rightPageShadow = printShadow(rightPage);
   bookRoot.add(rightPage);
-  const leftPage = new Mesh(ownGeometry(createFlatPageGeometry(D.pageWidth, D.pageHeight)), leftMaterial);
+  const leftPage = shadowed(new Mesh(ownGeometry(createSpreadPageGeometry(D.pageWidth, D.pageHeight, 'end', geometryState.left.amplitude)), leftMaterial), false);
   leftPage.name = 'StaticLeftPage';
   leftPage.rotation.z = Math.PI;
-  const leftPageShadow = printShadow(leftPage);
   coverHinge.add(leftPage);
 
-  const leafGeometry = ownGeometry(createTurningLeafGeometry());
-  const turningLeaf = new Mesh(leafGeometry, [leafFrontMaterial, leafBackMaterial, leafEdgeMaterial]);
-  turningLeaf.name = 'TurningLeaf';
-  turningLeaf.visible = false;
-  turningLeaf.castShadow = true;
-  const turningLeafShadow = printShadow(turningLeaf, true);
-  bookRoot.add(turningLeaf);
+  const leafPool = poolFrontMaterials.map((front, slot) => {
+    const leaf = shadowed(new Mesh(ownGeometry(createTurningLeafGeometry()), [front, poolBackMaterials[slot]!, leafEdgeMaterial]));
+    leaf.name = slot === 0 ? 'TurningLeaf' : `TurningLeaf${slot}`;
+    leaf.visible = false;
+    bookRoot.add(leaf);
+    return leaf;
+  });
 
-  // A small reusable set of visible fore-edge lines represents a paper bundle.
-  const lineGeometry = ownGeometry(new BoxGeometry(D.pageWidth, 0.001, 0.002));
-  const leftRules: Mesh[] = [];
-  const rightRules: Mesh[] = [];
-  for (let index = 1; index <= 7; index += 1) {
-    const leftRule = new Mesh(lineGeometry, ruleMaterial);
-    const rightRule = new Mesh(lineGeometry, ruleMaterial);
-    coverHinge.add(leftRule); bookRoot.add(rightRule);
-    leftRules.push(leftRule); rightRules.push(rightRule);
-  }
+  // v3 R5: paper flaps ride the static page meshes (their own page-local frame).
+  const flaps = createFlapLayer();
+  const flapPages = () => ({
+    left: { mesh: leftPage, width: D.pageWidth, height: D.pageHeight, surface: (u: number) => geometryState.left.amplitude * spreadHeight(1 - u) },
+    right: { mesh: rightPage, width: D.pageWidth, height: D.pageHeight, surface: (u: number) => geometryState.right.amplitude * spreadHeight(u) },
+  });
+  let flapsMoving = false;
   const sceneAnchor = new Group();
   sceneAnchor.name = 'ActiveSceneAnchor';
   bookRoot.add(sceneAnchor);
@@ -266,31 +319,10 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     });
   }
 
-  const ambient = new AmbientLight('#fff8e9', 2.1);
-  scene.add(ambient);
-  const key = new DirectionalLight('#fff7e8', 2.8);
-  key.position.set(-3, 8, 3);
-  key.castShadow = true;
-  key.shadow.mapSize.set(1024, 1024);
-  key.shadow.camera.left = -5;
-  key.shadow.camera.right = 5;
-  key.shadow.camera.top = 5;
-  key.shadow.camera.bottom = -5;
-  key.shadow.camera.near = 0.5;
-  key.shadow.camera.far = 18;
-  key.shadow.normalBias = 0.018;
-  key.shadow.bias = -0.0001;
-  key.shadow.radius = 3;
-  scene.add(key);
-  const desk = new Mesh(ownGeometry(new PlaneGeometry(30, 30)), ownMaterial(new ShadowMaterial({ color: '#4b4233', opacity: 0.19 })));
-  desk.name = 'ContactShadowDesk';
-  desk.rotation.x = -Math.PI / 2;
-  desk.position.y = -0.002;
-  desk.receiveShadow = true;
-  scene.add(desk);
-
-  let state: StageUpdate = { coverProgress: 0, introProgress: 0, currentSpreadIndex: 0, spreadCount: 6, turn: null, sceneProgress: 0, suspendFit: false };
-  const textures: StageTextures = { staticLeft: null, staticRight: null, turnFront: null, turnBack: null };
+  let state: StageUpdate = { coverProgress: 0, introProgress: 0, currentSpreadIndex: 0, spreadCount: 6, turn: null, sceneProgress: 0, sceneReveal: 1, suspendFit: false };
+  const textures: StageTextures = { staticLeft: null, staticRight: null, turnFront: null, turnBack: null,
+    staticLeftState: null, staticRightState: null, turnFrontState: null, turnBackState: null,
+    turnFront1: null, turnBack1: null, turnFront2: null, turnBack2: null };
   let width = 0;
   let height = 0;
   let layout: StageLayout | null = null;
@@ -300,39 +332,21 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
   let coverReady = false;
   let ownedCoverTexture: Texture | null = null;
   let renderedFrames = 0;
+  let drawCalls = 0;
   let rightSurfaceY = 0;
   const raycaster = new Raycaster();
   const pointer = new Vector2();
   const rayHit = new Vector3();
   const dragPlane = new Plane(new Vector3(0, 1, 0), 0);
   let visiblePoints: Vector3[] = [];
-  const closedBounds = new Box3(new Vector3(-0.09, 0, -D.coverHeight / 2), new Vector3(D.coverWidth, D.totalStackHeight + 2 * D.coverThickness + 0.002, D.coverHeight / 2));
-  const closedAnchor = new Vector3(D.coverWidth / 2, D.totalStackHeight + 2 * D.coverThickness + 0.001, 0);
-  const openAnchor = new Vector3(0, D.coverThickness + D.totalStackHeight / 2, 0);
-  // Fit the actual swept surface in view coordinates, instead of a loose box
-  // combining unrelated X/Y/Z extrema. The same endpoint covers every turn.
-  const openProjected = { left: Infinity, right: -Infinity, bottom: Infinity, top: -Infinity };
-  const includeOpenPoint = (point: Vector3): void => {
-    const x = point.dot(VIEW_RIGHT), y = point.dot(VIEW_UP);
-    openProjected.left = Math.min(openProjected.left, x);
-    openProjected.right = Math.max(openProjected.right, x);
-    openProjected.bottom = Math.min(openProjected.bottom, y);
-    openProjected.top = Math.max(openProjected.top, y);
-  };
-  for (const point of corners(new Box3(new Vector3(-D.coverWidth - 0.10, 0, -D.coverHeight / 2 - 0.04), new Vector3(D.coverWidth + 0.10, D.totalStackHeight + 2 * D.coverThickness, D.coverHeight / 2 + 0.04)))) includeOpenPoint(point);
-  for (const direction of ['forward', 'backward'] as const) for (const corner of ['top', 'bottom'] as const) {
-    for (let step = 0; step <= 64; step += 1) for (let row = 0; row <= 4; row += 1) for (let column = 0; column <= 24; column += 1) {
-      const point = leafPoint(D.pageWidth, D.pageHeight, column / 24, row / 4, step / 64, corner, direction);
-      includeOpenPoint(new Vector3(point.x, point.y + D.coverThickness + D.totalStackHeight + 0.015, point.z));
-    }
-  }
-  openProjected.left -= 0.025; openProjected.right += 0.025;
-  openProjected.bottom -= 0.025; openProjected.top += 0.025;
-  openAnchor.addScaledVector(VIEW_UP, (openProjected.top + openProjected.bottom) / 2 - openAnchor.dot(VIEW_UP));
+  const openPoints = openFramePoints();
+  const closedPoints = closedFramePoints();
+  let fitCache: { key: string; closed: number; open: { anchor: Vector3; distance: number } } | null = null;
 
   function metrics(): void {
     if (disposed) return;
-    options.onMetrics?.({ renderedFrames, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures, programs: renderer.info.programs?.length ?? 0, contextLost, coverReady });
+    options.onMetrics?.({ renderedFrames, geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures,
+      programs: renderer.info.programs?.length ?? 0, contextLost, coverReady, drawCalls, quality });
   }
   function safeRect(): StageRect {
     const probe = getComputedStyle(safeProbe);
@@ -355,91 +369,97 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     for (const x of [bounds.min.x, bounds.max.x]) for (const y of [bounds.min.y, bounds.max.y]) for (const z of [bounds.min.z, bounds.max.z]) result.push(new Vector3(x, y, z));
     return result;
   }
-  function fitScale(bounds: Box3, anchor: Vector3, target: StagePoint, safe: StageRect): number {
-    return fitPoints(corners(bounds), anchor, target, safe);
-  }
-  function fitPoints(points: readonly Vector3[], anchor: Vector3, target: StagePoint, safe: StageRect): number {
-    let scale = 0.001;
-    const available = { left: Math.max(8, target.x - safe.left), right: Math.max(8, safe.right - target.x), top: Math.max(8, target.y - safe.top), bottom: Math.max(8, safe.bottom - target.y) };
-    for (const point of points) {
-      const relative = point.clone().sub(anchor);
-      const x = relative.dot(VIEW_RIGHT);
-      const y = relative.dot(VIEW_UP);
-      scale = Math.max(scale, x / available.right, -x / available.left, y / available.top, -y / available.bottom);
-    }
-    return scale * 1.018;
-  }
-  function fitOpenScale(target: StagePoint, safe: StageRect): number {
-    const anchorX = openAnchor.dot(VIEW_RIGHT), anchorY = openAnchor.dot(VIEW_UP);
-    return Math.max(
-      (openProjected.right - anchorX) / Math.max(8, safe.right - target.x),
-      (anchorX - openProjected.left) / Math.max(8, target.x - safe.left),
-      (openProjected.top - anchorY) / Math.max(8, target.y - safe.top),
-      (anchorY - openProjected.bottom) / Math.max(8, safe.bottom - target.y),
-    ) * 1.018;
-  }
   function project(point: Vector3): StagePoint {
     point.project(camera);
     return { x: (point.x + 1) * width / 2, y: (1 - point.y) * height / 2 };
   }
-  function pageQuad(mesh: Mesh, pageWidth: number, pageHeight: number): StageQuad {
-    const [tl, tr, br, bl] = PAGE_CORNERS.map(([u, v]) => project(new Vector3(u * pageWidth, 0, v * pageHeight / 2).applyMatrix4(mesh.matrixWorld)));
-    return { tl, tr, br, bl };
+  /** Actual curved page corners: top-left, top-right, bottom-right, bottom-left in page-local UV order. */
+  function pageQuad(mesh: Mesh, pageWidth: number, pageHeight: number, spine: SpineSide, amplitude: number): StageQuad {
+    const corner = (u: number, v: number) => {
+      const spineDistance = spine === 'start' ? u : 1 - u;
+      return project(new Vector3(u * pageWidth, amplitude * spreadHeight(spineDistance), (v - 0.5) * pageHeight).applyMatrix4(mesh.matrixWorld));
+    };
+    return { tl: corner(0, 0), tr: corner(1, 0), br: corner(1, 1), bl: corner(0, 1) };
+  }
+  function refreshStack(side: 'left' | 'right', height: number): void {
+    const target = geometryState[side];
+    const amplitude = spreadAmplitude(height);
+    if (Math.abs(target.height - height) < 1e-7 && Math.abs(target.amplitude - amplitude) < 1e-7) return;
+    target.height = height;
+    target.amplitude = amplitude;
+    const spine: SpineSide = side === 'right' ? 'start' : 'end';
+    updateStackGeometry((side === 'right' ? rightStack : leftStack).geometry, D.pageWidth, D.pageHeight, spine, height, amplitude);
+    updateSpreadPageGeometry((side === 'right' ? rightPage : leftPage).geometry, D.pageWidth, D.pageHeight, spine, amplitude);
   }
   function applyObjects(): void {
     const progress = unitProgress(state.coverProgress);
     const turn = state.turn;
-    const turnProgress = turn ? unitProgress(turn.progress) : 0;
     const turnSign = turn?.direction === 'backward' ? -1 : 1;
-    for (const material of [leafFrontMaterial, leafBackMaterial, leafEdgeMaterial]) {
+    // One leaf (a turn or a drag) or a GO_TO's leaves, each with its own progress.
+    const leafProgress = turn ? (turn.leaves?.length ? turn.leaves : [turn.progress]).map(unitProgress) : [];
+    const moved = leafProgress.reduce((sum, value) => sum + value, 0);
+    for (const material of [...poolFrontMaterials, ...poolBackMaterials, leafEdgeMaterial]) {
       if (material.wireframe !== Boolean(state.inspectionWireframe)) {
         material.wireframe = Boolean(state.inspectionWireframe);
         material.needsUpdate = true;
       }
     }
-    turningLeafShadow.visible = !state.inspectionWireframe;
-    const heights = stackHeights(state.currentSpreadIndex + (turn ? turnSign * turnProgress : 0), state.spreadCount);
+    const heights = stackHeights(state.currentSpreadIndex + turnSign * moved, state.spreadCount);
     // The binding flexes down the spine as the rigid board opens. The pivot
     // stays at x=0 on the spine, never at the center of the cover artwork.
     coverHinge.position.y = D.coverThickness / 2 + (D.coverThickness + D.totalStackHeight) * (1 - progress);
     coverHinge.rotation.z = Math.PI * progress;
-    rightStack.scale.y = heights.right;
-    rightStack.position.set(D.pageWidth / 2, D.coverThickness + heights.right / 2, 0);
-    leftStack.scale.y = heights.left;
-    leftStack.position.set(D.pageWidth / 2, -D.coverThickness / 2 - heights.left / 2, 0);
+    const spineTop = coverHinge.position.y + D.coverThickness / 2;
+    spine.scale.y = spineTop;
+    spine.position.y = spineTop / 2;
+    refreshStack('right', heights.right);
+    refreshStack('left', heights.left);
     rightSurfaceY = D.coverThickness + heights.right + D.pageLift;
     rightPage.position.y = rightSurfaceY;
     leftPage.position.set(D.pageWidth, -D.coverThickness / 2 - heights.left - D.pageLift, 0);
-    leftRules.forEach((line, index) => line.position.set(D.pageWidth / 2, -D.coverThickness / 2 - heights.left * (index + 1) / 8, D.pageHeight / 2 + 0.001));
-    rightRules.forEach((line, index) => line.position.set(D.pageWidth / 2, D.coverThickness + heights.right * (index + 1) / 8, D.pageHeight / 2 + 0.001));
-    turningLeaf.visible = progress >= 1 && turn !== null;
-    if (turn && turningLeaf.visible) {
-      const source = stackHeights(state.currentSpreadIndex, state.spreadCount);
-      const destination = stackHeights(state.currentSpreadIndex + turnSign, state.spreadCount);
+    // A single leaf shows for the whole turn (flat on its stack at 0 and 1); a GO_TO leaf only while
+    // it is in the air. Leaf k flies in slot k mod 3 (the schedule frees a slot before reusing it).
+    const single = leafProgress.length === 1;
+    const flying: (number | null)[] = leafPool.map(() => null);
+    leafProgress.forEach((value, index) => {
+      if (single || (value > 0 && value < 1)) flying[index % leafPool.length] = index;
+    });
+    leafPool.forEach((leaf, slot) => {
+      const index = flying[slot];
+      leaf.visible = progress >= 1 && turn !== null && index !== null;
+      if (!turn || !leaf.visible || index === null) return;
+      const leafTurn = leafProgress[index]!;
+      const source = stackHeights(state.currentSpreadIndex + turnSign * index, state.spreadCount);
+      const destination = stackHeights(state.currentSpreadIndex + turnSign * (index + 1), state.spreadCount);
       const sourceHeight = turn.direction === 'forward' ? source.right : source.left;
       const destinationHeight = turn.direction === 'forward' ? destination.left : destination.right;
-      // The subpixel lift prevents coplanar source print from z-fighting. It
-      // remains below the DOM/texture handoff tolerance at the tested sizes.
-      turningLeaf.position.y = D.coverThickness + sourceHeight + (destinationHeight - sourceHeight) * turnProgress + D.pageLift + LEAF_THICKNESS;
-      updateTurningLeafGeometry(leafGeometry, D.pageWidth, D.pageHeight, turnProgress, turn.corner, turn.direction);
-    }
-    const growth = unitProgress(state.sceneProgress ?? 0);
-    // The current owner may fold under an early direct curl and unfold on
-    // cancellation. Depth testing keeps the leaf in front; the destination
-    // owner is attached only after the controller commits the turn.
-    sceneAnchor.visible = progress >= 1 && growth > 0 && (sceneWindow?.visible ?? true);
-    sceneAnchor.position.set(0, rightSurfaceY + 0.006 - (1 - growth) * 0.07, 0);
-    sceneAnchor.scale.set(1, Math.max(0.0001, growth), 1);
+      // The subpixel lift prevents coplanar source print from z-fighting. A GO_TO's leaves keep their
+      // physical order through their own stack heights (leaf k leaves from k leaves down).
+      leaf.position.y = D.coverThickness + sourceHeight + (destinationHeight - sourceHeight) * leafTurn + D.pageLift + LEAF_THICKNESS;
+      updateTurningLeafGeometry(leaf.geometry, D.pageWidth, D.pageHeight, leafTurn, turn.corner, turn.direction,
+        { source: spreadAmplitude(sourceHeight), destination: spreadAmplitude(destinationHeight) });
+    });
+    // v3 R4: the scene is an ink figure lying on the right page (it follows the page's curve
+    // itself). The timeline lifts it (0 flat → 1 standing) and the pen reveals it; the anchor no
+    // longer grows. The current owner may lie down under an early direct curl and stand again on
+    // cancellation; depth testing keeps the leaf in front. Once flat during a turn its ink would sit
+    // on the wrong page, so only a standing figure stays visible while a leaf moves.
+    const lift = unitProgress(state.sceneProgress ?? 0);
+    const reveal = unitProgress(state.sceneReveal ?? 1);
+    const figure = figureControlsOf(borrowedScene);
+    figure?.setLift(lift);
+    figure?.setReveal(reveal);
+    sceneAnchor.visible = progress >= 1 && (lift > 0 || (reveal > 0 && !turn)) && (sceneWindow?.visible ?? true);
+    // Flaps belong to the still page: the leaf carries the print during a turn.
+    flaps.setVisible(progress >= 1 && !turn);
+    sceneAnchor.position.set(0, rightSurfaceY, 0);
     applySceneWindow();
     bookRoot.updateMatrixWorld(true);
     visiblePoints = [];
     bookRoot.traverseVisible(object => {
       if (!(object instanceof Mesh)) return;
-      // Shadow receivers reuse their parents' vertices and are not extra book
-      // bounds; using a curved receiver's AABB would overestimate its silhouette.
-      if (object === leftPageShadow || object === rightPageShadow || object === turningLeafShadow) return;
-      if (object === turningLeaf) {
-        const positions = leafGeometry.getAttribute('position');
+      if (leafPool.includes(object)) {
+        const positions = object.geometry.getAttribute('position');
         for (let index = 0; index < positions.count; index += 1) visiblePoints.push(new Vector3().fromBufferAttribute(positions, index).applyMatrix4(object.matrixWorld));
       } else {
         if (!object.geometry.boundingBox) object.geometry.computeBoundingBox();
@@ -447,33 +467,78 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       }
     });
   }
+  /** v3 R6: world points of a shot's region — the standing figure's bounds or a page rect on the curved paper. */
+  function shotPoints(shot: NonNullable<StageUpdate['shot']>): Vector3[] {
+    const region = shot.spec.region;
+    if (typeof region === 'string') {
+      if (!borrowedScene) return [];
+      // The visible figure's world bounds, part by part: a part whose bounds are not finite (an empty or
+      // still-unwritten geometry) is left out instead of turning the whole shot camera into NaN.
+      borrowedScene.updateMatrixWorld(true);
+      const box = new Box3(), part = new Box3();
+      borrowedScene.traverseVisible(object => {
+        const geometry = (object as Mesh).geometry as BufferGeometry | undefined;
+        if (!geometry) return;
+        if (!geometry.boundingBox) geometry.computeBoundingBox();
+        const local = geometry.boundingBox;
+        if (!local || local.isEmpty() || ![local.min.x, local.min.y, local.min.z, local.max.x, local.max.y, local.max.z].every(Number.isFinite)) return;
+        box.union(part.copy(local).applyMatrix4(object.matrixWorld));
+      });
+      return box.isEmpty() ? [] : corners(box);
+    }
+    if (!shot.side) return [];
+    const mesh = shot.side === 'left' ? leftPage : rightPage;
+    const amplitude = geometryState[shot.side].amplitude;
+    mesh.updateMatrixWorld(true);
+    const points: Vector3[] = [];
+    for (const u of [region.rect.u0, (region.rect.u0 + region.rect.u1) / 2, region.rect.u1]) for (const v of [region.rect.v0, region.rect.v1]) {
+      const y = amplitude * spreadHeight(shot.side === 'left' ? 1 - u : u);
+      points.push(new Vector3(u * D.pageWidth, y, (v - 0.5) * D.pageHeight).applyMatrix4(mesh.matrixWorld));
+    }
+    return points;
+  }
+  let shotFit: { key: string; fit: FitResult } | null = null;
   function fitCamera(rect: DOMRect, safe: StageRect): void {
+    // v3 R6: during a shot the reading fit stays as it was (suspendFit) and the camera blends from it
+    // to the shot's own fit; t = 0 applies the reading fit result itself (exact return).
+    const shot = state.shot && state.shot.t > 0 ? state.shot : null;
+    if (!shot) shotFit = null;
+    if (shot && layout && cameraFit) {
+      const viewport = { width, height };
+      const key = JSON.stringify([shot.spec.id, shot.side, width, height, safe]);
+      if (!shotFit || shotFit.key !== key) {
+        const points = shotPoints(shot);
+        const fit = points.length ? resolveShot(shot.spec, points, viewport, safe, SCENE_EXTENT) : null;
+        const finite = !!fit && [...fit.position.toArray(), ...fit.quaternion.toArray(), fit.fovDeg, fit.near, fit.far].every(Number.isFinite);
+        shotFit = finite ? { key, fit: fit! } : null;
+      }
+      appliedFit = shotFit ? blendTo(cameraFit, shotFit.fit, shot.t) : cameraFit;
+      rig.apply(appliedFit, viewport);
+      return;
+    }
     // Pinch zoom belongs to the reader. Refitting to its smaller visual viewport
     // would move the book under the fingers and undo the chosen magnification.
-    if ((state.suspendFit || (window.visualViewport?.scale ?? 1) > 1.001) && layout) return;
+    if ((state.suspendFit || (window.visualViewport?.scale ?? 1) > 1.001) && layout && cameraFit) return;
     const progress = unitProgress(state.coverProgress);
     const intro = unitProgress(state.introProgress);
     const target = viewportCenter(rect);
-    const anchor = closedAnchor.clone().lerp(openAnchor, progress);
-    anchor.x += (1 - intro) * 0.30;
-    anchor.z += (1 - intro) * 0.12;
-    const closedScale = fitScale(closedBounds, closedAnchor, target, safe);
-    const openScale = fitOpenScale(target, safe);
-    const baseScale = (closedScale + (openScale - closedScale) * progress) * (1 + 0.14 * (1 - intro));
-    const worldPerPixel = progress === 1 && intro === 1 ? openScale : Math.max(baseScale, fitPoints(visiblePoints, anchor, target, safe));
-    cameraTarget.copy(anchor)
-      .addScaledVector(VIEW_RIGHT, -(target.x - width / 2) * worldPerPixel)
-      .addScaledVector(VIEW_UP, (target.y - height / 2) * worldPerPixel);
-    camera.position.copy(cameraTarget).addScaledVector(VIEW_DIRECTION, 12 + 0.75 * (1 - intro) + 0.5 * progress);
-    camera.quaternion.copy(fixedQuaternion);
-    camera.left = -width * worldPerPixel / 2;
-    camera.right = width * worldPerPixel / 2;
-    camera.top = height * worldPerPixel / 2;
-    camera.bottom = -height * worldPerPixel / 2;
-    camera.near = 0.1;
-    camera.far = 40;
-    camera.updateProjectionMatrix();
-    camera.updateMatrixWorld(true);
+    const viewport = { width, height };
+    const key = JSON.stringify([width, height, target, safe, pose]);
+    if (!fitCache || fitCache.key !== key) {
+      const closed = fitDistance({ points: closedPoints, anchor: CLOSED_ANCHOR, target, safe, viewport, pose }).distance;
+      const open = balancedAnchor({ points: openPoints, anchor: OPEN_ANCHOR, target, safe, viewport, pose }, 1.6);
+      fitCache = { key, closed, open };
+    }
+    const anchor = CLOSED_ANCHOR.clone().lerp(fitCache.open.anchor, progress).addScaledVector(INTRO_OFFSET, 1 - intro);
+    const scale = 1 + INTRO_DISTANCE * (1 - intro);
+    let distance = (fitCache.closed + (fitCache.open.distance - fitCache.closed) * progress) * scale;
+    // In motion (intro, cover hinge) the visible silhouette can exceed both endpoints.
+    if (!(progress === 1 && intro === 1) && !(progress === 0 && intro === 1)) {
+      distance = Math.max(distance, fitDistance({ points: visiblePoints, anchor, target, safe, viewport, pose }).distance);
+    }
+    cameraFit = placeRig({ anchor, target, safe, viewport, pose, distance, sceneExtent: SCENE_EXTENT });
+    appliedFit = cameraFit;
+    rig.apply(cameraFit, viewport);
   }
   function render(): void {
     pendingFrame = null;
@@ -484,11 +549,17 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     if (nextWidth !== width || nextHeight !== height) {
       width = nextWidth; height = nextHeight;
       renderer.setSize(width, height, false);
+      post.setSize(width, height, pixelRatio);
     }
     applyObjects();
+    flapsMoving = flaps.update(performance.now(), flapPages());
     const safe = safeRect();
     fitCamera(rect, safe);
-    renderer.render(scene, camera);
+    // Ink widths are CSS pixels of this viewport.
+    figureControlsOf(borrowedScene)?.setResolution(width, height);
+    renderer.info.reset();
+    post.render();
+    drawCalls = renderer.info.render.calls;
     renderedFrames += 1;
     const coverUvCenter = project(new Vector3(D.coverWidth / 2, 0, 0).applyMatrix4(artwork.matrixWorld));
     const target = viewportCenter(rect);
@@ -497,14 +568,18 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     layout = {
       width, height, pageWidth: D.pageWidth, pageHeight: D.pageHeight,
       pageWorld: { width: D.pageWidth, height: D.pageHeight },
-      left: pageQuad(leftPage, D.pageWidth, D.pageHeight), right: pageQuad(rightPage, D.pageWidth, D.pageHeight),
-      cover: pageQuad(artwork, D.coverWidth, D.coverHeight), safeRect: safe, coverUvCenter,
+      left: pageQuad(leftPage, D.pageWidth, D.pageHeight, 'end', geometryState.left.amplitude),
+      right: pageQuad(rightPage, D.pageWidth, D.pageHeight, 'start', geometryState.right.amplitude),
+      cover: pageQuad(artwork, D.coverWidth, D.coverHeight, 'start', 0), safeRect: safe, coverUvCenter,
       coverCenterErrorPx: Math.hypot(coverUvCenter.x - target.x, coverUvCenter.y - target.y),
-      camera: { position: camera.position.toArray(), target: cameraTarget.toArray(), quaternion: camera.quaternion.toArray(), span: camera.top - camera.bottom },
+      camera: { position: camera.position.toArray(), target: appliedFit?.cameraTarget.toArray() ?? [], quaternion: camera.quaternion.toArray(),
+        span: appliedFit ? appliedFit.worldPerPixelAtAnchor * height : 0, fov: camera.fov, distance: appliedFit?.distance ?? 0,
+        worldPerPixelAtAnchor: appliedFit?.worldPerPixelAtAnchor ?? 0, shot: state.shot && state.shot.t > 0 ? { id: state.shot.spec.id, t: state.shot.t } : null },
       bookBounds: bounds, openWidthFraction: (bounds.right - bounds.left) / width,
     };
     options.onLayout?.(layout);
     metrics();
+    if (flapsMoving) invalidate();
   }
   function invalidate(): void {
     if (!disposed && !contextLost && pendingFrame === null) pendingFrame = requestAnimationFrame(render);
@@ -554,8 +629,9 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       const turnEqual = JSON.stringify(merged.turn) === JSON.stringify(state.turn);
       if (merged.coverProgress === state.coverProgress && merged.introProgress === state.introProgress
         && merged.currentSpreadIndex === state.currentSpreadIndex && merged.spreadCount === state.spreadCount
-        && merged.sceneProgress === state.sceneProgress && merged.suspendFit === state.suspendFit
-        && merged.inspectionWireframe === state.inspectionWireframe && turnEqual) return;
+        && merged.sceneProgress === state.sceneProgress && merged.sceneReveal === state.sceneReveal && merged.suspendFit === state.suspendFit
+        && merged.inspectionWireframe === state.inspectionWireframe && turnEqual
+        && (merged.shot ?? null) === (state.shot ?? null)) return;
       state = merged;
       invalidate();
     },
@@ -566,18 +642,18 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
         if (textures[key] !== texture) { textures[key] = texture; changed = true; }
       }
       if (!changed || disposed) return;
-      leftMaterial.map = textures.staticLeft;
-      rightMaterial.map = textures.staticRight;
-      leafFrontMaterial.map = textures.turnFront;
-      leafBackMaterial.map = textures.turnBack;
-      leftMaterial.color.set(textures.staticLeft ? '#ffffff' : '#f4eedc');
-      rightMaterial.color.set(textures.staticRight ? '#ffffff' : '#f4eedc');
-      leafFrontMaterial.color.set(textures.turnFront ? '#ffffff' : '#f4eedc');
-      leafBackMaterial.color.set(textures.turnBack ? '#ffffff' : '#f4eedc');
-      leftMaterial.needsUpdate = true;
-      rightMaterial.needsUpdate = true;
-      leafFrontMaterial.needsUpdate = true;
-      leafBackMaterial.needsUpdate = true;
+      leftMaterial.setPrint(textures.staticLeft);
+      rightMaterial.setPrint(textures.staticRight);
+      leafFrontMaterial.setPrint(textures.turnFront);
+      leafBackMaterial.setPrint(textures.turnBack);
+      poolFrontMaterials[1].setPrint(textures.turnFront1);
+      poolBackMaterials[1].setPrint(textures.turnBack1);
+      poolFrontMaterials[2].setPrint(textures.turnFront2);
+      poolBackMaterials[2].setPrint(textures.turnBack2);
+      leftMaterial.setState(textures.staticLeftState);
+      rightMaterial.setState(textures.staticRightState);
+      leafFrontMaterial.setState(textures.turnFrontState);
+      leafBackMaterial.setState(textures.turnBackState);
       invalidate();
     },
     setSceneGroup(group) {
@@ -617,6 +693,27 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
         turnProgress: state.turn ? leafProgressFromX(D.pageWidth, D.pageHeight, rayHit.x - grabbedOffsetX, state.turn.corner, state.turn.direction) : undefined,
       };
     },
+    pagePointer(clientX, clientY) {
+      if (disposed || !layout || state.turn || unitProgress(state.coverProgress) < 1) return null;
+      const rect = renderer.domElement.getBoundingClientRect();
+      if (!(rect.width > 0 && rect.height > 0)) return null;
+      pointer.set((clientX - rect.left) / rect.width * 2 - 1, 1 - (clientY - rect.top) / rect.height * 2);
+      raycaster.setFromCamera(pointer, camera);
+      const hit = raycaster.intersectObjects([leftPage, rightPage], false)[0];
+      if (!hit?.uv) return null;
+      // Page geometry UV is (u, 1 - row); the print canvas runs top-down.
+      return { side: hit.object === leftPage ? 'left' : 'right', u: hit.uv.x, v: 1 - hit.uv.y };
+    },
+    pagePoint(side, u, v) {
+      if (disposed || !layout || ![u, v].every(Number.isFinite)) return null;
+      const mesh = side === 'left' ? leftPage : rightPage;
+      const spine: SpineSide = side === 'left' ? 'end' : 'start';
+      const amplitude = geometryState[side].amplitude;
+      const local = new Vector3(u * D.pageWidth, amplitude * spreadHeight(spine === 'start' ? u : 1 - u), (v - 0.5) * D.pageHeight);
+      const point = project(local.applyMatrix4(mesh.matrixWorld));
+      const rect = renderer.domElement.getBoundingClientRect();
+      return { x: rect.left + point.x, y: rect.top + point.y };
+    },
     pickScene(clientX, clientY, targets) {
       if (disposed || !sceneAnchor.visible || state.turn || sceneWindow?.visible === false) return null;
       const rect = renderer.domElement.getBoundingClientRect();
@@ -626,6 +723,44 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       const hit = raycaster.intersectObjects(targets, false).find(intersection => !sceneWindow
         || intersection.point.z >= sceneWindow.minZ && intersection.point.z <= sceneWindow.maxZ);
       return (hit?.object as Mesh | undefined) ?? null;
+    },
+    setPageFlaps(list, instant = false) {
+      if (disposed) return;
+      flaps.set(list, flapPages(), instant);
+      invalidate();
+    },
+    flapAngles: () => flaps.angles(),
+    holdFlaps(ms) { flaps.hold(ms); invalidate(); },
+    flapAt(clientX, clientY) {
+      const targets = flaps.targets();
+      if (disposed || !targets.length || state.turn) return null;
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.set((clientX - rect.left) / rect.width * 2 - 1, 1 - (clientY - rect.top) / rect.height * 2);
+      scene.updateMatrixWorld(true);
+      raycaster.setFromCamera(pointer, camera);
+      const hit = raycaster.intersectObjects(targets, false)[0];
+      return hit ? flaps.keyOf(hit.object) : null;
+    },
+    projectToClient(point) {
+      if (disposed || !layout || !point.every(Number.isFinite)) return null;
+      const projected = project(new Vector3(point[0], point[1], point[2]));
+      const rect = renderer.domElement.getBoundingClientRect();
+      return { x: rect.left + projected.x, y: rect.top + projected.y };
+    },
+    measureSceneDrawCalls() {
+      if (disposed || contextLost || !layout) return null;
+      // A full frame first, so the figure reflects the current timeline state.
+      if (pendingFrame !== null) cancelAnimationFrame(pendingFrame);
+      render();
+      const total = drawCalls;
+      const visible = sceneAnchor.visible;
+      sceneAnchor.visible = false;
+      renderer.info.reset();
+      post.render();
+      const withoutScene = renderer.info.render.calls;
+      sceneAnchor.visible = visible;
+      render();
+      return { total, withoutScene, scene: total - withoutScene, figure: figureControlsOf(borrowedScene)?.stats() ?? null };
     },
     getLayout: () => layout,
     invalidate,
@@ -641,10 +776,13 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
       renderer.domElement.removeEventListener('webglcontextrestored', contextRestoredHandler);
       restoreSceneMaterials();
       if (borrowedScene) { borrowedScene.position.z = borrowedSceneZ; sceneAnchor.remove(borrowedScene); }
+      flaps.dispose();
       ownedCoverTexture?.dispose();
       ownedGeometries.forEach(geometry => geometry.dispose());
       ownedMaterials.forEach(material => material.dispose());
-      key.shadow.map?.dispose();
+      ownedTextures.forEach(texture => texture.dispose());
+      environment.dispose();
+      post.dispose();
       renderer.renderLists.dispose();
       renderer.dispose();
       renderer.domElement.remove();
@@ -653,3 +791,4 @@ export function createBookStage(host: HTMLElement, options: StageOptions = {}): 
     },
   };
 }
+

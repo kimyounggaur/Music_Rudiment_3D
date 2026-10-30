@@ -133,3 +133,18 @@ await writeFile('public/licenses/font-metadata.json', JSON.stringify({
   ],
   fonts, notices, wrapperNotices,
 }, null, 2) + '\n', 'utf8');
+
+// v3 R9: the printed page fonts are OFL subsets renamed under condition 3 (Reserved Font Names):
+// the notice lists both, each WOFF2 carries only the new family name and keeps its licence record.
+const pageNotice = await readFile('public/licenses/book-page-fonts.txt', 'utf8');
+assert.ok(pageNotice.includes('SIL OPEN FONT LICENSE Version 1.1') && pageNotice.includes('"Book Sans"') && pageNotice.includes('"Book Serif"'),
+  'public/licenses/book-page-fonts.txt must carry the OFL text and both renamed families');
+for (const [file, family] of [['book-sans-regular.subset.woff2', 'Book Sans'], ['book-sans-semibold.subset.woff2', 'Book Sans'], ['book-serif-bold.subset.woff2', 'Book Serif']] as const) {
+  const inspected = namesFromWoff2(await readFile(resolve('public/fonts', file)));
+  const families = [...new Set(inspected.records.filter(record => record.nameId === 1 || record.nameId === 16).map(record => record.text))];
+  assert.ok(families.length > 0 && families.every(name => name.startsWith(family)), `${file}: only the renamed family ${family} (found ${families.join(', ')})`);
+  assert.ok(!families.some(name => /Pretendard|Noto|Source/.test(name)), `${file}: a Reserved Font Name is still the family name`);
+  const licence = inspected.records.find(record => record.nameId === 13)?.text ?? '';
+  assert.ok(/Open Font License|OFL/i.test(licence), `${file}: the OFL licence record must be kept`);
+  console.log(JSON.stringify({ pageFont: file, family: families, licence: licence.split('\n')[0] }));
+}

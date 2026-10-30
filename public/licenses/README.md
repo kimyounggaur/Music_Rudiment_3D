@@ -27,3 +27,14 @@ Academico의 OFL 적용은 Steinberg 공식 포럼 안내와도 일치한다. �
 외부 출처 조사 중 `web.click`으로 요청한 `https://github.com/vexflow/vexflow-fonts/tree/main/academico`와 `https://github.com/vexflow/vexflow-fonts/tree/main/bravura`는 각각 `Failed to fetch restricted URL`로 읽기 실패했다. 두 경로는 재시도하거나 다른 경로로 우회하지 않았다. 위 고지는 그 외부 경로에서 받은 내용이 아니라 이미 로컬에 검증돼 있던 패키지의 실제 WOFF2 이름 테이블에서 추출한 전체 원문이다. 따라서 이 조사로 외부 글꼴 저장소 내용까지 확인했다고 보고하지 않는다.
 
 이 기록은 글꼴 고지 조사와 보존 범위다. 앱의 실제 배포·검증 상태는 프로젝트 README와 배포 기록에서 별도로 확인한다. 라이선스 조사를 음악교사 승인이나 교육 효과 검증으로 표시하지 않는다.
+
+## 인쇄 쪽 글꼴 (v3 R3)
+
+3D 책 쪽에 인쇄되는 한국어 글꼴은 [book-page-fonts.txt](book-page-fonts.txt)에 고지와 OFL 1.1 전문을 둔다. 앱에 들어가는 파일은 원 글꼴의 글자 부분집합(WOFF2)이라 OFL의 수정본(Modified Version)이며, 조건 3(Reserved Font Name)에 따라 이름을 바꿨다.
+
+| 앱 안 이름 | 원 글꼴 | 파일 |
+| --- | --- | --- |
+| Book Sans 400·600 | Pretendard 1.3.9 Regular·SemiBold (RFN `Pretendard`) | `fonts/book-sans-regular.subset.woff2`, `fonts/book-sans-semibold.subset.woff2` |
+| Book Serif 700 | Noto Serif CJK KR Bold (RFN `Source`) | `fonts/book-serif-bold.subset.woff2` |
+
+원 저작권·상표·라이선스 이름 레코드는 각 파일 안에 그대로 남겼다. 재현 명령은 `node scripts/extract-page-fonts.mjs`(pyftsubset + `scripts/rename-subset-font.py`)이고, `tests/page-fonts.test.ts`가 예약 이름이 남지 않았는지와 크기·해시를 매번 검사한다.

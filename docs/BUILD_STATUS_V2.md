@@ -262,3 +262,7 @@ Current full-source summary: output/qa-v2.1/r1-integrated-20261028-140635-summar
 New actual UI evidence prefix r1-1793196104305 covers whole-to16 balanced splits, all16 real C4 noteheads/stems/ledger lines and four groups of two beam paths, last-note keyboard selection, merge/undo/redo and16 saved IDs after reload/resume.390x844 CSS viewport emulation has root width390/scroll width390 and44px event-list targets; native keyboard selection and editing worked. This is one emulated size, not the complete responsive matrix, native desktop zoom or physical phone touch.
 
 MANUAL_DRAG_CHECK.md gives the user a minimal hold/reverse-cancel/complete/revisit check. The existing4183 server responds. The retained IAB is back at normal1280x720, first3D spread, spreadIdle/scene ready/prints ready/turn null/audio0. No automated drag retry was made after JavaScript execution was denied. Specific cause/reviewer identity absent; retry question and manual results pending. Existing JSON file-download delivery remains uncertain. No commit/push/remote CI/new deployment. Additional responsive/keyboard/audio/resource stress QA and the current moved-corner manual result remain before first deployment. Spreads3-6 remain deferred until that deployment.
+
+## v3 리팩토링으로 이어짐
+
+2026-10-30부터의 v3 리팩토링(R0–R9) 보고는 [BUILD_STATUS_V3.md](BUILD_STATUS_V3.md)로 이어진다.

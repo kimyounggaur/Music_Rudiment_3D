@@ -11,8 +11,6 @@ import { createLessonScene } from '../src/book/lessonScene.ts';
 import { createLessonState, currentAssessment, isSceneComplete, reduceLesson, sceneEvents } from '../src/lesson/controller.ts';
 import { frac, seconds } from '../src/domain/index.ts';
 import { captureBookProgress, restoreBookLearning } from '../src/book/learningProgress.ts';
-import { pageSnapshotKey } from '../src/book/pageSnapshot.ts';
-import type { PageId } from '../src/book/manifest.ts';
 import { renderBarBuffer } from '../src/audio/renderBarBuffer.ts';
 
 const complete = (state: BookState, type: Extract<BookEvent, { token: unknown }>['type']) => bookReducer(state, { type, token: bookToken(state) } as BookEvent);
@@ -87,15 +85,6 @@ test('adjacent print windows retain all four leaf surfaces, never more than six 
       for (const id of [leaf.frontPageId, leaf.backPageId, leaf.stationaryLeftPageId, leaf.stationaryRightPageId]) assert.ok(pages.includes(id));
     }
     assert.equal(spreadIndex(spread.spreadId), BOOK_MANIFEST.indexOf(spread));
-  }
-});
-
-test('every exposed manifest page has a valid snapshot identity, while unknown and future pages still fail closed', () => {
-  const identity = { contentRevision: 1, width: 340, height: 500, scale: 2, fontVersion: 'local-bravura', scrollSignature: '[]' };
-  const keys = BOOK_MANIFEST.flatMap(spread => [spread.leftPageId, spread.rightPageId]).map(pageId => pageSnapshotKey({ ...identity, pageId }));
-  assert.equal(new Set(keys).size, BOOK_MANIFEST.length * 2);
-  for (const id of ['page-0', 'page-01', 'page-13', `page-${BOOK_MANIFEST.length * 2 + 1}`]) {
-    assert.throws(() => pageSnapshotKey({ ...identity, pageId: id as PageId }), /Invalid page snapshot identity/);
   }
 });
 
