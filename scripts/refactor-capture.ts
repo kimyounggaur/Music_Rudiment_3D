@@ -552,6 +552,8 @@ try {
       const frames: Record<string, unknown>[] = [];
       for (let step = 0; step <= 7; step += 1) {
         await inspectorCall(`inspector.holdTurn(${step / 7})`);
+        // The held progress reaches the stage after React applies it: read the leaves once it is drawn.
+        await waitFor(page, `Math.abs((window.__bookInspector?.snapshot().visual.turn?.progress ?? -1) - ${step / 7}) < 1e-9`, 30_000);
         const turn = await page.evaluate(() => (window as unknown as { __bookInspector: { snapshot(): { visual: { turn: { leaves?: number[] } | null } } } }).__bookInspector.snapshot().visual.turn);
         frames.push({ step, progress: Number((step / 7).toFixed(4)), leaves: turn?.leaves?.map(value => Number(value.toFixed(3))) ?? null,
           textures: (await rootData(page)).textures ?? null, file: await frame(`goto_${step}`) });

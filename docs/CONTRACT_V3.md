@@ -86,6 +86,10 @@ v2.1 계약([design-v2.1](source/design-v2.1.md), [prompt-v2.1](source/prompt-v2
 | 넘김 중 카메라 불변 | 드래그·넘김·닫기 중 카메라 이동 없음 | `tests/book-camera-rig.test.ts`(suspendFit), R6 `tests/shots.test.ts` |
 | C8 효과음 | 절차 합성 7종(음원 파일 없음), 학습 재생과 같은 AudioContext의 별도 게인. 첫 제스처(표지 열기) 전 무음, 음악 재생 중 펜 소리 없음, 음소거·설정 꺼짐이면 노드 0, 피크 ≤ −6 dBFS, 길이 설계값 ±10% | `tests/sfx.test.ts`(4), `scripts/sfx-render.ts`(OfflineAudioContext 렌더), `scripts/book-v3-e2e.ts`('R7: …' 3개), 청취는 사람 검사(외부 검수 대기) |
 | 저장 v3 | schema 3(`bookUiVersion 3.0.0`)이 `preferences.sfx`(켬)·`autoShot`(끔)을 더함. v2 → v3 이관 = v2 원본 백업 → 검증 → 새 키, v2 키 무변경, 저장은 CAS | `tests/book-progress-v3.test.ts`(8), `tests/book-progress.test.ts`(무변경 통과) |
+| C9 넘기기(R8) | 책 순서 = 목차 · 레슨 1–6 · 마침. 첫 펼침면(목차) 이전 = 표지로(CLOSE_BOOK), 마지막(마침) 다음 = 비활성, 모서리 드래그도 책 순서. 레슨 함수(G1·V13 고정 데이터, 저장 형식)는 그대로 | `tests/book-goto.test.ts`, `tests/book-turn-hit.test.ts`(책 끝 모서리), `scripts/book-v3-e2e.ts`('R5/R8: …' 2개) |
+| GO_TO | 목차 줄·조작바 '목차'·마침 '차례로' = GO_TO(spreadId). NEXT/PREV와 같은 경로(한 번의 넘김, 한 칸 대기열, 경계, 숨김 복구). 잎 사이 45 ms, 공중 ≤ 3장(잎 풀 3), 잎당 min(1120, 1600/n) ms, 전체 ≤ 1.6 s | `tests/book-goto.test.ts`(8), `scripts/book-v3-e2e.ts`('R8: …'), 캡처 `goto_0`–`goto_7` |
+| 인쇄 창(R8) | 평소 현재 ± 1 펼침면(≤ 6쪽), GO_TO 동안 출발·첫 잎 먼 면·마지막 잎 가까운 면·도착(6쪽), ≤ 48 MiB. 사이 쪽은 인쇄 없는 종이 | `tests/book-goto.test.ts`, 캡처 `metrics.json`(`extra.printStats`) |
+| 목차·마침 파생 | 목차 체크·마침 체크·마침 도장 = `isSceneComplete`에서 파생, 새 저장 필드 없음. 마침의 문장은 `content/lesson.ts` 원문(제목·목표)과 쪽 이름표뿐 | `tests/print-layout.test.ts`(R8 2개) |
 
 ## 5 고정 수치(설계서 부록 D, 제안값)
 

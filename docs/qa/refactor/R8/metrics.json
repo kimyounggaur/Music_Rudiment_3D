@@ -1,0 +1,7387 @@
+[
+  {
+    "file": "after/1280x720_spread1_ink.jpg",
+    "viewport": "1280x720",
+    "state": "spread1",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:27:00.506Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "33",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "101",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.1,
+      "nearEdgePx": 650.14,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 279.56,
+      "rightPageHeightPx": 400.28,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80513,
+      "leftGutter": 0.80325,
+      "rightGutter": 0.81635,
+      "rightOuter": 0.78118,
+      "leftPage": 0.81765,
+      "rightPage": 0.80536,
+      "edgeToGutterPercent": -2.1,
+      "paperShadingPercent": 4.31
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 101,
+            "withoutScene": 87,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 46.1,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 4,
+          "states": 2,
+          "lastDraftMs": 0.3,
+          "lastSettledMs": 0.1
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.2709,
+          "pxPerUnitH": 0.3006,
+          "bodyFontPx": 5.64,
+          "bodyXHeightPx": 2.99,
+          "hotspotMinPx": 7.7,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.2722,
+          "pxPerUnitH": 0.303,
+          "bodyFontPx": 7.08,
+          "bodyXHeightPx": 3.75,
+          "hotspotMinPx": 13.1,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 383.109375,
+          "top": 667,
+          "right": 896.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_spread2_ink.jpg",
+    "viewport": "1280x720",
+    "state": "spread2",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:28:40.871Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "65",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.05,
+      "nearEdgePx": 650.1,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 279.14,
+      "rightPageHeightPx": 399.82,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80475,
+      "leftGutter": 0.80992,
+      "rightGutter": 0.81743,
+      "rightOuter": 0.78265,
+      "leftPage": 0.81793,
+      "rightPage": 0.76243,
+      "edgeToGutterPercent": -2.52,
+      "paperShadingPercent": 4.25
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 15,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "scissors",
+          "stats": {
+            "segments": 275,
+            "ink": 183,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 1,
+            "hits": 1,
+            "labels": 3
+          },
+          "calls": {
+            "total": 96,
+            "withoutScene": 87,
+            "scene": 9,
+            "figure": {
+              "segments": 275,
+              "ink": 183,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 1,
+              "hits": 1,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 46.1,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 4,
+          "states": 2,
+          "lastDraftMs": 2.5,
+          "lastSettledMs": 5.5
+        },
+        "left": {
+          "pageId": "page-3",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.2712,
+          "pxPerUnitH": 0.3011,
+          "bodyFontPx": 7.05,
+          "bodyXHeightPx": 3.74,
+          "hotspotMinPx": 9.7,
+          "hotspots": 7
+        },
+        "right": {
+          "pageId": "page-4",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.2718,
+          "pxPerUnitH": 0.3025,
+          "bodyFontPx": 7.07,
+          "bodyXHeightPx": 3.75,
+          "hotspotMinPx": 13,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 383.109375,
+          "top": 667,
+          "right": 896.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_contents_ink.jpg",
+    "viewport": "1280x720",
+    "state": "contents",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:29:12.302Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "contents",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "72",
+      "textures": "27",
+      "geometries": "12",
+      "drawCalls": "87",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.17,
+      "nearEdgePx": 650.21,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 279.99,
+      "rightPageHeightPx": 400.78,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80558,
+      "leftGutter": 0.79814,
+      "rightGutter": 0.81641,
+      "rightOuter": 0.78045,
+      "leftPage": 0.81751,
+      "rightPage": 0.80536,
+      "edgeToGutterPercent": -1.8,
+      "paperShadingPercent": 4.4
+    },
+    "extra": {
+      "printStats": {
+        "pages": 4,
+        "bytes": 39078570.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 2,
+        "states": 2,
+        "printPaints": 20,
+        "statePaints": 8,
+        "lastDraftMs": 6.099999999627471,
+        "lastSettledMs": 0.8999999985098839,
+        "recent": [
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 2.699999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.6000000014901161
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 2.099999999627471
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.40000000037252903
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.099999999627471
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1.699999999254942
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 6.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 3.900000000372529
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.2999999988824129
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 6.200000001117587
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 2.5
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 1.8999999985098839
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 5.5
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 6.099999999627471
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 388.109375,
+          "top": 667,
+          "right": 891.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_spread3_ink.jpg",
+    "viewport": "1280x720",
+    "state": "spread3",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:29:35.706Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-3",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "79",
+      "textures": "28",
+      "geometries": "17",
+      "drawCalls": "93",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.04,
+      "nearEdgePx": 650.09,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 278.73,
+      "rightPageHeightPx": 399.49,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80444,
+      "leftGutter": 0.81122,
+      "rightGutter": 0.8187,
+      "rightOuter": 0.78372,
+      "leftPage": 0.818,
+      "rightPage": 0.65116,
+      "edgeToGutterPercent": -2.63,
+      "paperShadingPercent": 4.27
+    },
+    "extra": {
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 28,
+        "statePaints": 10,
+        "lastDraftMs": 1.299999998882413,
+        "lastSettledMs": 10.199999999254942,
+        "recent": [
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 2.699999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.6000000014901161
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 2.099999999627471
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.40000000037252903
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.099999999627471
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1.699999999254942
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 6.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 3.900000000372529
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.2999999988824129
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 6.200000001117587
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 2.5
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 1.8999999985098839
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 5.5
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 6.099999999627471
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 1.699999999254942
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 4
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 1.5
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 1.299999998882413
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 1.200000001117587
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 10.199999999254942
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 383.109375,
+          "top": 667,
+          "right": 896.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_spread4_ink.jpg",
+    "viewport": "1280x720",
+    "state": "spread4",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:29:55.366Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-4",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "85",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.04,
+      "nearEdgePx": 650.09,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 278.33,
+      "rightPageHeightPx": 399.16,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80382,
+      "leftGutter": 0.80951,
+      "rightGutter": 0.81758,
+      "rightOuter": 0.78562,
+      "leftPage": 0.78059,
+      "rightPage": 0.80565,
+      "edgeToGutterPercent": -2.37,
+      "paperShadingPercent": 3.91
+    },
+    "extra": {
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 32,
+        "statePaints": 12,
+        "lastDraftMs": 5.899999998509884,
+        "lastSettledMs": 10.400000000372529,
+        "recent": [
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 2.699999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.6000000014901161
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 2.099999999627471
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.40000000037252903
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.099999999627471
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1.699999999254942
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 6.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 3.900000000372529
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.2999999988824129
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 6.200000001117587
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 2.5
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 1.8999999985098839
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 5.5
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 6.099999999627471
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 1.699999999254942
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 4
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 1.5
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 1.299999998882413
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 1.200000001117587
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 10.199999999254942
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 3
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 5.899999998509884
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 2.400000000372529
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 10.400000000372529
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 383.109375,
+          "top": 667,
+          "right": 896.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_spread5_ink.jpg",
+    "viewport": "1280x720",
+    "state": "spread5",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:30:15.745Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-5",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "91",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "98",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.05,
+      "nearEdgePx": 650.1,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 277.94,
+      "rightPageHeightPx": 398.83,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80399,
+      "leftGutter": 0.80697,
+      "rightGutter": 0.81461,
+      "rightOuter": 0.78697,
+      "leftPage": 0.81919,
+      "rightPage": 0.76737,
+      "edgeToGutterPercent": -1.92,
+      "paperShadingPercent": 3.39
+    },
+    "extra": {
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 36,
+        "statePaints": 14,
+        "lastDraftMs": 7.399999998509884,
+        "lastSettledMs": 4.900000000372529,
+        "recent": [
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 2.099999999627471
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.40000000037252903
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.099999999627471
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1.699999999254942
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 6.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 3.900000000372529
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.2999999988824129
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 6.200000001117587
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 2.5
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 1.8999999985098839
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 5.5
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 6.099999999627471
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 1.699999999254942
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 4
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 1.5
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 1.299999998882413
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 1.200000001117587
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 10.199999999254942
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 3
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 5.899999998509884
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 2.400000000372529
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 10.400000000372529
+          },
+          {
+            "pageId": "page-9",
+            "layer": "state",
+            "ms": 4.299999998882413
+          },
+          {
+            "pageId": "page-10",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-11",
+            "layer": "draft",
+            "ms": 1.799999998882413
+          },
+          {
+            "pageId": "page-12",
+            "layer": "draft",
+            "ms": 7.399999998509884
+          },
+          {
+            "pageId": "page-9",
+            "layer": "settled",
+            "ms": 2.200000001117587
+          },
+          {
+            "pageId": "page-10",
+            "layer": "settled",
+            "ms": 4.900000000372529
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 379.5,
+          "top": 667,
+          "right": 900.5,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_spread6_ink.jpg",
+    "viewport": "1280x720",
+    "state": "spread6",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:30:31.618Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-6",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "96",
+      "textures": "28",
+      "geometries": "15",
+      "drawCalls": "91",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.1,
+      "nearEdgePx": 650.14,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 277.54,
+      "rightPageHeightPx": 398.5,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80321,
+      "leftGutter": 0.80453,
+      "rightGutter": 0.80836,
+      "rightOuter": 0.78942,
+      "leftPage": 0.78899,
+      "rightPage": 0.77944,
+      "edgeToGutterPercent": -1.27,
+      "paperShadingPercent": 2.34
+    },
+    "extra": {
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 40,
+        "statePaints": 16,
+        "lastDraftMs": 0.6999999992549419,
+        "lastSettledMs": 0.8000000007450581,
+        "recent": [
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 6.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 3.900000000372529
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.2999999988824129
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 6.200000001117587
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 2.5
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 1.8999999985098839
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 5.5
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 6.099999999627471
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 1.699999999254942
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 4
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 1.5
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 1.299999998882413
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 1.200000001117587
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 10.199999999254942
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 3
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 5.899999998509884
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 2.400000000372529
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 10.400000000372529
+          },
+          {
+            "pageId": "page-9",
+            "layer": "state",
+            "ms": 4.299999998882413
+          },
+          {
+            "pageId": "page-10",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-11",
+            "layer": "draft",
+            "ms": 1.799999998882413
+          },
+          {
+            "pageId": "page-12",
+            "layer": "draft",
+            "ms": 7.399999998509884
+          },
+          {
+            "pageId": "page-9",
+            "layer": "settled",
+            "ms": 2.200000001117587
+          },
+          {
+            "pageId": "page-10",
+            "layer": "settled",
+            "ms": 4.900000000372529
+          },
+          {
+            "pageId": "page-11",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-12",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-15",
+            "layer": "draft",
+            "ms": 0.40000000037252903
+          },
+          {
+            "pageId": "page-16",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-11",
+            "layer": "settled",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-12",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 376.3671875,
+          "top": 667,
+          "right": 903.6328125,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/1280x720_closing_ink.jpg",
+    "viewport": "1280x720",
+    "state": "closing",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:30:50.541Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "closing",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "102",
+      "textures": "27",
+      "geometries": "12",
+      "drawCalls": "87",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.17,
+      "nearEdgePx": 650.21,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 277.15,
+      "rightPageHeightPx": 398.17,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80361,
+      "leftGutter": 0.80436,
+      "rightGutter": 0.80212,
+      "rightOuter": 0.79086,
+      "leftPage": 0.81912,
+      "rightPage": 0.80622,
+      "edgeToGutterPercent": -0.75,
+      "paperShadingPercent": 1.68
+    },
+    "extra": {
+      "printStats": {
+        "pages": 4,
+        "bytes": 39078570.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 2,
+        "states": 2,
+        "printPaints": 42,
+        "statePaints": 18,
+        "lastDraftMs": 0.6999999992549419,
+        "lastSettledMs": 7.299999998882413,
+        "recent": [
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.2999999988824129
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 6.200000001117587
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 2.5
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 1.8999999985098839
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 5.5
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 6.099999999627471
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 1.699999999254942
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 4
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 1.5
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 1.299999998882413
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 1.200000001117587
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 10.199999999254942
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 3
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 5.899999998509884
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 2.400000000372529
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 10.400000000372529
+          },
+          {
+            "pageId": "page-9",
+            "layer": "state",
+            "ms": 4.299999998882413
+          },
+          {
+            "pageId": "page-10",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-11",
+            "layer": "draft",
+            "ms": 1.799999998882413
+          },
+          {
+            "pageId": "page-12",
+            "layer": "draft",
+            "ms": 7.399999998509884
+          },
+          {
+            "pageId": "page-9",
+            "layer": "settled",
+            "ms": 2.200000001117587
+          },
+          {
+            "pageId": "page-10",
+            "layer": "settled",
+            "ms": 4.900000000372529
+          },
+          {
+            "pageId": "page-11",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-12",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-15",
+            "layer": "draft",
+            "ms": 0.40000000037252903
+          },
+          {
+            "pageId": "page-16",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-11",
+            "layer": "settled",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-12",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-15",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-16",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-15",
+            "layer": "settled",
+            "ms": 0.6000000014901161
+          },
+          {
+            "pageId": "page-16",
+            "layer": "settled",
+            "ms": 7.299999998882413
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 388.109375,
+          "top": 667,
+          "right": 891.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "after/844x390_spread1_ink.jpg",
+    "viewport": "844x390",
+    "state": "spread1",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:31:31.915Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "34",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "101",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "farEdgePx": 275.35,
+      "nearEdgePx": 316.71,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 138.13,
+      "rightPageHeightPx": 194.1,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.80498,
+      "leftGutter": 0.80899,
+      "rightGutter": 0.81631,
+      "rightOuter": 0.77443,
+      "leftPage": 0.82016,
+      "rightPage": 0.80564,
+      "edgeToGutterPercent": -2.91,
+      "paperShadingPercent": 5.13
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 101,
+            "withoutScene": 87,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 46.1,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 4,
+          "states": 2,
+          "lastDraftMs": 0.2,
+          "lastSettledMs": 0.2
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.1315,
+          "pxPerUnitH": 0.1475,
+          "bodyFontPx": 2.73,
+          "bodyXHeightPx": 1.45,
+          "hotspotMinPx": 3.7,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.132,
+          "pxPerUnitH": 0.1485,
+          "bodyFontPx": 3.43,
+          "bodyXHeightPx": 1.82,
+          "hotspotMinPx": 6.3,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 165.109375,
+          "top": 337,
+          "right": 678.890625,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "after/844x390_spread2_ink.jpg",
+    "viewport": "844x390",
+    "state": "spread2",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:32:25.494Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "66",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "farEdgePx": 275.33,
+      "nearEdgePx": 316.69,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 137.94,
+      "rightPageHeightPx": 193.91,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.80495,
+      "leftGutter": 0.81242,
+      "rightGutter": 0.81783,
+      "rightOuter": 0.77166,
+      "leftPage": 0.82023,
+      "rightPage": 0.77588,
+      "edgeToGutterPercent": -3.4,
+      "paperShadingPercent": 5.65
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 15,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "scissors",
+          "stats": {
+            "segments": 275,
+            "ink": 183,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 1,
+            "hits": 1,
+            "labels": 3
+          },
+          "calls": {
+            "total": 96,
+            "withoutScene": 87,
+            "scene": 9,
+            "figure": {
+              "segments": 275,
+              "ink": 183,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 1,
+              "hits": 1,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 46.1,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 4,
+          "states": 2,
+          "lastDraftMs": 3.5,
+          "lastSettledMs": 1.4
+        },
+        "left": {
+          "pageId": "page-3",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1315,
+          "pxPerUnitH": 0.1477,
+          "bodyFontPx": 3.42,
+          "bodyXHeightPx": 1.81,
+          "hotspotMinPx": 4.7,
+          "hotspots": 7
+        },
+        "right": {
+          "pageId": "page-4",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1318,
+          "pxPerUnitH": 0.1483,
+          "bodyFontPx": 3.43,
+          "bodyXHeightPx": 1.82,
+          "hotspotMinPx": 6.3,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 165.109375,
+          "top": 337,
+          "right": 678.890625,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "after/844x390_contents_ink.jpg",
+    "viewport": "844x390",
+    "state": "contents",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:32:39.186Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "contents",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "73",
+      "textures": "27",
+      "geometries": "12",
+      "drawCalls": "87",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "farEdgePx": 275.39,
+      "nearEdgePx": 316.74,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 138.33,
+      "rightPageHeightPx": 194.32,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.80446,
+      "leftGutter": 0.80694,
+      "rightGutter": 0.81494,
+      "rightOuter": 0.77447,
+      "leftPage": 0.8203,
+      "rightPage": 0.80565,
+      "edgeToGutterPercent": -2.72,
+      "paperShadingPercent": 4.97
+    },
+    "extra": {
+      "printStats": {
+        "pages": 4,
+        "bytes": 39078570.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 2,
+        "states": 2,
+        "printPaints": 20,
+        "statePaints": 8,
+        "lastDraftMs": 0.5,
+        "lastSettledMs": 0.900000000372529,
+        "recent": [
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 2.899999998509884
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 2.299999998882413
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.2999999988824129
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 2.800000000745058
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 5.300000000745058
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 3.5
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 2.700000001117587
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 7.099999999627471
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 1.900000000372529
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 4.900000000372529
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 0.900000000372529
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 170.109375,
+          "top": 337,
+          "right": 673.890625,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "after/844x390_spread3_ink.jpg",
+    "viewport": "844x390",
+    "state": "spread3",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:32:54.282Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-3",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "81",
+      "textures": "28",
+      "geometries": "17",
+      "drawCalls": "93",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "farEdgePx": 275.32,
+      "nearEdgePx": 316.69,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 137.76,
+      "rightPageHeightPx": 193.76,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.80472,
+      "leftGutter": 0.81202,
+      "rightGutter": 0.81891,
+      "rightOuter": 0.77204,
+      "leftPage": 0.82009,
+      "rightPage": 0.66847,
+      "edgeToGutterPercent": -3.44,
+      "paperShadingPercent": 5.72
+    },
+    "extra": {
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 28,
+        "statePaints": 10,
+        "lastDraftMs": 0.6999999992549419,
+        "lastSettledMs": 12,
+        "recent": [
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 2.899999998509884
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 2.299999998882413
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.2999999988824129
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 2.800000000745058
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 5.300000000745058
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 3.5
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 2.700000001117587
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 7.099999999627471
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 1.900000000372529
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 4.900000000372529
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 0.7999999988824129
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 6.900000000372529
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 1.200000001117587
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 9.5
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 12
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 165.109375,
+          "top": 337,
+          "right": 678.890625,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "after/844x390_spread4_ink.jpg",
+    "viewport": "844x390",
+    "state": "spread4",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:33:11.264Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-4",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "89",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "farEdgePx": 275.32,
+      "nearEdgePx": 316.69,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 137.58,
+      "rightPageHeightPx": 193.62,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.79871,
+      "leftGutter": 0.80956,
+      "rightGutter": 0.818,
+      "rightOuter": 0.78078,
+      "leftPage": 0.80143,
+      "rightPage": 0.80189,
+      "edgeToGutterPercent": -3.04,
+      "paperShadingPercent": 4.55
+    },
+    "extra": {
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 32,
+        "statePaints": 12,
+        "lastDraftMs": 0.9000000022351742,
+        "lastSettledMs": 4.900000002235174,
+        "recent": [
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 2.899999998509884
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 2.299999998882413
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.2999999988824129
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 2.800000000745058
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 5.300000000745058
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 3.5
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 2.700000001117587
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 7.099999999627471
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 1.900000000372529
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 4.900000000372529
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 0.7999999988824129
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 6.900000000372529
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 1.200000001117587
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 9.5
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 12
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0.3999999985098839
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 1.0999999977648258
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 4.600000001490116
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 4.900000002235174
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 165.109375,
+          "top": 337,
+          "right": 678.890625,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "after/844x390_spread5_ink.jpg",
+    "viewport": "844x390",
+    "state": "spread5",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:33:22.457Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-5",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "98",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "98",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "farEdgePx": 275.33,
+      "nearEdgePx": 316.69,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 137.4,
+      "rightPageHeightPx": 193.48,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.80066,
+      "leftGutter": 0.80716,
+      "rightGutter": 0.81511,
+      "rightOuter": 0.78182,
+      "leftPage": 0.81988,
+      "rightPage": 0.76474,
+      "edgeToGutterPercent": -2.51,
+      "paperShadingPercent": 4.08
+    },
+    "extra": {
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 36,
+        "statePaints": 14,
+        "lastDraftMs": 0.6999999992549419,
+        "lastSettledMs": 0.8000000007450581,
+        "recent": [
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 2.299999998882413
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.2999999988824129
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 2.800000000745058
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 5.300000000745058
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 3.5
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 2.700000001117587
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 7.099999999627471
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 1.900000000372529
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 4.900000000372529
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 0.7999999988824129
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 6.900000000372529
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 1.200000001117587
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 9.5
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 12
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0.3999999985098839
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 1.0999999977648258
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 4.600000001490116
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 4.900000002235174
+          },
+          {
+            "pageId": "page-9",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-10",
+            "layer": "state",
+            "ms": 7.899999998509884
+          },
+          {
+            "pageId": "page-11",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-12",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-9",
+            "layer": "settled",
+            "ms": 3.900000002235174
+          },
+          {
+            "pageId": "page-10",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 161.5,
+          "top": 337,
+          "right": 682.5,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "after/844x390_spread6_ink.jpg",
+    "viewport": "844x390",
+    "state": "spread6",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:33:33.043Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-6",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "104",
+      "textures": "28",
+      "geometries": "15",
+      "drawCalls": "91",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "farEdgePx": 275.35,
+      "nearEdgePx": 316.71,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 137.22,
+      "rightPageHeightPx": 193.34,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.80207,
+      "leftGutter": 0.80308,
+      "rightGutter": 0.81171,
+      "rightOuter": 0.78198,
+      "leftPage": 0.78948,
+      "rightPage": 0.78879,
+      "edgeToGutterPercent": -1.94,
+      "paperShadingPercent": 3.66
+    },
+    "extra": {
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 40,
+        "statePaints": 16,
+        "lastDraftMs": 0.7000000029802322,
+        "lastSettledMs": 0.5,
+        "recent": [
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 2.800000000745058
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 5.300000000745058
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 3.5
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 2.700000001117587
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 7.099999999627471
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 1.900000000372529
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 4.900000000372529
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 0.7999999988824129
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 6.900000000372529
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 1.200000001117587
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 9.5
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 12
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0.3999999985098839
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 1.0999999977648258
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 4.600000001490116
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 4.900000002235174
+          },
+          {
+            "pageId": "page-9",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-10",
+            "layer": "state",
+            "ms": 7.899999998509884
+          },
+          {
+            "pageId": "page-11",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-12",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-9",
+            "layer": "settled",
+            "ms": 3.900000002235174
+          },
+          {
+            "pageId": "page-10",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-11",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-12",
+            "layer": "state",
+            "ms": 0.20000000298023224
+          },
+          {
+            "pageId": "page-15",
+            "layer": "draft",
+            "ms": 0.30000000074505806
+          },
+          {
+            "pageId": "page-16",
+            "layer": "draft",
+            "ms": 0.7000000029802322
+          },
+          {
+            "pageId": "page-11",
+            "layer": "settled",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-12",
+            "layer": "settled",
+            "ms": 0.5
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 158.3671875,
+          "top": 337,
+          "right": 685.6328125,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "after/844x390_closing_ink.jpg",
+    "viewport": "844x390",
+    "state": "closing",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:33:45.099Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "closing",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "110",
+      "textures": "27",
+      "geometries": "12",
+      "drawCalls": "87",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 83.724,
+      "bookWidthRatio": 0.4265,
+      "bookHeightRatio": 0.5431,
+      "farEdgePx": 275.39,
+      "nearEdgePx": 316.74,
+      "farNearRatio": 0.8694,
+      "rightPageTopPx": 137.04,
+      "rightPageHeightPx": 193.19,
+      "camera.fov": 30,
+      "camera.distance": 13.04134,
+      "camera.worldPerPixelAtAnchor": 0.01792,
+      "camera.span": 6.98883
+    },
+    "luminance": {
+      "leftOuter": 0.80386,
+      "leftGutter": 0.80121,
+      "rightGutter": 0.8082,
+      "rightOuter": 0.78493,
+      "leftPage": 0.81988,
+      "rightPage": 0.80746,
+      "edgeToGutterPercent": -1.3,
+      "paperShadingPercent": 2.88
+    },
+    "extra": {
+      "printStats": {
+        "pages": 4,
+        "bytes": 39078570.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 2,
+        "states": 2,
+        "printPaints": 42,
+        "statePaints": 18,
+        "lastDraftMs": 0.7000000029802322,
+        "lastSettledMs": 5.600000001490116,
+        "recent": [
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.2000000011175871
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 5.300000000745058
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 3.5
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 2.700000001117587
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 7.099999999627471
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 1.900000000372529
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 4.900000000372529
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.900000000372529
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 0.7999999988824129
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 6.900000000372529
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.400000000372529
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0.09999999962747097
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 1.200000001117587
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 9.5
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 12
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0.3999999985098839
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 1.0999999977648258
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 4.600000001490116
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 4.900000002235174
+          },
+          {
+            "pageId": "page-9",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-10",
+            "layer": "state",
+            "ms": 7.899999998509884
+          },
+          {
+            "pageId": "page-11",
+            "layer": "draft",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-12",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-9",
+            "layer": "settled",
+            "ms": 3.900000002235174
+          },
+          {
+            "pageId": "page-10",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-11",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-12",
+            "layer": "state",
+            "ms": 0.20000000298023224
+          },
+          {
+            "pageId": "page-15",
+            "layer": "draft",
+            "ms": 0.30000000074505806
+          },
+          {
+            "pageId": "page-16",
+            "layer": "draft",
+            "ms": 0.7000000029802322
+          },
+          {
+            "pageId": "page-11",
+            "layer": "settled",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-12",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-15",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-16",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-15",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-16",
+            "layer": "settled",
+            "ms": 5.600000001490116
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 170.109375,
+          "top": 337,
+          "right": 673.890625,
+          "bottom": 390
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 16.8
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "844x390",
+    "state": "errors",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:33:45.100Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "after/390x844_spread1_ink.jpg",
+    "viewport": "390x844",
+    "state": "spread1",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:34:31.809Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-1",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "33",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "101",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "farEdgePx": 284.3,
+      "nearEdgePx": 303.19,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.38,
+      "rightPageHeightPx": 189.52,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.74839,
+      "leftGutter": 0.75611,
+      "rightGutter": 0.77748,
+      "rightOuter": 0.69294,
+      "leftPage": 0.7817,
+      "rightPage": 0.76207,
+      "edgeToGutterPercent": -6.4,
+      "paperShadingPercent": 10.87
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 13,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "sound",
+          "stats": {
+            "segments": 572,
+            "ink": 480,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 5,
+            "hits": 5,
+            "labels": 3
+          },
+          "calls": {
+            "total": 101,
+            "withoutScene": 87,
+            "scene": 14,
+            "figure": {
+              "segments": 572,
+              "ink": 480,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 5,
+              "hits": 5,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 46.1,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 4,
+          "states": 2,
+          "lastDraftMs": 0.2,
+          "lastSettledMs": 0.1
+        },
+        "left": {
+          "pageId": "page-1",
+          "resolution": "settled",
+          "layoutScale": 0.8,
+          "overflow": 0,
+          "pxPerUnitV": 0.1286,
+          "pxPerUnitH": 0.1466,
+          "bodyFontPx": 2.68,
+          "bodyXHeightPx": 1.42,
+          "hotspotMinPx": 3.7,
+          "hotspots": 13
+        },
+        "right": {
+          "pageId": "page-2",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1289,
+          "pxPerUnitH": 0.1471,
+          "bodyFontPx": 3.35,
+          "bodyXHeightPx": 1.78,
+          "hotspotMinPx": 6.2,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "after/390x844_spread2_ink.jpg",
+    "viewport": "390x844",
+    "state": "spread2",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:35:16.025Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-2",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "65",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "farEdgePx": 284.29,
+      "nearEdgePx": 303.18,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.29,
+      "rightPageHeightPx": 189.44,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.7475,
+      "leftGutter": 0.76767,
+      "rightGutter": 0.78064,
+      "rightOuter": 0.69436,
+      "leftPage": 0.78184,
+      "rightPage": 0.72234,
+      "edgeToGutterPercent": -7.38,
+      "paperShadingPercent": 11.05
+    },
+    "extra": {
+      "ink": {
+        "htmlPageElements": 0,
+        "mirrorControls": 15,
+        "mirrorPresent": true,
+        "figure": {
+          "lift": 1,
+          "reveal": 1,
+          "decor": "scissors",
+          "stats": {
+            "segments": 275,
+            "ink": 183,
+            "dashed": 0,
+            "accent": 92,
+            "fills": 1,
+            "hits": 1,
+            "labels": 3
+          },
+          "calls": {
+            "total": 96,
+            "withoutScene": 87,
+            "scene": 9,
+            "figure": {
+              "segments": 275,
+              "ink": 183,
+              "dashed": 0,
+              "accent": 92,
+              "fills": 1,
+              "hits": 1,
+              "labels": 3
+            }
+          }
+        },
+        "print": {
+          "MiB": 46.1,
+          "budgetMiB": 48,
+          "settled": 2,
+          "drafts": 4,
+          "states": 2,
+          "lastDraftMs": 1.3,
+          "lastSettledMs": 8.7
+        },
+        "left": {
+          "pageId": "page-3",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1287,
+          "pxPerUnitH": 0.1467,
+          "bodyFontPx": 3.35,
+          "bodyXHeightPx": 1.77,
+          "hotspotMinPx": 4.6,
+          "hotspots": 7
+        },
+        "right": {
+          "pageId": "page-4",
+          "resolution": "settled",
+          "layoutScale": 1,
+          "overflow": 0,
+          "pxPerUnitV": 0.1288,
+          "pxPerUnitH": 0.147,
+          "bodyFontPx": 3.35,
+          "bodyXHeightPx": 1.78,
+          "hotspotMinPx": 6.2,
+          "hotspots": 4
+        }
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "after/390x844_contents_ink.jpg",
+    "viewport": "390x844",
+    "state": "contents",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:35:33.749Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "contents",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "71",
+      "textures": "27",
+      "geometries": "12",
+      "drawCalls": "87",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "farEdgePx": 284.33,
+      "nearEdgePx": 303.21,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.47,
+      "rightPageHeightPx": 189.62,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.75034,
+      "leftGutter": 0.74977,
+      "rightGutter": 0.77522,
+      "rightOuter": 0.69413,
+      "leftPage": 0.78109,
+      "rightPage": 0.76438,
+      "edgeToGutterPercent": -5.57,
+      "paperShadingPercent": 10.46
+    },
+    "extra": {
+      "printStats": {
+        "pages": 4,
+        "bytes": 39078570.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 2,
+        "states": 2,
+        "printPaints": 20,
+        "statePaints": 8,
+        "lastDraftMs": 0.9000000022351742,
+        "lastSettledMs": 5.800000000745058,
+        "recent": [
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 2.699999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 2.2999999970197678
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.30000000074505806
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.09999999776482582
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.0999999977648258
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 2.099999997764826
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 0.6000000014901161
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 2.5
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 1.300000000745058
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 2.899999998509884
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 8.699999999254942
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 3.699999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 6.300000000745058
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0.09999999776482582
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 5.800000000745058
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 58,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 58,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "after/390x844_spread3_ink.jpg",
+    "viewport": "390x844",
+    "state": "spread3",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:35:51.167Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-3",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "79",
+      "textures": "28",
+      "geometries": "17",
+      "drawCalls": "93",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "farEdgePx": 284.28,
+      "nearEdgePx": 303.18,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.19,
+      "rightPageHeightPx": 189.38,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.74882,
+      "leftGutter": 0.77104,
+      "rightGutter": 0.7824,
+      "rightOuter": 0.69645,
+      "leftPage": 0.78198,
+      "rightPage": 0.63469,
+      "edgeToGutterPercent": -7.48,
+      "paperShadingPercent": 10.99
+    },
+    "extra": {
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 28,
+        "statePaints": 10,
+        "lastDraftMs": 5.299999997019768,
+        "lastSettledMs": 0.8999999985098839,
+        "recent": [
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 2.699999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 2.2999999970197678
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.30000000074505806
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.09999999776482582
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.0999999977648258
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 2.099999997764826
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 0.6000000014901161
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 2.5
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 1.300000000745058
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 2.899999998509884
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 8.699999999254942
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 3.699999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 6.300000000745058
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0.09999999776482582
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 5.800000000745058
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1.4000000022351742
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 6.699999999254942
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.800000000745058
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 2.100000001490116
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 5.299999997019768
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "after/390x844_spread4_ink.jpg",
+    "viewport": "390x844",
+    "state": "spread4",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:36:02.213Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-4",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "87",
+      "textures": "29",
+      "geometries": "17",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "farEdgePx": 284.28,
+      "nearEdgePx": 303.18,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.1,
+      "rightPageHeightPx": 189.32,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.74821,
+      "leftGutter": 0.76909,
+      "rightGutter": 0.78174,
+      "rightOuter": 0.70121,
+      "leftPage": 0.75806,
+      "rightPage": 0.75687,
+      "edgeToGutterPercent": -7,
+      "paperShadingPercent": 10.3
+    },
+    "extra": {
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 32,
+        "statePaints": 12,
+        "lastDraftMs": 0.8999999985098839,
+        "lastSettledMs": 1,
+        "recent": [
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 2.699999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 2.2999999970197678
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.30000000074505806
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.09999999776482582
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.0999999977648258
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 2.099999997764826
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 0.6000000014901161
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 2.5
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 1.300000000745058
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 2.899999998509884
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 8.699999999254942
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 3.699999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 6.300000000745058
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0.09999999776482582
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 5.800000000745058
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1.4000000022351742
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 6.699999999254942
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.800000000745058
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 2.100000001490116
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 5.299999997019768
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 1.5999999977648258
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 1.6000000014901161
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 1
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 52,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "after/390x844_spread5_ink.jpg",
+    "viewport": "390x844",
+    "state": "spread5",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:36:08.871Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-5",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "92",
+      "textures": "30",
+      "geometries": "18",
+      "drawCalls": "98",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "farEdgePx": 284.29,
+      "nearEdgePx": 303.18,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 142.01,
+      "rightPageHeightPx": 189.25,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.74815,
+      "leftGutter": 0.76358,
+      "rightGutter": 0.77731,
+      "rightOuter": 0.69913,
+      "leftPage": 0.78204,
+      "rightPage": 0.70621,
+      "edgeToGutterPercent": -6.47,
+      "paperShadingPercent": 10.06
+    },
+    "extra": {
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 36,
+        "statePaints": 14,
+        "lastDraftMs": 0.6999999992549419,
+        "lastSettledMs": 9.400000002235174,
+        "recent": [
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 2.2999999970197678
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.30000000074505806
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.09999999776482582
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.0999999977648258
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 2.099999997764826
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 0.6000000014901161
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 2.5
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 1.300000000745058
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 2.899999998509884
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 8.699999999254942
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 3.699999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 6.300000000745058
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0.09999999776482582
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 5.800000000745058
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1.4000000022351742
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 6.699999999254942
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.800000000745058
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 2.100000001490116
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 5.299999997019768
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 1.5999999977648258
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 1.6000000014901161
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-9",
+            "layer": "state",
+            "ms": 0.30000000074505806
+          },
+          {
+            "pageId": "page-10",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-11",
+            "layer": "draft",
+            "ms": 1.699999999254942
+          },
+          {
+            "pageId": "page-12",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-9",
+            "layer": "settled",
+            "ms": 2.399999998509884
+          },
+          {
+            "pageId": "page-10",
+            "layer": "settled",
+            "ms": 9.400000002235174
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 49,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 49,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "after/390x844_spread6_ink.jpg",
+    "viewport": "390x844",
+    "state": "spread6",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:36:16.373Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-6",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "98",
+      "textures": "28",
+      "geometries": "15",
+      "drawCalls": "91",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "farEdgePx": 284.3,
+      "nearEdgePx": 303.19,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 141.92,
+      "rightPageHeightPx": 189.19,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.74786,
+      "leftGutter": 0.75751,
+      "rightGutter": 0.76922,
+      "rightOuter": 0.70559,
+      "leftPage": 0.72903,
+      "rightPage": 0.7332,
+      "edgeToGutterPercent": -5.04,
+      "paperShadingPercent": 8.27
+    },
+    "extra": {
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 40,
+        "statePaints": 16,
+        "lastDraftMs": 0.7000000029802322,
+        "lastSettledMs": 3.699999999254942,
+        "recent": [
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 2.099999997764826
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 0.6000000014901161
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 2.5
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 1.300000000745058
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 2.899999998509884
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 8.699999999254942
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 3.699999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 6.300000000745058
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0.09999999776482582
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 5.800000000745058
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1.4000000022351742
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 6.699999999254942
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.800000000745058
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 2.100000001490116
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 5.299999997019768
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 1.5999999977648258
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 1.6000000014901161
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-9",
+            "layer": "state",
+            "ms": 0.30000000074505806
+          },
+          {
+            "pageId": "page-10",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-11",
+            "layer": "draft",
+            "ms": 1.699999999254942
+          },
+          {
+            "pageId": "page-12",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-9",
+            "layer": "settled",
+            "ms": 2.399999998509884
+          },
+          {
+            "pageId": "page-10",
+            "layer": "settled",
+            "ms": 9.400000002235174
+          },
+          {
+            "pageId": "page-11",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-12",
+            "layer": "state",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-15",
+            "layer": "draft",
+            "ms": 0.7000000029802322
+          },
+          {
+            "pageId": "page-16",
+            "layer": "draft",
+            "ms": 0.7000000029802322
+          },
+          {
+            "pageId": "page-11",
+            "layer": "settled",
+            "ms": 2.900000002235174
+          },
+          {
+            "pageId": "page-12",
+            "layer": "settled",
+            "ms": 3.699999999254942
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 46,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 46,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "after/390x844_closing_ink.jpg",
+    "viewport": "390x844",
+    "state": "closing",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:36:23.365Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "closing",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "4",
+      "threeReady": "true",
+      "frames": "103",
+      "textures": "27",
+      "geometries": "12",
+      "drawCalls": "87",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 84.757,
+      "bookWidthRatio": 0.8835,
+      "bookHeightRatio": 0.2466,
+      "farEdgePx": 284.33,
+      "nearEdgePx": 303.21,
+      "farNearRatio": 0.9377,
+      "rightPageTopPx": 141.84,
+      "rightPageHeightPx": 189.13,
+      "camera.fov": 30,
+      "camera.distance": 28.3361,
+      "camera.worldPerPixelAtAnchor": 0.01799,
+      "camera.span": 15.18527
+    },
+    "luminance": {
+      "leftOuter": 0.7473,
+      "leftGutter": 0.75492,
+      "rightGutter": 0.75974,
+      "rightOuter": 0.71527,
+      "leftPage": 0.7821,
+      "rightPage": 0.76367,
+      "edgeToGutterPercent": -3.56,
+      "paperShadingPercent": 5.85
+    },
+    "extra": {
+      "printStats": {
+        "pages": 4,
+        "bytes": 39078570.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 2,
+        "states": 2,
+        "printPaints": 42,
+        "statePaints": 18,
+        "lastDraftMs": 0.7000000029802322,
+        "lastSettledMs": 2.900000002235174,
+        "recent": [
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-3",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-4",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 2.5
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 1.300000000745058
+          },
+          {
+            "pageId": "page-3",
+            "layer": "settled",
+            "ms": 2.899999998509884
+          },
+          {
+            "pageId": "page-4",
+            "layer": "settled",
+            "ms": 8.699999999254942
+          },
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 3.699999999254942
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 6.300000000745058
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0.09999999776482582
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 5.800000000745058
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1.4000000022351742
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 0.9000000022351742
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 6.699999999254942
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 1.800000000745058
+          },
+          {
+            "pageId": "page-5",
+            "layer": "state",
+            "ms": 1.199999999254942
+          },
+          {
+            "pageId": "page-6",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 2.100000001490116
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 5.299999997019768
+          },
+          {
+            "pageId": "page-5",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-6",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 1.5999999977648258
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 1.6000000014901161
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-9",
+            "layer": "state",
+            "ms": 0.30000000074505806
+          },
+          {
+            "pageId": "page-10",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-11",
+            "layer": "draft",
+            "ms": 1.699999999254942
+          },
+          {
+            "pageId": "page-12",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-9",
+            "layer": "settled",
+            "ms": 2.399999998509884
+          },
+          {
+            "pageId": "page-10",
+            "layer": "settled",
+            "ms": 9.400000002235174
+          },
+          {
+            "pageId": "page-11",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-12",
+            "layer": "state",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-15",
+            "layer": "draft",
+            "ms": 0.7000000029802322
+          },
+          {
+            "pageId": "page-16",
+            "layer": "draft",
+            "ms": 0.7000000029802322
+          },
+          {
+            "pageId": "page-11",
+            "layer": "settled",
+            "ms": 2.900000002235174
+          },
+          {
+            "pageId": "page-12",
+            "layer": "settled",
+            "ms": 3.699999999254942
+          },
+          {
+            "pageId": "page-15",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-16",
+            "layer": "state",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-15",
+            "layer": "settled",
+            "ms": 1
+          },
+          {
+            "pageId": "page-16",
+            "layer": "settled",
+            "ms": 2.900000002235174
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 0,
+          "top": 791,
+          "right": 390,
+          "bottom": 844
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 58,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 58,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 44,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 279.7
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "390x844",
+    "state": "errors",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T10:36:23.367Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  },
+  {
+    "file": "after/1280x720_goto_ink.jpg",
+    "viewport": "1280x720",
+    "state": "goto",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T11:12:53.948Z",
+    "data": {
+      "phase": "spreadIdle",
+      "camera": "settled",
+      "scene": "ready",
+      "spread": "spread-4",
+      "transport": "stopped",
+      "printsReady": "true",
+      "printCount": "6",
+      "threeReady": "true",
+      "frames": "72",
+      "textures": "30",
+      "geometries": "19",
+      "drawCalls": "96",
+      "quality": "high"
+    },
+    "layout": {
+      "coverCenterErrorPx": 175.881,
+      "bookWidthRatio": 0.5774,
+      "bookHeightRatio": 0.6056,
+      "farEdgePx": 557.04,
+      "nearEdgePx": 650.09,
+      "farNearRatio": 0.8569,
+      "rightPageTopPx": 278.33,
+      "rightPageHeightPx": 399.16,
+      "camera.fov": 30,
+      "camera.distance": 11.81999,
+      "camera.worldPerPixelAtAnchor": 0.0088,
+      "camera.span": 6.33431
+    },
+    "luminance": {
+      "leftOuter": 0.80369,
+      "leftGutter": 0.80951,
+      "rightGutter": 0.81758,
+      "rightOuter": 0.78487,
+      "leftPage": 0.78059,
+      "rightPage": 0.80565,
+      "edgeToGutterPercent": -2.43,
+      "paperShadingPercent": 4
+    },
+    "extra": {
+      "frames": [
+        {
+          "step": 0,
+          "progress": 0,
+          "leaves": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "textures": "27",
+          "file": "after/1280x720_goto_0_ink.jpg"
+        },
+        {
+          "step": 1,
+          "progress": 0.1429,
+          "leaves": [
+            0.286,
+            0.173,
+            0.061,
+            0
+          ],
+          "textures": "29",
+          "file": "after/1280x720_goto_1_ink.jpg"
+        },
+        {
+          "step": 2,
+          "progress": 0.2857,
+          "leaves": [
+            0.571,
+            0.459,
+            0.346,
+            0
+          ],
+          "textures": "29",
+          "file": "after/1280x720_goto_2_ink.jpg"
+        },
+        {
+          "step": 3,
+          "progress": 0.4286,
+          "leaves": [
+            0.857,
+            0.745,
+            0.632,
+            0
+          ],
+          "textures": "29",
+          "file": "after/1280x720_goto_3_ink.jpg"
+        },
+        {
+          "step": 4,
+          "progress": 0.5714,
+          "leaves": [
+            1,
+            1,
+            0.918,
+            0.143
+          ],
+          "textures": "31",
+          "file": "after/1280x720_goto_4_ink.jpg"
+        },
+        {
+          "step": 5,
+          "progress": 0.7143,
+          "leaves": [
+            1,
+            1,
+            1,
+            0.429
+          ],
+          "textures": "31",
+          "file": "after/1280x720_goto_5_ink.jpg"
+        },
+        {
+          "step": 6,
+          "progress": 0.8571,
+          "leaves": [
+            1,
+            1,
+            1,
+            0.714
+          ],
+          "textures": "31",
+          "file": "after/1280x720_goto_6_ink.jpg"
+        },
+        {
+          "step": 7,
+          "progress": 1,
+          "leaves": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "textures": "31",
+          "file": "after/1280x720_goto_7_ink.jpg"
+        }
+      ],
+      "printStatsDuring": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 17,
+        "statePaints": 6,
+        "lastDraftMs": 0.6999999992549419,
+        "lastSettledMs": 11,
+        "recent": [
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 8.5
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 3.300000000745058
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.29999999701976776
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 6.300000000745058
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1.5999999977648258
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 3.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.09999999776482582
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1.800000000745058
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 11
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 1.1000000014901161
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 2
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          }
+        ]
+      },
+      "printStats": {
+        "pages": 6,
+        "bytes": 48335530.66666667,
+        "budgetBytes": 50331648,
+        "settled": 2,
+        "drafts": 4,
+        "states": 2,
+        "printPaints": 22,
+        "statePaints": 8,
+        "lastDraftMs": 8.800000000745058,
+        "lastSettledMs": 2.199999999254942,
+        "recent": [
+          {
+            "pageId": "page-13",
+            "layer": "draft",
+            "ms": 8.5
+          },
+          {
+            "pageId": "page-14",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 3.300000000745058
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0.29999999701976776
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-3",
+            "layer": "draft",
+            "ms": 6.300000000745058
+          },
+          {
+            "pageId": "page-4",
+            "layer": "draft",
+            "ms": 1.5999999977648258
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 3.5
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.8999999985098839
+          },
+          {
+            "pageId": "page-1",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-1",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-2",
+            "layer": "draft",
+            "ms": 0.10000000149011612
+          },
+          {
+            "pageId": "page-2",
+            "layer": "state",
+            "ms": 0.09999999776482582
+          },
+          {
+            "pageId": "page-1",
+            "layer": "settled",
+            "ms": 0.8000000007450581
+          },
+          {
+            "pageId": "page-2",
+            "layer": "settled",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-13",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-14",
+            "layer": "state",
+            "ms": 0.19999999925494194
+          },
+          {
+            "pageId": "page-13",
+            "layer": "settled",
+            "ms": 1.800000000745058
+          },
+          {
+            "pageId": "page-14",
+            "layer": "settled",
+            "ms": 11
+          },
+          {
+            "pageId": "page-6",
+            "layer": "draft",
+            "ms": 1.1000000014901161
+          },
+          {
+            "pageId": "page-7",
+            "layer": "draft",
+            "ms": 2
+          },
+          {
+            "pageId": "page-8",
+            "layer": "draft",
+            "ms": 0.6999999992549419
+          },
+          {
+            "pageId": "page-5",
+            "layer": "draft",
+            "ms": 1.0999999977648258
+          },
+          {
+            "pageId": "page-7",
+            "layer": "state",
+            "ms": 0.30000000074505806
+          },
+          {
+            "pageId": "page-8",
+            "layer": "state",
+            "ms": 0
+          },
+          {
+            "pageId": "page-9",
+            "layer": "draft",
+            "ms": 6.599999997764826
+          },
+          {
+            "pageId": "page-10",
+            "layer": "draft",
+            "ms": 8.800000000745058
+          },
+          {
+            "pageId": "page-7",
+            "layer": "settled",
+            "ms": 3
+          },
+          {
+            "pageId": "page-8",
+            "layer": "settled",
+            "ms": 2.199999999254942
+          }
+        ]
+      },
+      "chrome": {
+        "toolbarVisible": true,
+        "toolbarRect": {
+          "left": 383.109375,
+          "top": 667,
+          "right": 896.890625,
+          "bottom": 720
+        },
+        "toolbarButtons": [
+          {
+            "id": "book-prev",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "book-contents",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "book-next",
+            "w": 44,
+            "h": 44
+          },
+          {
+            "id": "sound",
+            "w": 50,
+            "h": 44
+          },
+          {
+            "id": "still",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "reading-mode",
+            "w": 82,
+            "h": 44
+          },
+          {
+            "id": "records",
+            "w": 50,
+            "h": 44
+          }
+        ],
+        "coverButtons": 0,
+        "outsideButtons": [],
+        "toolbarHeightPx": 53,
+        "bookToolbarOverlapPx2": 0,
+        "bookBottomToToolbarPx": 22.4
+      }
+    }
+  },
+  {
+    "file": "",
+    "viewport": "1280x720",
+    "state": "errors",
+    "renderer": "ink",
+    "phase": "after",
+    "time": "2026-10-30T11:12:53.957Z",
+    "data": {},
+    "extra": {
+      "errors": []
+    }
+  }
+]
