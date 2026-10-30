@@ -14,7 +14,7 @@
 | R3 | V21 | 캔버스 페이지 인쇄 시스템 | 일부 완료 (x-height B6, 핫스폿 B5, 보조기술 외부 검수 대기) |
 | R4 | V22 | 잉크 그림 시스템 + 음가 그림 | 통과 (선 폭 부분 통과: 서 있는 모서리 측정 2건 범위 밖, 편차 11) |
 | R5 | V23 | 조작부 재배치 | 통과 |
-| R6 | V24 | 레슨 카메라 연출(샷) | 미착수 |
+| R6 | V24 | 레슨 카메라 연출(샷) | 통과 |
 | R7 | V25 | 효과음·마감 | 미착수 |
 | R8 | V26 | 콘텐츠 확장(목차·마침·GO_TO) | 미착수 |
 | R9 | V27 | 검증 관문 개편·정리 | 미착수 |
@@ -253,3 +253,39 @@ G1-C 체크리스트(부록 B) 영향 항목과 현재 판정:
 - 하단 조작바가 책을 가리지 않고 한 줄로 작은가(≤ 56 px).
 - 책갈피가 사라져도 모서리 드래그로 넘기기가 그대로 되는가(실기기 터치).
 - 덮개가 종이처럼 들리고, 서 있는 덮개를 눌러 다시 덮을 수 있는가. 도장이 찍히는가.
+
+## R6 (V24) 레슨 카메라 연출(샷) — 통과
+
+- **단계 ID와 상태:** R6 **통과**(자동 검사·캡처 자체 판정). 사람 검사 항목(아래)과 실기기 60 fps 움직임은 미관측.
+- **실제로 가능한 사용자 행동:** 펼침면 1 오른쪽의 인쇄 단추 '가까이 보기'를 누르면 카메라가 900 ms에 걸쳐 '두 줄' 그림 쪽으로 내려가 비스듬히 다가간다(앙각 36°, 방위 −14°, 화각 32°). 단추는 '돌아오기'로 다시 인쇄되고, 그것을 다시 누르거나 Escape를 누르면 600 ms에 걸쳐 원래 읽기 자리로 정확히 돌아온다. 샷 안에서도 인쇄된 단추(▶ 위 줄 듣기 등)와 그림 고르기가 그대로 된다. 샷 중에 →·←·조작바 넘기기·표지로를 누르면 먼저 읽기 자리로 돌아온 뒤 넘긴다(한 칸 대기열). 샷 중 모서리를 누르면 넘기기를 시작하지 않고 읽기 자리로 돌아온다. 펼침면 2의 '가까이 보기'는 종이 띠(가위 자국)로 다가간다(34°, 10°, 32°). 다른 탭으로 가거나 2D로 바꾸면 샷은 바로 풀린다.
+- **변경 경로와 이유:**
+  - 신규 `src/book/render/shots.ts`(ShotSpec = 영역 + 자세 + 여유 + 시간, `SPREAD_SHOTS`, `resolveShot` = 영역 점을 `fitRig`에 넣은 fit, `shotProgress`, `SHOT_RETURN_MS` 600), `tests/shots.test.ts`.
+  - 수정 `src/book/render/cameraRig.ts`(`blendTo(from, to, t)`: smoothStep, 위치·target lerp, 쿼터니언 slerp, t ≤ 0이면 읽기 fit 객체 자체), `src/book/controller.ts`(최소 변경: `CameraState` `'shot'`, `SHOT_START`·`SHOT_END`, 샷 중 NEXT·PREV·CLOSE 대기열, 드래그 거부, 숨김·2D 해제), `src/book/stage.ts`(`StageUpdate.shot`, 읽기 fit과 적용 fit 분리, 영역 점은 보이는 유한한 부분만, 유한하지 않은 fit 무시, layout에 `camera.shot`), `src/book/BookApp.tsx`(샷 구동: 진입·유지·복귀, '가까이 보기' ↔ '돌아오기' 인쇄, Escape·대기열·모서리 누름 처리, DEV `holdShot`), `src/book/print/pageSpec.ts`(`PageUiState.shotId`), `src/book/print/pageCompositor.ts`(`printKey`에 `shotId`), `src/content/pages/lessonPages.ts`·`pageText.ts`(펼침면 1·2 '가까이 보기'/'돌아오기'), `src/book/inspector.ts`(`shot()`, `holdShot(ms)`).
+  - 검증: `tests/book-controller.test.ts`(R6 3개), `tests/shots.test.ts`(4), `scripts/book-v3-e2e.ts`(R6 검사 5개), `scripts/refactor-capture.ts`(`shot`·`shotHotspot`·`shotTurn` 상태, 샷 시계 고정).
+- **실행 명령과 종료 결과:** `npm run typecheck` 0, `npm run lint` 0, `npm test` 360/360, `npm run build` 0(500 kB 경고 1건은 R1과 같은 three 공유 청크). `node scripts/book-v3-e2e.ts` 33/33 × 4 viewport(1280×720, 844×390, 390×844, 568×320). `node scripts/refactor-capture.ts --stage R6 …` ink 2 viewport(1280×720, 844×390) × spread1·샷(진입 4장·유지·복귀 3장·복귀 뒤)·샷 중 조작·spread2·샷 중 넘김(3장), 오류 0.
+- **기기와 브라우저 및 commit:** Linux 컨테이너, Node 22.23.4, Playwright 1.60 + headless Chromium 1243(SwiftShader WebGL), DPR 1. 캡처는 `?quality=high`. 코드 `7bef23d`, 수정 `887c863`.
+- **실제 캡처 영상 로그 경로:** [qa/refactor/R6/index.md](qa/refactor/R6/index.md)(before = R5 after).
+- **측정값:** 복귀 뒤 카메라 − 샷 전 읽기 카메라: 위치·쿼터니언 최대 차 **0 / 0**(1280×720, 844×390 캡처), e2e 4 viewport `maxDifference` 0. 샷 중 카메라 위치 이동 8.1 / 9.0(월드 단위, 1280×720 / 844×390). 샷 중 인쇄 '▶ 위 줄 듣기' 누름 → 재생(2 viewport 캡처, 4 viewport e2e). 샷 중 ArrowRight: 복귀 중(t 0.5) 넘김 대기(phase spreadIdle, camera shot) → 복귀 뒤 넘김 → spread-3, 샷 상태로 넘긴 프레임 0(e2e 프레임 표본). 페이지 오류 0.
+- **미실행 항목과 정확한 이유:** 실기기 60 fps의 900 ms 진입·600 ms 복귀(SwiftShader는 한 프레임에 0.5–3 s라 샷 시계를 inspector로 고정해 찍었다) — 사람 검사(R9). 재생 시작 시 자동 샷(결정 5, 기본 끔)은 설정 저장 필드가 필요해 R7의 저장 형식 판올림과 함께 넣는다.
+- **남은 결함과 재현 절차:**
+  0. (수정됨, `887c863`) 샷이 '유지' 단계일 때 고정 시계(`holdShot(0)`)를 걸면 샷 카메라가 읽기 자리로 튀고 복귀가 바로 끝났다(캡처가 찾음). 유지 단계의 t는 시계와 무관하게 1이다. 같은 커밋에서 e2e·캡처의 "샷에서 돌아옴" 판정이 stage가 읽기 카메라를 실제로 그린 뒤(layout `camera.shot` 없음)를 기다리게 했다 — SwiftShader의 느린 프레임에서는 SHOT_END가 그 프레임보다 먼저 와서 844×390·390×844·568×320 e2e가 샷 카메라를 읽었다.
+  1. 샷 중 모서리를 누르면 넘기기를 시작하지 않고 복귀만 한다. 복귀 뒤 다시 잡아야 넘어간다(설계: 드래그 시작 거부).
+- **객관적 게이트와 선택적 사용자 피드백 상태:** 복귀 오차 0(단위·e2e·캡처), 5 viewport fit(단위), 샷 중 NEXT 대기열·드래그 거부·hidden 해제(단위·e2e), 샷 중 핫스폿(e2e·캡처). 사람 피드백 없음.
+- **다음 허용 단계와 막힌 단계:** R7 허용(R5 통과). R8은 R3·R4·R5 통과로 허용.
+- **전후 캡처 경로와 metrics.json 요약:** index.md 표 참고.
+- **renderer 플래그 상태:** 기본 `ink`, `?renderer=legacy`는 착수 커밋 고정 사본(샷 없음 — 비교용).
+- **설계서 대비 편차와 사유:**
+  1. **`blendTo` 서명**: 프롬프트는 `blendTo(pose, position, target, t)`를 적었다. 여기서는 두 fit 결과를 섞는 `blendTo(from: FitResult, to: FitResult, t)`로, t ≤ 0이면 읽기 fit 객체 자체를 돌려준다. 복귀가 "읽기 포즈 fit 결과를 그대로 쓴다"는 조건을 구조로 보장한다.
+  2. **`returnToReading`의 자리**: 복귀 tween은 rig가 아니라 BookApp의 샷 구동이 맡는다(진입·유지·복귀를 한 시계로 돌리고 DEV에서 고정하려고). 시간은 설계대로 600 ms다.
+  3. **샷 중 닫기·숨김**: CLOSE_BOOK은 NEXT처럼 대기열('close')에 들어가 복귀 뒤 실행한다. HIDE_DOCUMENT는 대기열에 넣지 않고 바로 해제한다(설계 수용 기준 'hidden에서 해제').
+  4. **펼침면 2의 '가까이 보기'**: 설계 표의 두 번째 샷(strip-close)을 쓰려면 독자가 시작할 단추가 필요해 펼침면 2 오른쪽에도 같은 인쇄 단추를 두었다.
+  5. **자동 샷**: 결정 5(기본 끔)의 설정은 저장 형식 판올림이 필요해 R7에서 넣는다.
+  6. **샷 시계 고정**: 캡처를 위해 DEV `holdShot(ms)`(지금 단계가 시작된 뒤의 ms)를 두었다. 실사용 경로에는 영향이 없다.
+  7. **인쇄 키**: 단추 이름('가까이 보기' ↔ '돌아오기')이 바뀌도록 인쇄 키에 `shotId`를 넣었다(같은 텍스처를 다시 인쇄, draft ≤ 10 ms).
+- **G1-C 체크리스트 영향 항목과 현재 판정:** 연출 샷(정체성 5번) — 독자가 시작하는 샷과 정확한 복귀 확인(캡처·e2e). 원본 실동작 비교는 미관측(결정 6 원본 녹화 없음).
+
+### R6 사람 검사 항목 (`docs/qa/refactor/R6/after/`)
+
+- '가까이 보기'를 누르면 카메라가 그림 쪽으로 들어가고, 다시 누르면 정확히 원래 자리로 돌아오는가.
+- 샷 중에 페이지를 넘기면 먼저 돌아온 뒤 넘기는가.
+- 넘김 중에는 카메라가 움직이지 않는가.

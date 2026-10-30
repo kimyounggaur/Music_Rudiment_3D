@@ -414,7 +414,9 @@ try {
       // A printed control keeps working inside the shot: press '▶ 위 줄 듣기' through the shot camera.
       await inspectorCall('inspector.holdShot(null)');
       await enterShot();
-      await waitFor(page, `window.__bookInspector?.shot()?.phase === 'hold'`, 10_000);
+      // Pin the entry's end (SwiftShader frames take seconds; the real-time entry is not the subject here).
+      await inspectorCall('inspector.holdShot(900)');
+      await waitFor(page, `window.__bookInspector?.shot()?.phase === 'hold'`, 30_000);
       const target = await page.evaluate(({ w, h }) => {
         const hotspots = ((window as unknown as { __bookInspector: { pages(): { side: string | null; hotspots: { id: string; role: string; enabled: boolean; testId: string | null; center: { x: number; y: number } | null }[] }[] } }).__bookInspector.pages())
           .flatMap(item => item.side ? item.hotspots : []);
@@ -431,7 +433,8 @@ try {
       await shoot('shotHotspot', true, { control: target.testId ?? target.id, pressed, transport: (await rootData(page)).transport ?? null, target: target.center });
       if (/^play-/.test(target.testId ?? '')) await mirrorPress('button[data-testid="stop-audio"]');
       await mirrorPress('button[data-testid="close-look"]');
-      await waitFor(page, `window.__bookInspector?.shot() === null && document.querySelector('main.book-app')?.dataset.camera === 'settled' && !window.__bookInspector?.snapshot().layout?.camera.shot`, 20_000);
+      await inspectorCall('inspector.holdShot(null)');
+      await waitFor(page, `window.__bookInspector?.shot() === null && document.querySelector('main.book-app')?.dataset.camera === 'settled' && !window.__bookInspector?.snapshot().layout?.camera.shot`, 30_000);
       await waitFor(page, settledPrints, 30_000);
     }
     if (states.includes('turn50')) {
@@ -489,15 +492,16 @@ try {
       await waitFor(page, `document.querySelector('main.book-app')?.dataset.spread === 'spread-2' && document.querySelector('main.book-app')?.dataset.phase === 'spreadIdle'`, 60_000);
       await inspectorCall('inspector.holdShot(null)');
       await enterShot();
-      await waitFor(page, `window.__bookInspector?.shot()?.phase === 'hold'`, 10_000);
+      await inspectorCall('inspector.holdShot(900)');
+      await waitFor(page, `window.__bookInspector?.shot()?.phase === 'hold'`, 30_000);
       await inspectorCall('inspector.holdShot(300)');
       await page.evaluate(() => document.querySelector<HTMLElement>('.book-mirror h1')?.focus({ preventScroll: true }));
       await page.keyboard.press('ArrowRight');
-      await waitFor(page, `window.__bookInspector?.shot()?.phase === 'return'`, 10_000);
+      await waitFor(page, `window.__bookInspector?.shot()?.phase === 'return'`, 30_000);
       const during = { ...(await rootData(page)), shot: await shotState() };
       const files = [await frame('shotTurn_1_returning')];
       await inspectorCall('inspector.holdShot(null)');
-      await waitFor(page, `window.__bookInspector?.shot() === null`, 10_000);
+      await waitFor(page, `window.__bookInspector?.shot() === null`, 30_000);
       const after = await rootData(page);
       files.push(await frame('shotTurn_2_turning'));
       await waitFor(page, `(() => { const r = document.querySelector('main.book-app'); return r?.dataset.spread === 'spread-3' && r?.dataset.phase === 'spreadIdle' && r?.dataset.scene === 'ready' && r?.dataset.printsReady === 'true'; })()`, 240_000);
