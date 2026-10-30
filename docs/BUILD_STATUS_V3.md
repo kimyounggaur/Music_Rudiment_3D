@@ -12,7 +12,7 @@
 | R1 | V19 | 원근 카메라 리그 | 통과 |
 | R2 | V20 | 종이·조명·환경·후처리 | 통과 |
 | R3 | V21 | 캔버스 페이지 인쇄 시스템 | 일부 완료 (x-height B6, 핫스폿 B5, 보조기술 외부 검수 대기) |
-| R4 | V22 | 잉크 그림 시스템 + 음가 그림 | 미착수 |
+| R4 | V22 | 잉크 그림 시스템 + 음가 그림 | 통과 (선 폭 부분 통과: 서 있는 모서리 측정 2건 범위 밖, 편차 11) |
 | R5 | V23 | 조작부 재배치 | 미착수 |
 | R6 | V24 | 레슨 카메라 연출(샷) | 미착수 |
 | R7 | V25 | 효과음·마감 | 미착수 |
@@ -165,3 +165,49 @@ G1-C 체크리스트(부록 B) 영향 항목과 현재 판정:
 - 키보드 Tab으로 조작을 옮길 때 종이 위에 초점 링이 보이는가.
 - 2D(크게 읽기) 책이 이전과 같은 내용·조작을 주는가.
 - 실제 스크린리더로 거울을 읽었을 때 순서가 [ACCESSIBILITY.md](qa/ACCESSIBILITY.md) R3 절과 같은가(미실행).
+
+---
+
+## R4 (V22) 잉크 그림 시스템 + 음가 그림 — 통과(선 폭 부분 통과)
+
+- **단계 ID와 상태:** R4(a–d) **통과**(자동 검사·캡처 자체 판정). 단 선 폭 게이트는 **부분 통과**다: 종이 위 잉크는 범위 안이고, 서 있는 모서리의 화면 측정값 둘이 범위를 벗어났다(편차 11). 사람 검사 항목(아래)과 실기기 60 fps 움직임은 미관측.
+- **실제로 가능한 사용자 행동:** 펼침면을 열면 오른쪽 쪽의 그림 칸에 펜이 시간 축·눈금·숫자와 블록 윤곽을 그리고, 그림이 종이에서 입체로 일어선다(다시 찾은 펼침면은 일어서기만 한다). 블록은 종이색 면과 잉크 모서리, 그늘진 면의 해칭으로 그려지고 펼친 쪽의 곡면 위에 선다. 블록을 누르면(투명 히트 박스, 일어선 위치 기준) 음표가 골라지고 강조 잉크 외곽선이 생긴다. 들으면 재생 중인 음표가 강조색으로 빛나고 재생선이 지나간다. 나누기·합치기는 데이터가 바로 바뀌고 새(사라지는) 경계가 240 ms 펜 획으로 그어진다(지워진다). 펼침면 1·2에는 소리 띠·메트로놈, 가위 자국·분수 장식이 함께 그려진다. 넘기기 시작하면 그림은 종이에 눕고, 넘김 잎이 그 위를 덮는다.
+- **변경 경로와 이유:**
+  - 신규 `src/book/figures/`: `inkLines.ts`(LineSegments2/LineMaterial 패치: 평면↔입체 `uLift`, 펜 `uReveal`, 정확한 폭의 안티앨리어싱, 눈 쪽 당김, 세그먼트별 농담·점선 거리, 펜 스케줄러), `paperFill.ts`(종이 채움: 해칭·글로·reveal 임계값, 그림자 depth 재질), `figure.ts`(그림 빌더 line/box/label/hit/pause, 곡면 순응, 강조 외곽선, stage가 찾는 figure controls 레지스트리), `choreography.ts`(등장 시간표), `music/durationFigure.ts`(음가 그림: durationWorld 의미 import, 분할·합치기 획), `music/decor.ts`(장식).
+  - 수정 `src/book/lessonScene.ts`(durationWorld → durationFigure, 첫 레인만 숫자, 장식·반 박자 안내 잉크, 곡면 `spread` 옵션, figure controls, DEV `holdTransitions`·`laneToWorld`), `src/book/stage.ts`(세로 scale·bulge 보정 삭제, lift/reveal 적용, 넘김 중 납작한 그림 숨김, 선 해상도, DEV 장면 draw call 측정·투영), `src/book/BookApp.tsx`(첫 등장 reveal∥lift, 재방문 lift만, 그림 창 중앙 = 그림 전체 범위, 장면 생성 옵션), `src/book/motion.ts`(토큰 추가만: reveal 520, lift 600, liftDelay 120, stagger 45, splitMerge 240), `src/book/lessonPresentation.ts`(그림 배치 거울 `LESSON_FIGURE_LAYOUT`, `lessonFigureExtent`), `src/book/geometry.ts`(`rightPagePaper`), `src/book/inspector.ts`(sceneProgress/sceneReveal 포즈, figure·figureEntry·holdFigureStrokes·figurePlayback·sceneDrawCalls·figurePoints), `src/content/pages/lessonPages.ts`(펼침면 1·2 그림 칸 높이).
+  - 검증: 신규 `scripts/figure-capture.ts`, `scripts/book-v3-e2e.ts`에 R4 검사 2개(등장 끝 상태·예산, 분할 획)와 그림 탭을 블록 위치로 조준, `scripts/refactor-capture.ts`에 그림 세그먼트·장면 draw call 기록. 테스트 신규 `tests/ink-lines.test.ts`(5), `tests/figure.test.ts`(7), `tests/duration-figure.test.ts`(9), `tests/book-lesson-scene.test.ts`에 3개 추가·기존 4개를 그림 API로 수정(의미 기대값 유지).
+- **실행 명령과 종료 결과:** `npm run typecheck` 0, `npm run lint` 0, `npm test` 351/351, `npm run build` 0(500 kB 경고 1건은 R1과 같은 three 공유 청크). `node scripts/book-v3-e2e.ts` 19/19 × 3 viewport(1280×720, 844×390, 390×844). `node scripts/figure-capture.ts` 3 viewport 오류 0. `node scripts/refactor-capture.ts --stage R4 …` ink 18장 + legacy 12장.
+- **기기와 브라우저 및 commit:** Linux 컨테이너, Node 22.23.4, Playwright 1.60 + headless Chromium 1243(SwiftShader WebGL), DPR 1. 캡처는 `?quality=high`.
+- **실제 캡처 영상 로그 경로:** [qa/refactor/R4/index.md](qa/refactor/R4/index.md)(after ink 18장, legacy 12장, before = R3 after), 등장 12프레임·글로·분할 3장(3 viewport), 선 폭 400% 크롭, `figure-*.json`, e2e JSON 3개.
+- **측정값:** 선 폭(FWHM) 종이 위 눈금 1.28 / 1.21 / 1.33 px, 서 있는 윗모서리 1.74 / 1.11 / 1.58 px(1280×720 / 844×390 / 390×844). 장면 draw call 14(펼침면 1)·9(펼침면 2), 세그먼트 572·275(예산 3,000/6,000), 장식 ≤ 400(테스트). 첫 등장 reveal 520 ms ∥ lift 600 ms(120 ms 지연) = 720 ms(프레임별 값은 index.md). draft 인쇄 최대 7.3 / 5.8 / 2.9 ms(≤ 60). 인쇄 메모리 46.1 MiB(예산 48), 20회 왕복 뒤 변화 0. 본문 x-height 4.06 / 2.14 / 1.77 px(R3 B6와 같음). 페이지 오류 0.
+- **미실행 항목과 정확한 이유:** 실기기 GPU에서 60 fps 등장·분할 획의 움직임(SwiftShader는 프레임 하나에 0.5–3 s라 시간표를 inspector로 고정해 찍었다), 실제 스크린리더에서 그림 안내(거울의 그림 설명 문장은 R3와 같음) — 사람 검사(R9).
+- **남은 결함과 재현 절차:**
+  1. 분할 획은 강조 외곽선(선택된 앞 블록)과 같은 경계를 지나 1280×720에서 눈에 잘 띄지 않는다(`1280x720_split_*`). 획은 블록 위 0.35 단위에서 시작해 눈금까지 이어진다. 더 잘 보이게 하는 연출은 R6(가까이 보기 샷)에서 다시 본다.
+  2. 메트로놈은 서 있는 카드라 읽기 포즈(62°)에서 세로가 약 절반으로 줄어 작게 보인다.
+  3. (과도기) 넘김 중에는 그림이 종이에 누운 뒤 숨는다(잎과 함께 넘어가지 않는다). 잎이 그림 칸을 덮는 동안 숨으므로 보이지 않지만, 그림을 잎에 붙이는 연출은 설계 범위 밖이다.
+  4. 가로 축의 선 폭은 블록 앞모서리와 3–4 px 떨어져 844×390·390×844에서 단면이 분리되지 않아 재지 못했다(`figure-*.json`의 `dropped` 15). 측정 위치를 블록이 없는 축 끝으로 옮기는 것은 R9 게이트 측정에서 한다.
+- **객관적 게이트와 선택적 사용자 피드백 상태:** 선 폭(화면 측정, 부분 통과), 의미 테스트 6개 이전, 장면 draw call ≤ 40, 세그먼트 예산, 그림 창 안에 그림 전체(테스트), 데이터 먼저 분할(e2e), 넘김 중 그림 처리(캡처 turn50·BK12). 사람 피드백 없음.
+- **다음 허용 단계와 막힌 단계:** R5 허용(R3 일부 완료: B5·B6는 기록된 대체 처리, 불변식 회귀 없음). R6은 R4·R5 뒤.
+- **전후 캡처 경로와 metrics.json 요약:** index.md 표 참고.
+- **renderer 플래그 상태:** 기본 `ink`(인쇄 책 + 잉크 그림), `?renderer=legacy`는 착수 커밋 고정 사본(정상, 캡처 12장, `src/scenes/durationWorld.ts`는 legacy가 계속 쓰므로 R9까지 그대로).
+- **설계서 대비 편차와 사유:**
+  1. **선 폭 구현**: `LineMaterial(linewidth 1.4)`를 그대로 쓰면 1.4 px 사각형이 화소 격자 위치에 따라 1 또는 2 화소를 덮어(SMAA는 단면을 고치지 않음) 실측 폭이 1.03–1.29 px였다. 사각형을 1.5 px 넓히고(`aaPad`) 조각 셰이더가 정확히 1.4 px를 1 px 경사로 덮게 했다(`uInkWidth`, 투명 혼합, ink끼리는 깊이 쓰기 없음). 또 블록 모서리 선이 옆 면의 기울어진 깊이에 반쯤 가려져, 선의 view 공간 위치를 눈 쪽으로 0.15% 당긴다(투영은 그대로). 설계값 1.4 px는 그대로다.
+  2. **평면 투영**: 설계서 기본값 (x, 0, z) 평면도를 그대로 쓴다. 높이는 접히지 않고 바닥 윤곽 위에 겹친다(일어서면 위 윤곽이 올라온다). `fold` 옵션은 남겨 두었다.
+  3. **API 모양**: 설계서의 `InkLineSet.add/build/setLines`는 `InkLines.set(segments)`(용량 재할당 포함), `figure(id, build)`는 `createInkFigure(id).rebuild(build)`, `InkFigure.update(time, camera)`는 stage가 매 프레임 부르는 `setResolution(w, h)`로 바뀌었다. stage는 그림을 모르는 채 group에 등록된 figure controls(`figureControlsOf`)로 lift·reveal·해상도를 넘긴다(SceneHost 계약 무변경). 빌더의 `lathe`는 음가 그림·장식에 필요 없어 만들지 않았다(R8 장식에서 필요하면 추가).
+  4. **해칭**: `sin(dot(pos, dir)/spacing)` 대신 같은 방향·간격의 안티앨리어싱 선 패턴(`fract` + `fwidth`)이다. 간격 0.55(레인 단위)는 설계값 그대로이며 1280×720에서 약 13 px 간격이다.
+  5. **reveal 순서와 강조**: 레인 → 장식 → 안내선 순서로 45 ms씩 늦게 그리고(`staggeredReveal`), 선택 외곽선은 그 레인의 그림이 다 그려진 뒤에 나타난다(펜보다 앞서 선택 표시가 보이지 않게).
+  6. **첫 등장 길이**: reveal 520 ms와 lift 600 ms(120 ms 지연)를 겹치므로 첫 등장은 720 ms다(`BOOK_MOTION.enter` 600은 값 그대로 두고 ink 경로에서 쓰지 않음). 각 채널은 자기 시간에 smoothStep을 받고, `tween`의 smoothStep은 역함수로 풀어 선형 시간으로 쓴다.
+  7. **넘김 중 그림**: lift가 0이 된 납작한 그림은 넘김 중에 숨긴다(잎이 그 쪽을 들어 올리면 다음 쪽 위에 남기 때문). 드래그 초반(p < 0.16)처럼 서 있는 동안은 보이고 잎이 depthTest로 가린다.
+  8. **숫자 라벨·그림 창**: 겹친 레인은 첫 레인에만 '0, 1/2, 1'을 찍는다. 그림 창 높이를 펼침면 1·2에서 늘렸고(장식 자리), 창 중앙은 그림 전체(올라선 블록 윗면·숫자·장식)의 화면 범위 중앙이다(`lessonFigureExtent`, 테스트가 모든 장면이 창 안에 들어감을 확인).
+  9. **장식 모양**: 메트로놈은 서 있는 카드(평면도에서 일어섬), 소리 띠·가위 자국·가위는 종이 위 잉크, 분수는 사건에서 계산한 문장이다. 모두 고르기·채점·저장에 쓰지 않는다.
+  10. **분할 획**: 앞면 앞 0.04 단위, 블록 위 0.35 단위에서 눈금까지 잇는 잉크 획(2.2 px)이다(외곽선 위로 보이게).
+  11. **선 폭 측정**: 화면 FWHM은 선이 화소 격자의 어디에 놓이느냐에 따라 같은 1.4 px 선도 약 1.25–2.0 px로 읽힌다. 종이 위 눈금은 세 화면 모두 1.2–1.6 px 안이지만, 서 있는 블록 윗모서리는 1.74 px(1280×720)와 1.11 px(844×390)로 범위를 벗어났다(두 면의 밝기 차이로 기준선도 흔들림). 셰이더의 덮임 폭은 테스트로 확인했고, 위상 평균 측정은 R9로 넘긴다. 이 게이트는 부분 통과로 기록한다.
+- **G1-C 체크리스트 영향 항목과 현재 판정:** 5번(그림이 종이에서 올라오는 잉크 선화) — 펜 reveal·lift·해칭·종이 면·곡면 순응 확인(캡처). 원본 실동작 비교는 미관측.
+
+### R4 사람 검사 항목 (`docs/qa/refactor/R4/after/`)
+
+- 그림이 색 블록이 아니라 종이에 그린 잉크 선화로 보이는가(해칭, 종이색 면, 잉크 모서리).
+- 첫 등장에서 펜이 그리고 그림이 일어서는 순서가 자연스러운가(`*_entry_sheet_ink.jpg`).
+- 선 폭이 고르게 보이는가(400% 크롭).
+- 분할할 때 새 경계가 그어지는 것이 보이는가(실기기).
+- 장식이 학습을 돕고 산만하지 않은가.

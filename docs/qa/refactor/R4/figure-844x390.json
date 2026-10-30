@@ -1,0 +1,203 @@
+{
+  "viewport": "844x390",
+  "time": "2026-10-30T07:35:12.000Z",
+  "entryFramesMs": [
+    0,
+    60,
+    120,
+    180,
+    240,
+    300,
+    360,
+    420,
+    480,
+    540,
+    600,
+    660
+  ],
+  "entry": [
+    {
+      "ms": 0,
+      "lift": 0,
+      "reveal": 0
+    },
+    {
+      "ms": 60,
+      "lift": 0,
+      "reveal": 0.013
+    },
+    {
+      "ms": 120,
+      "lift": 0,
+      "reveal": 0.084
+    },
+    {
+      "ms": 180,
+      "lift": 0.009,
+      "reveal": 0.229
+    },
+    {
+      "ms": 240,
+      "lift": 0.058,
+      "reveal": 0.428
+    },
+    {
+      "ms": 300,
+      "lift": 0.163,
+      "reveal": 0.642
+    },
+    {
+      "ms": 360,
+      "lift": 0.317,
+      "reveal": 0.827
+    },
+    {
+      "ms": 420,
+      "lift": 0.5,
+      "reveal": 0.948
+    },
+    {
+      "ms": 480,
+      "lift": 0.683,
+      "reveal": 0.996
+    },
+    {
+      "ms": 540,
+      "lift": 0.837,
+      "reveal": 1
+    },
+    {
+      "ms": 600,
+      "lift": 0.942,
+      "reveal": 1
+    },
+    {
+      "ms": 660,
+      "lift": 0.991,
+      "reveal": 1
+    }
+  ],
+  "lineWidths": [
+    {
+      "label": "tick (ink on the paper, vertical)",
+      "a": {
+        "x": 471.2592479443786,
+        "y": 221.9467874404152
+      },
+      "b": {
+        "x": 471.36558912936084,
+        "y": 224.95971559217776
+      },
+      "meanPx": 1.21,
+      "minPx": 1.15,
+      "maxPx": 1.36,
+      "samples": 15,
+      "dropped": 0
+    },
+    {
+      "label": "axis (ink on the paper, horizontal)",
+      "a": {
+        "x": 513.4367215800677,
+        "y": 179.6705807351623
+      },
+      "b": {
+        "x": 535.8759757397455,
+        "y": 179.9988722196752
+      },
+      "meanPx": 0,
+      "minPx": null,
+      "maxPx": null,
+      "samples": 0,
+      "dropped": 15
+    },
+    {
+      "label": "block top back edge (standing)",
+      "a": {
+        "x": 475.44456910852233,
+        "y": 205.5514472156679
+      },
+      "b": {
+        "x": 502.9655421637626,
+        "y": 205.44272269128945
+      },
+      "meanPx": 1.11,
+      "minPx": 1.06,
+      "maxPx": 1.19,
+      "samples": 15,
+      "dropped": 0
+    }
+  ],
+  "spread1": {
+    "calls": {
+      "total": 101,
+      "withoutScene": 87,
+      "scene": 14,
+      "figure": {
+        "segments": 572,
+        "ink": 480,
+        "dashed": 0,
+        "accent": 92,
+        "fills": 5,
+        "hits": 5,
+        "labels": 3
+      }
+    },
+    "figure": {
+      "segments": 572,
+      "ink": 480,
+      "dashed": 0,
+      "accent": 92,
+      "fills": 5,
+      "hits": 5,
+      "labels": 3
+    }
+  },
+  "spread2": {
+    "calls": {
+      "total": 96,
+      "withoutScene": 87,
+      "scene": 9,
+      "figure": {
+        "segments": 275,
+        "ink": 183,
+        "dashed": 0,
+        "accent": 92,
+        "fills": 1,
+        "hits": 1,
+        "labels": 3
+      }
+    },
+    "figure": {
+      "segments": 275,
+      "ink": 183,
+      "dashed": 0,
+      "accent": 92,
+      "fills": 1,
+      "hits": 1,
+      "labels": 3
+    }
+  },
+  "split": {
+    "printGenerationBefore": "34",
+    "0ms": {
+      "kind": "draw",
+      "boundaries": [
+        5
+      ]
+    },
+    "120ms": {
+      "kind": "draw",
+      "boundaries": [
+        5
+      ]
+    },
+    "240ms": {
+      "kind": "draw",
+      "boundaries": [
+        5
+      ]
+    },
+    "after": null
+  },
+  "errors": []
+}
